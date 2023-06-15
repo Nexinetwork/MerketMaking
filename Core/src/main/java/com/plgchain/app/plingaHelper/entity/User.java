@@ -10,8 +10,6 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.constant.UserRole;
 import com.plgchain.app.plingaHelper.constant.UserStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -47,8 +46,6 @@ import lombok.NoArgsConstructor;
 public class User implements UserDetails,Serializable {
 
 	private static final long serialVersionUID = 8463125357769272244L;
-
-	private final static Logger logger = LoggerFactory.getLogger(User.class);
 
 	@Id
 	@SequenceGenerator(name = "TBLUSER_USERID_GENERATOR", sequenceName = "\"seqUserUserId\"", schema = "\"schUser\"", allocationSize = 1)
@@ -93,8 +90,7 @@ public class User implements UserDetails,Serializable {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-		logger.info("Role name is : " + userRole.name());
-		return List.of(new SimpleGrantedAuthority("ROLE_" + userRole.name()));
+		return List.of(new SimpleGrantedAuthority(userRole.name()));
 	}
 
 	@Override
