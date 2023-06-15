@@ -1,4 +1,4 @@
-package com.plgchain.app.config;
+package com.plgchain.app.plingaHelper.config;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.plgchain.app.config;
+package com.plgchain.app.plingaHelper.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
