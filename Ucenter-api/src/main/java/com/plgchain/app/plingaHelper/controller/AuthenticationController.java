@@ -32,32 +32,29 @@ public class AuthenticationController implements Serializable {
 
 	private final static Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
-
 	private final AuthenticationService authenticationService;
-    @PostMapping("/signup")
-    public ResponseEntity<JwtAuthenticationResponse> signup(@RequestBody SignUpRequest request) {
-    	logger.info("aaaaaaaaaaaa" + request.toString());
-        return ResponseEntity.ok(authenticationService.signup(request));
-    }
 
-    @PostMapping("/signin")
-    public ResponseEntity<String> signin(@RequestBody SigninRequest request) {
-    	try {
-    	JwtAuthenticationResponse res = authenticationService.signin(request);
-        return ResponseEntity.ok(authenticationService.signin(request).getToken());
-    	} catch (IllegalArgumentException e) {
-    		if (e.getMessage().contains("Invalid email or password"))
-    			return ResponseEntity.ok("Invalid email or password");
+	@PostMapping("/signup")
+	public ResponseEntity<JwtAuthenticationResponse> signup(@RequestBody SignUpRequest request) {
+		logger.info("aaaaaaaaaaaa" + request.toString());
+		return ResponseEntity.ok(authenticationService.signup(request));
+	}
 
-    	}
-    	return ResponseEntity.ok("");
-    }
+	@PostMapping("/signin")
+	public ResponseEntity<String> signin(@RequestBody SigninRequest request) {
+		try {
+			return ResponseEntity.ok(authenticationService.signin(request).getToken());
+		} catch (Exception e) {
+			logger.warn("Errrrrrror" + e.getMessage());
+			if (e.getMessage().contains("Invalid email or password"))
+				return ResponseEntity.ok("Invalid email or password");
+		}
+		return ResponseEntity.ok("");
+	}
 
-    @RequestMapping("/ping")
-    public ResponseEntity<String> ping() {
-        return ResponseEntity.ok("Pong");
-    }
-
-
+	@RequestMapping("/ping")
+	public ResponseEntity<String> ping() {
+		return ResponseEntity.ok("Pong");
+	}
 
 }
