@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/godaction")
+@RequestMapping("/api/v1/adminArea")
 @RequiredArgsConstructor
-public class GodBlockchainControler extends BaseController implements Serializable {
+public class AdminAreaControler extends BaseController implements Serializable {
 
 	private static final long serialVersionUID = -4038029722467775718L;
 
 	@RequestMapping("/ping")
 	public ResponseEntity<String> ping() {
-		return ResponseEntity.ok("Pong God");
+		return ResponseEntity.ok("Pong Admin");
 	}
 
 }
