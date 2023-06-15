@@ -35,6 +35,7 @@ public class SecurityConfiguration {
 		http.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**").permitAll()
 						.requestMatchers("/api/v1/public/**").permitAll().requestMatchers("/api/v1/godaction/**")
+						.hasRole("GOD").requestMatchers("/api/v1/godaction/")
 						.hasRole("GOD").requestMatchers("/api/v1/godArea/**")
 						.hasRole("GOD").requestMatchers("/api/v1/adminArea/**")
 						.hasRole("ADMIN").requestMatchers("/api/v1/memberArea/**")

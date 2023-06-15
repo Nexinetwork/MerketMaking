@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +23,7 @@ public class GodBlockchainControler extends BaseController implements Serializab
 	@RequestMapping("/ping")
 	public MessageResult ping() {
 		try {
-		return success("Pong God");
+			return success("Pong God");
 		} catch (Exception e) {
 			logger.info("Error is : " + e.getMessage());
 			return error(e.getMessage());
