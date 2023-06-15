@@ -22,6 +22,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -49,7 +50,6 @@ public class User implements Serializable {
 	private String password;
 
 	@Enumerated(EnumType.ORDINAL)
-	@NotBlank(message = "UserStatus may not be blank")
 	@Column(name = "\"userStatus\"")
 	private UserStatus userStatus;
 
