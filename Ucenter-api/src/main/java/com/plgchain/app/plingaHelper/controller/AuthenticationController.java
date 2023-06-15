@@ -40,6 +40,11 @@ public class AuthenticationController implements Serializable {
         return ResponseEntity.ok(authenticationService.signin(request));
     }
 
+    @RequestMapping("/ping")
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("Pong");
+    }
+
 
 
 }
