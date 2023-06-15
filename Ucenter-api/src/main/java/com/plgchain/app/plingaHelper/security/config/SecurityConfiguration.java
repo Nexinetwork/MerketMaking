@@ -34,11 +34,10 @@ public class SecurityConfiguration {
 		http.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests((request) -> request.requestMatchers("/api/v1/auth/**").permitAll()
 						.requestMatchers("/api/v1/public/**").permitAll().requestMatchers("/api/v1/godaction/**")
-						.hasRole("GOD").requestMatchers("/api/v1/godaction/")
-						.hasRole("GOD").requestMatchers("/api/v1/godArea/**")
-						.hasRole("GOD").requestMatchers("/api/v1/adminArea/**")
-						.hasRole("ADMIN").requestMatchers("/api/v1/memberArea/**")
-						.hasRole("USER").anyRequest().authenticated())
+						.hasRole("GOD").requestMatchers("/api/v1/godaction/").hasRole("GOD")
+						.requestMatchers("/api/v1/godArea/**").hasRole("GOD").requestMatchers("/api/v1/adminArea/**")
+						.hasRole("ADMIN").requestMatchers("/api/v1/memberArea/**").hasRole("USER").anyRequest()
+						.authenticated())
 				.sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -63,12 +62,13 @@ public class SecurityConfiguration {
 		return config.getAuthenticationManager();
 	}
 
-	/*
-	 * @Bean public RoleHierarchy roleHierarchy() { RoleHierarchyImpl roleHierarchy
-	 * = new RoleHierarchyImpl(); String hierarchy =
-	 * "ROLE_GOD > ROLE_ADMIN \n ROLE_ADMIN > ROLE_STAFF \n ROLE_STAFF > ROLE_USER \n ROLE_USER > ROLE_GUEST"
-	 * ; roleHierarchy.setHierarchy(hierarchy); return roleHierarchy; }
-	 */
+	@Bean
+	public RoleHierarchy roleHierarchy() {
+		RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+		String hierarchy = "ROLE_GOD > ROLE_ADMIN \n ROLE_ADMIN > ROLE_STAFF \n ROLE_STAFF > ROLE_USER \n ROLE_USER > ROLE_GUEST";
+		roleHierarchy.setHierarchy(hierarchy);
+		return roleHierarchy;
+	}
 
 	/*
 	 * @Bean public DefaultWebSecurityExpressionHandler
