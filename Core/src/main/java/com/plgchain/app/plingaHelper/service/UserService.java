@@ -4,11 +4,13 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.dao.UserDao;
 import com.plgchain.app.plingaHelper.entity.User;
 import com.plgchain.app.plingaHelper.service.Base.BaseService;
 
+@Service
 public class UserService extends BaseService implements Serializable {
 
 	private static final long serialVersionUID = -820540009110569732L;
