@@ -14,9 +14,9 @@ import com.plgchain.app.plingaHelper.entity.User;
 import com.plgchain.app.plingaHelper.service.UserService;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
-@RestController
-@RequestMapping("/api/v1/api/common")
+//@CrossOrigin(origins = "*", maxAge = 3600)
+//@RestController
+//@RequestMapping("/api/v1/api/common")
 public class PublicCommonApi extends BaseController implements Serializable {
 
 	private static final long serialVersionUID = -1421027553562847647L;

@@ -2,6 +2,7 @@ package com.plgchain.app.plingaHelper.service;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class UserService extends BaseService implements Serializable {
 		return userDao.findById(id).get();
 	}
 
-	public User findByEmailAddress(String emailAddress) {
+	public Optional<User> findByEmailAddress(String emailAddress) {
 		return userDao.findByEmailAddress(emailAddress);
 	}
 

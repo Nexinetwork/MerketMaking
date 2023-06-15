@@ -1,38 +1,59 @@
 package com.plgchain.app.plingaHelper.security.config;
 
-import lombok.RequiredArgsConstructor;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.plgchain.app.plingaHelper.security.service.UserService;
+
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class SecurityConfiguration {
-	/*private final JwtAuthenticationFilter jwtAuthFilter;
-	private final AuthenticationProvider authenticationProvider;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final UserService userService;
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**")
+                        .permitAll().requestMatchers("/api/v1/public/**")
+                        .permitAll().anyRequest().authenticated())
+                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
+                .authenticationProvider(authenticationProvider()).addFilterBefore(
+                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeHttpRequests().requestMatchers("/api/auth/**").permitAll()
-				.requestMatchers("/publicApi/**").permitAll().requestMatchers("/godAreaApi/**").hasAnyRole("GOD")
-				.requestMatchers("/adminAreaApi/**").hasAnyRole("ADMIN").requestMatchers("/userAreaApi/**")
-				.hasAnyRole("USER").anyRequest().authenticated().and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-				.authenticationProvider(authenticationProvider)
-				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-		return http.build();
-	}*/
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userService.userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeHttpRequests().anyRequest().permitAll(); // Works for GET, POST, PUT, DELETE
-		return http.build();
-	}
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+            throws Exception {
+        return config.getAuthenticationManager();
+    }
 }
