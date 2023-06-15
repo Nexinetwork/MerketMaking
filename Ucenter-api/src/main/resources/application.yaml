@@ -52,8 +52,6 @@ spring:
             session:
                 timeout: 15000
         producer:
-            batch:
-                size: 256
             buffer:
                 memory: 1048576
             linger: 1
