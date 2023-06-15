@@ -17,7 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 public enum UserRole implements BaseEnum {
-	GOD("God") , ADMIN("Admin"), USER("User");
+	GOD("GOD") , ADMIN("ADMIN"),STAFF("STAFF"), USER("USER"), GUEST("GUEST");
 
 	@Setter
     private String perName;

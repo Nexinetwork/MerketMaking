@@ -90,7 +90,7 @@ public class User implements UserDetails,Serializable {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-		return List.of(new SimpleGrantedAuthority(userRole.name()));
+		return List.of(new SimpleGrantedAuthority("ROLE_" + userRole.name()));
 	}
 
 	@Override

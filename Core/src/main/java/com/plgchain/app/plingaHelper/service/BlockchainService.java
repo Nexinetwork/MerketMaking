@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.dao.BlockchainDao;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
-import com.plgchain.app.plingaHelper.entity.User;
 import com.plgchain.app.plingaHelper.service.Base.BaseService;
 
 /**
@@ -37,6 +36,14 @@ public class BlockchainService extends BaseService implements Serializable {
 
 	public boolean existsBlockchainByName(String name) {
 		return blockchainDao.existsBlockchainByName(name);
+	}
+
+	public Optional<Blockchain> findByMainCoin(String name) {
+		return blockchainDao.findByMainCoin(name);
+	}
+
+	public boolean existsBlockchainByMainCoin(String name) {
+		return blockchainDao.existsBlockchainByMainCoin(name);
 	}
 
 	public Blockchain save(Blockchain blockchain) {
