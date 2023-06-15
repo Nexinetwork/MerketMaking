@@ -42,7 +42,6 @@ spring:
                     interval: 100
                 offset:
                     reset: earliest
-            concurrency: 9
             enable:
                 auto:
                     commit: false
