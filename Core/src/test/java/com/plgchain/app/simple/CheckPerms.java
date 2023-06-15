@@ -43,7 +43,7 @@ public class CheckPerms implements Serializable {
 
 	@Test
 	public void testCase() {
-		HttpResponse<String> response = Unirest.get("http://185.173.129.244:7001/api/v1/adminArea/ping")
+		HttpResponse<String> response = Unirest.get("http://185.173.129.244:7001/api/v1/godaction/ping")
 				.header("content-type", "application/json")
 				.header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
