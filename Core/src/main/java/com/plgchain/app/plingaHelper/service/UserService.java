@@ -11,6 +11,7 @@ import com.plgchain.app.plingaHelper.dao.UserDao;
 import com.plgchain.app.plingaHelper.entity.User;
 import com.plgchain.app.plingaHelper.service.Base.BaseService;
 
+@SuppressWarnings("rawtypes")
 @Service
 public class UserService extends BaseService implements Serializable {
 
