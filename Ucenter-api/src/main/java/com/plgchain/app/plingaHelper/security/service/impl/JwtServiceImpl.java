@@ -19,7 +19,7 @@ import com.plgchain.app.plingaHelper.security.service.JwtService;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-    @Value("${token.signing.key}")
+    @Value("${spring.security.token.signing.key}")
     private String jwtSigningKey;
     @Override
     public String extractUserName(String token) {

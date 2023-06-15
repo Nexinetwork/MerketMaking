@@ -12,6 +12,9 @@ spring:
     application:
         name: Ucenter-api
     security:
+       token:
+          signing:
+             key: 413F4428472B4B6250655368566D5970337336763979244226452948404D6351
         app:
             jwtSecret: ILoveTedtedsoMuch2023@!!@ILoveTedtedsoMuch2023@!!@ILoveTedtedsoMuch2023@!!@
             jwtExpirationMs: 1800000000
@@ -68,3 +71,4 @@ spring:
             min-idle: 20
         port: 6379
         timeout: 30000
+
