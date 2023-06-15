@@ -1,0 +1,70 @@
+eureka:
+    client:
+        enabled: true
+        serviceUrl:
+            defaultZone: http://127.0.0.1:7000/eureka/
+    instance:
+        prefer-ip-address: true
+server:
+    context-path: /
+    port: 7001
+spring:
+    application:
+        name: Ucenter-api
+    security:
+        app:
+            jwtSecret: ILoveTedtedsoMuch2023@!!@ILoveTedtedsoMuch2023@!!@ILoveTedtedsoMuch2023@!!@
+            jwtExpirationMs: 1800000000
+    data:
+        jpa:
+            repositories:
+                enabled: true
+        mongodb:
+            uri: mongodb://pligaHelperUser:pligaHelperPass2023!@127.0.0.1:27017/dbPligaHelper
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://127.0.0.1:5432/dbBlockchainNetworkHealth
+        username: plingaUser
+        password: plingaPass2023!
+    devtools:
+        restart:
+            enabled: true
+    jpa:
+        show-sql: true
+        properties:
+            hibernate:
+                physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    kafka:
+        bootstrap-servers: 127.0.0.1:9092
+        consumer:
+            auto:
+                commit:
+                    interval: 100
+                offset:
+                    reset: earliest
+            concurrency: 9
+            enable:
+                auto:
+                    commit: false
+            group:
+                id: default-group
+            maxPollRecordsConfig: 50
+            session:
+                timeout: 15000
+        producer:
+            batch:
+                size: 256
+            buffer:
+                memory: 1048576
+            linger: 1
+            retries: 0
+    redis:
+        host: 127.0.0.1
+        password: ILoveTedTed2023!
+        pool:
+            max-active: 300
+            max-idle: 100
+            max-wait: 60000
+            min-idle: 20
+        port: 6379
+        timeout: 30000
