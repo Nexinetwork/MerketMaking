@@ -33,12 +33,7 @@ public class SecurityConfiguration {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**").permitAll()
-						.requestMatchers("/api/v1/public/**").permitAll().requestMatchers("/api/v1/godaction/**")
-						.hasAnyRole("GOD").requestMatchers("/api/v1/godaction/")
-						.hasAnyRole("GOD").requestMatchers("/api/v1/godArea/**")
-						.hasRole("GOD").requestMatchers("/api/v1/adminArea/**")
-						.hasRole("ADMIN").requestMatchers("/api/v1/memberArea/**")
-						.hasRole("USER").anyRequest().authenticated())
+						.requestMatchers("/api/v1/public/**").permitAll().anyRequest().authenticated())
 				.sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.plgchain.app.plingaHelper.security.dao.request.SignUpRequest;
 import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
-import com.plgchain.app.plingaHelper.security.dao.response.JwtAuthenticationResponse;
 import com.plgchain.app.plingaHelper.security.service.AuthenticationService;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 
