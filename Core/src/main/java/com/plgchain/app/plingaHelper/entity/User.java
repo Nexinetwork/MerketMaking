@@ -19,8 +19,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.constant.UserRole;
 import com.plgchain.app.plingaHelper.constant.UserStatus;
-import com.plgchain.app.plingaHelper.controller.AuthenticationController;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
