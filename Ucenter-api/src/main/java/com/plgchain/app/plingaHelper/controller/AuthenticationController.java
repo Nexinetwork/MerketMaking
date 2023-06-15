@@ -41,11 +41,16 @@ public class AuthenticationController implements Serializable {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
-    	logger.info("bbbbbbbbbbbbbbbbbbbbbb" + request.toString());
+    public ResponseEntity<String> signin(@RequestBody SigninRequest request) {
+    	try {
     	JwtAuthenticationResponse res = authenticationService.signin(request);
-    	logger.info("res is" + res);
-        return ResponseEntity.ok(authenticationService.signin(request));
+        return ResponseEntity.ok(authenticationService.signin(request).getToken());
+    	} catch (IllegalArgumentException e) {
+    		if (e.getMessage().contains("Invalid email or password"))
+    			return ResponseEntity.ok("Invalid email or password");
+
+    	}
+    	return ResponseEntity.ok("");
     }
 
     @RequestMapping("/ping")
