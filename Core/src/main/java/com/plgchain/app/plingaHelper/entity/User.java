@@ -83,7 +83,7 @@ public class User implements UserDetails,Serializable {
 	private LocalDateTime creationDate;
 
 	@UpdateTimestamp
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+3:30")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	@Column(name = "\"lastUpdateDate\"")
 	private LocalDateTime lastUpdateDate;
 
