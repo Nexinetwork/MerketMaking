@@ -18,7 +18,7 @@ public class SecurityUtil implements Serializable {
         JSONObject jsonObject = new JSONObject(jsonString);
         JSONObject dataObject = jsonObject.getJSONObject("data");
         String token = dataObject.getString("token");
-        return token;
+        return "Bearer " + token;
     }
 
 }
