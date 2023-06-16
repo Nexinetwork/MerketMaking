@@ -6,19 +6,25 @@ package com.plgchain.app.plingaHelper.entity;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -36,7 +42,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ToString
+@ToString(exclude = {"nodeList"})
 @Table(name = "\"tblBlockchain\"", schema = "\"schSevice\"")
 public class Blockchain implements Serializable {
 
@@ -101,5 +107,9 @@ public class Blockchain implements Serializable {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	@Column(name = "\"lastCheck\"")
 	private LocalDateTime lastCheck;
+
+	@OneToMany(mappedBy = "blockchain",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+	@JSONField(serialize = false)
+	private List<BlockchainNode> nodeList;
 
 }
