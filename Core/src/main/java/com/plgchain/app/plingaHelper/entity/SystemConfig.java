@@ -21,6 +21,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.lang.reflect.Field;
+import org.springframework.util.Assert;
 import lombok.ToString;
 
 import java.time.LocalDate;
@@ -76,8 +78,8 @@ public class SystemConfig implements Serializable {
 	private String configStringValue;
 
 	@ColumnTransformer(
-            read = "PGP_SYM_DECRYPT(\"configEncryptedTextValue\", '!@MYLoveTeted2020secretLOGINILoveYouTedTed@!')",
-            write = "PGP_SYM_ENCRYPT (?, '!@MYLoveTeted2020secretLOGINILoveYouTedTed@!')"
+            read = "PGP_SYM_DECRYPT(\"configEncryptedTextValue\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!')",
+            write = "PGP_SYM_ENCRYPT (?, '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!')"
     )
 	@Column(name = "\"configEncryptedTextValue\"", columnDefinition = "bytea")
 	private String configEncryptedTextValue;
@@ -96,7 +98,22 @@ public class SystemConfig implements Serializable {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	private LocalDateTime lastModifiedDate;
 
+	public void mergeOtherObject(SystemConfig other) throws IllegalAccessException {
+	    Field[] fields = SystemConfig.class.getDeclaredFields();
 
+	    for (Field field : fields) {
+	        field.setAccessible(true);
+
+	        if (field.getName().equals("configId") || field.getName().equals("configName") || field.getName().equals("creationDate") || field.getName().equals("lastModifiedDate")) {
+	            continue;
+	        }
+
+	        Object value = field.get(other);
+	        if (value != null) {
+	            field.set(this, value);
+	        }
+	    }
+	}
 
 
 }
