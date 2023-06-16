@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 public enum AdminCommandType implements BaseEnum {
-	CREATEBLOCKCHAIN("Create new Blockchain");
+	UPDATEBLOCKCHAIN("Update Blockchain");
 
 	@Setter
 	private String englishName;
