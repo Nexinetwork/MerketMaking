@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.plgchain.app.plingaHelper.bean.security.BlockchainBean;
+import com.plgchain.app.plingaHelper.bean.BlockchainBean;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.exception.RestActionError;
-import com.plgchain.app.plingaHelper.security.dao.request.SignUpRequest;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 
 import lombok.RequiredArgsConstructor;

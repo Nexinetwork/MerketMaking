@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.plgchain.app.plingaHelper.bean.security;
+package com.plgchain.app.plingaHelper.bean;
 
 import java.io.Serializable;
 import java.math.BigInteger;
