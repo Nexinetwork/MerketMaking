@@ -14,42 +14,43 @@ import com.plgchain.app.plingaHelper.service.LogService;
 @Component
 public class Logger {
 
-	/*
-	 * @Autowired private LogService logService;
-	 */
+	@Autowired
+	private LogService logService;
 
+	@Pointcut("@within(com.plgchain.app.plingaHelper.annotation.LogClass)")
+	public void logClass() {
+	}
 
+	@Pointcut("@annotation(com.plgchain.app.plingaHelper.annotation.LogMethod)")
+	public void logMethod() {
+	}
 
-    @Pointcut("@within(com.plgchain.app.plingaHelper.annotation.LogClass)")
-    public void logClass() {}
+	@Pointcut("@annotation(com.plgchain.app.plingaHelper.annotation.NotLogMethod)")
+	public void notLogMethod() {
+	}
 
-    @Pointcut("@annotation(com.plgchain.app.plingaHelper.annotation.LogMethod)")
-    public void logMethod() {}
+	@Before("(logClass() ||  logMethod()) && !notLogMethod()")
+	public void adviceBefore(JoinPoint jp) {
+		System.out.println("@Before called");
+	}
 
-    @Pointcut("@annotation(com.plgchain.app.plingaHelper.annotation.NotLogMethod)")
-    public void notLogMethod() {}
+	@AfterReturning(pointcut = "(logClass() ||  logMethod()) && !notLogMethod()", returning = "result")
+	public void adviceAfterReturning(JoinPoint jp, Object result) {
+		System.out.println("Object created :" + result.toString());
 
+		Log log = new Log();
+		log.setLogAction(LogAction.SYSTEMACTION);
+		log.setLogType(LogType.SYSTEMACTION);
+		String res = String.format("Method %s has ben run,", jp.getSignature().getName());
+		if (result != null)
+			res += " and result is " + result.toString();
+		log.setLogDetail(res);
+		logService.save(log);
+	}
 
-
-    @Before("(logClass() ||  logMethod()) && !notLogMethod()")
-    public void adviceBefore(JoinPoint jp)  {
-        System.out.println("@Before called");
-    }
-
-    @AfterReturning(pointcut = "(logClass() ||  logMethod()) && !notLogMethod()",returning = "result")
-    public void adviceAfterReturning(JoinPoint jp, Object result)  {
-        System.out.println("Object created :" + result.toString());
-		/*
-		 * Log log = new Log(); log.setLogAction(LogAction.SYSTEMACTION);
-		 * log.setLogType(LogType.SYSTEMACTION); String res =
-		 * String.format("Method %s has ben run,", jp.getSignature().getName()); if
-		 * (result != null) res += " and result is " + result.toString();
-		 * log.setLogDetail(res); //logService.save(log);
-		 */    }
-
-    @AfterThrowing("(logClass() ||  logMethod()) && !notLogMethod()")
-    public void adviceAfterThrowing(JoinPoint jp){
-        System.out.println("@AfterThrowing called");
-    }
+	@AfterThrowing("(logClass() ||  logMethod()) && !notLogMethod()")
+	public void adviceAfterThrowing(JoinPoint jp) {
+		System.out.println("@AfterThrowing called");
+	}
 
 }
