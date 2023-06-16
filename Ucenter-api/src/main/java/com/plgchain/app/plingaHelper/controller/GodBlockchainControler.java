@@ -47,9 +47,12 @@ public class GodBlockchainControler extends BaseController implements Serializab
 			success(String.format("Blockchain %s has been created.", blockchain));
 		} catch (RestActionError e) {
 			// TODO Auto-generated catch block
+			logger.error("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + e.getMessage());
 			error(e.getMessage());
+			return error(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" + e.getMessage());
 			return error(e.getMessage());
 		}
 		return null;
