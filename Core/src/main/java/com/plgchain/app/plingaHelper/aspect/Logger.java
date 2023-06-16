@@ -14,8 +14,9 @@ import com.plgchain.app.plingaHelper.service.LogService;
 @Component
 public class Logger {
 
-	@Autowired
-	private LogService logService;
+	/*
+	 * @Autowired private LogService logService;
+	 */
 
 
 
@@ -45,7 +46,7 @@ public class Logger {
         if (result != null)
         	res += " and result is " + result.toString();
         log.setLogDetail(res);
-        logService.save(log);
+        //logService.save(log);
     }
 
     @AfterThrowing("(logClass() ||  logMethod()) && !notLogMethod()")
