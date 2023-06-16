@@ -37,16 +37,9 @@ public class Logger {
     }
 
     @After("(logClass() ||  logMethod()) && !notLogMethod()")
-    public void adviceAfter(JoinPoint jp, Object result)  {
-        System.out.println("Object created :" + result.toString());
-        Log log = new Log();
-        log.setLogAction(LogAction.SYSTEMACTION);
-        log.setLogType(LogType.SYSTEMACTION);
-        String res = String.format("Method %s has ben run,", jp.getSignature().getName());
-        if (result != null)
-        	res += " and result is " + result.toString();
-        log.setLogDetail(res);
-        //logService.save(log);
+    public void adviceAfter(JoinPoint jp)  {
+        System.out.println("Object created :");
+
     }
 
     @AfterThrowing("(logClass() ||  logMethod()) && !notLogMethod()")
