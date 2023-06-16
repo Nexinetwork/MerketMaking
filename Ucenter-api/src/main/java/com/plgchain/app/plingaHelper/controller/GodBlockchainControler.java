@@ -44,7 +44,7 @@ public class GodBlockchainControler extends BaseController implements Serializab
 	public MessageResult createNewBlockchain(@RequestBody Blockchain blockchain) {
 		try {
 			blockchain = blockchainBean.createBlockchain(blockchain);
-			success(String.format("Blockchain %s has been created.", blockchain));
+			return success(String.format("Blockchain %s has been created.", blockchain));
 		} catch (RestActionError e) {
 			// TODO Auto-generated catch block
 			logger.error("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" + e.getMessage());
@@ -55,7 +55,6 @@ public class GodBlockchainControler extends BaseController implements Serializab
 			logger.error("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" + e.getMessage());
 			return error(e.getMessage());
 		}
-		return null;
 	}
 
 }
