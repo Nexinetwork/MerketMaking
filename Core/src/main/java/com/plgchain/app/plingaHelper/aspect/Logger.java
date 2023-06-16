@@ -36,8 +36,8 @@ public class Logger {
         System.out.println("@Before called");
     }
 
-    @After("(logClass() ||  logMethod()) && !notLogMethod()")
-    public void adviceAfter(JoinPoint jp, Object result)  {
+    @AfterReturning("(logClass() ||  logMethod()) && !notLogMethod()")
+    public void adviceAfterReturning(JoinPoint jp, Object result)  {
         System.out.println("Object created :" + result.toString());
 		/*
 		 * Log log = new Log(); log.setLogAction(LogAction.SYSTEMACTION);
