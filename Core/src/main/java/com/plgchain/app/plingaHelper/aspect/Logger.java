@@ -36,7 +36,7 @@ public class Logger {
         System.out.println("@Before called");
     }
 
-    @AfterReturning("(logClass() ||  logMethod()) && !notLogMethod()")
+    @AfterReturning(pointcut = "(logClass() ||  logMethod()) && !notLogMethod()",returning = "result")
     public void adviceAfterReturning(JoinPoint jp, Object result)  {
         System.out.println("Object created :" + result.toString());
 		/*
