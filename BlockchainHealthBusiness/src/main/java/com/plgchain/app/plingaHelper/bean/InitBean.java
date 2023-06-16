@@ -5,6 +5,7 @@ package com.plgchain.app.plingaHelper.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
+import com.plgchain.app.plingaHelper.entity.BlockchainNode;
+import com.plgchain.app.plingaHelper.service.BlockchainNodeService;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
 
 import jakarta.annotation.PostConstruct;
@@ -39,6 +42,9 @@ public class InitBean implements Serializable {
 	@Autowired
 	private BlockchainService blockchainService;
 
+	@Autowired
+	private BlockchainNodeService blockchainNodeService;
+
 	@SuppressWarnings("rawtypes")
 	@Autowired
 	private RedisTemplate redisTemplate;
@@ -55,6 +61,10 @@ public class InitBean implements Serializable {
 			if (blockchainDataString.hasKey(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName()))
 				blockchainDataString.delete(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName());
 			blockchainDataString.put(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName(), JSON.toJSONString(blockchain));
+			List<BlockchainNode> blNodeList = blockchainNodeService.findByBlockchain(blockchain);
+			if (!blNodeList.isEmpty()) {
+				blockchainDataString.put(SysConstant.REDIS_NODE_DATA, blockchain.getName(), JSON.toJSONString(blNodeList));
+			}
 		}
 	}
 

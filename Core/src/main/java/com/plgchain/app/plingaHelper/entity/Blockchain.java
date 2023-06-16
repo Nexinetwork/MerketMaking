@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -111,5 +112,17 @@ public class Blockchain implements Serializable {
 	@OneToMany(mappedBy = "blockchain",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@JSONField(serialize = false)
 	private List<BlockchainNode> nodeList;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof Blockchain))
+			return false;
+		Blockchain other = (Blockchain) obj;
+		return blockchainId == other.blockchainId || (Objects.equals(chainId, other.chainId) && isEvm && other.isEvm)
+				|| Objects.equals(name, other.name);
+	}
+
 
 }
