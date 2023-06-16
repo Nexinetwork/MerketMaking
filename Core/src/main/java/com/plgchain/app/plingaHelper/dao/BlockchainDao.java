@@ -1,5 +1,7 @@
 package com.plgchain.app.plingaHelper.dao;
 
+import java.math.BigInteger;
+import java.util.List;
 import java.util.Optional;
 
 import com.plgchain.app.plingaHelper.dao.base.BaseLongDao;
@@ -11,5 +13,8 @@ public interface BlockchainDao extends BaseLongDao<Blockchain> {
 	public Blockchain findTopByOrderByLastCheckDesc();
 	public Optional<Blockchain> findByMainCoin(String mainCoin);
 	public boolean existsBlockchainByMainCoin(String mainCoin);
+	public Optional<Blockchain> findByChainId(BigInteger chainId);
+	public boolean existsBlockchainByChainId(BigInteger chainId);
+	public List<Blockchain> findByIsEvm(boolean isEvm);
 
 }

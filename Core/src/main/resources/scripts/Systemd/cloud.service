@@ -1,0 +1,16 @@
+[Unit]
+Description=Plinga Cloud service
+Wants=syslog.target network.target
+After=syslog.target network.target
+
+[Service]
+#WorkingDirectory=/opt/prod
+Environment="JAVA_HOME=/home/jdk-17.0.7"
+ExecStart=/home/jdk-17.0.7/bin/java -jar -Xms512m -Xmx512m -Xmn200m -Xss256k -XX:+UseParallelGC /root/PlingaHelperApp/Cloud-0.0.1.jar
+#User=jvmapps
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

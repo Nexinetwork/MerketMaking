@@ -4,6 +4,7 @@
 package com.plgchain.app.plingaHelper.service;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,6 +61,18 @@ public class BlockchainService extends BaseService implements Serializable {
 
 	public Blockchain findTopByOrderByLastCheckDesc() {
 		return blockchainDao.findTopByOrderByLastCheckDesc();
+	}
+
+	public Optional<Blockchain> findByChainId(BigInteger chainId) {
+		return blockchainDao.findByChainId(chainId);
+	}
+
+	public boolean existsBlockchainByChainId(BigInteger chainId) {
+		return blockchainDao.existsBlockchainByChainId(chainId);
+	}
+
+	public List<Blockchain> findByIsEvm(boolean isEvm) {
+		return blockchainDao.findByIsEvm(isEvm);
 	}
 
 }

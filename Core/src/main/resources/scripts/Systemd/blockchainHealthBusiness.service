@@ -1,0 +1,16 @@
+[Unit]
+Description=Mrdomain BlockchainHealthBusiness service
+Wants=cloud.service redis.service kafka.service postgresql.service mongod.service
+After=cloud.service redis.service kafka.service postgresql.service mongod.service
+
+[Service]
+#WorkingDirectory=/opt/prod
+Environment="JAVA_HOME=/home/jdk-17.0.7"
+ExecStart=/home/jdk-17.0.7/bin/java -jar -Xms512m -Xmx512m -Xmn200m -Xss256k -XX:+UseParallelGC /root/PlingaHelperApp/BlockchainHealthBusiness-0.0.1.jar
+#User=jvmapps
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

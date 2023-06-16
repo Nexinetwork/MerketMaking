@@ -63,6 +63,9 @@ public class Blockchain implements Serializable {
 	@Column(name = "\"height\"",nullable = false)
 	private BigInteger height;
 
+	@Column(name = "\"chainId\"")
+	private BigInteger chainId;
+
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "\"tech\"",nullable = false)
 	private BlockchainTechType blockchainType;
@@ -72,6 +75,12 @@ public class Blockchain implements Serializable {
 
 	@Column(name = "\"healthy\"",nullable = false)
 	private boolean healthy;
+
+	@Column(name = "\"mustCheck\"",nullable = false)
+	private boolean mustCheck;
+
+	@Column(name = "\"isEvm\"",nullable = false)
+	private boolean isEvm;
 
 	@Column(name = "\"nodeCount\"",nullable = false)
 	private int nodeCount;
