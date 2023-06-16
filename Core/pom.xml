@@ -10,8 +10,8 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>Core</artifactId>
-	<name>Spring Boot Simple Sample</name>
-	<description>Spring Boot Simple Sample</description>
+	<name>Spring Boot Core</name>
+	<description>Spring Boot Core</description>
 	<url>http://projects.spring.io/spring-boot/</url>
 	<organization>
 		<name>Pivotal Software, Inc.</name>

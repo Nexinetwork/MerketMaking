@@ -10,8 +10,8 @@
 		<version>0.0.1</version>
 	</parent>
 	<artifactId>Ucenter-api</artifactId>
-	<name>Spring Boot Tomcat Sample</name>
-	<description>Spring Boot Tomcat Sample</description>
+	<name>Spring Boot Ucenter-api</name>
+	<description>Spring Boot Ucenter-api</description>
 	<url>http://projects.spring.io/spring-boot/</url>
 	<organization>
 		<name>Pivotal Software, Inc.</name>

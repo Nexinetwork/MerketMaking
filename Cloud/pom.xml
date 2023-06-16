@@ -11,9 +11,8 @@
 	</parent>
 	<artifactId>Cloud</artifactId>
 	<groupId>com.plgchain.app</groupId>
-	<name>Spring Boot Simple Sample</name>
-	<description>Spring Boot Simple Sample</description>
-	<version>0.0.1</version>
+	<name>Spring Boot Cloud</name>
+	<description>Spring Boot Cloud</description>
 	<url>http://projects.spring.io/spring-boot/</url>
 	<organization>
 		<name>Pivotal Software, Inc.</name>
