@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson2.JSON;
 import com.google.common.base.Strings;
+import com.plgchain.app.plingaHelper.annotation.LogMethod;
 import com.plgchain.app.plingaHelper.constant.AdminCommandType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
@@ -33,6 +34,7 @@ public class BlockchainBean implements Serializable {
 	@Autowired
 	private KafkaTemplate<String, String> kafkaTemplate;
 
+	@LogMethod
 	public Blockchain createBlockchain(Blockchain blockchain) throws RestActionError {
 		if (blockchain == null)
 			throw new RestActionError("Blockchain is Null");

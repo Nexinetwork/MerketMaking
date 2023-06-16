@@ -17,7 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 public enum LogAction implements BaseEnum {
-	CREATEBLOCKCHAIN("CREATEBLOCKCHAIN") , CRATENODE("CRATENODE");
+	CREATEBLOCKCHAIN("CREATEBLOCKCHAIN"), CRATENODE("CRATENODE"), SYSTEMACTION("SYSTEMACTION");
 
 	@Setter
     private String perName;
