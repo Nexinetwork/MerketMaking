@@ -48,7 +48,8 @@ public class BlockchainUpdateDetailsSchedule implements Serializable {
 			blockchain.setHealthy(true);
 			blockchain.setNodeCount(Math.toIntExact(nodeCounts));
 			blockchain.setHeight(currentBlock);
-			blockchainService.save(blockchain);
+			blockchain = blockchainService.save(blockchain);
+			logger.info(String.format("Blockchain %s has been updated to %s", blockchain.getName(),blockchain.toString()));
 
 		});
 		initBean.writeBlockchainToRedis();
