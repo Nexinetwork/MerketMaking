@@ -106,6 +106,7 @@ public class BlockchainBean implements Serializable {
 			blockchainNode.setSshPort(22);
 		if (blockchainNode.getSshPort() <= 0)
 			blockchainNode.setSshPort(22);
+		blockchainNode.setLastBlock(BigInteger.ZERO);
 		blockchainNode = blockchainNodeService.save(blockchainNode);
 		return blockchainNode;
 	}
