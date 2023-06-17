@@ -56,7 +56,7 @@ public class BlockchainActionTest implements Serializable {
 		blockchain.setRpcUrl("\"https://bsc.publicnode.com\"");
 		blockchain.setHeight(new BigInteger("0"));
 		blockchain.setCoingeckoId("binance-smart-chain");
-		HttpResponse<String> response = Unirest.post("http://185.173.129.244:7001/api/v1/godaction/createNewBlockchain")
+		HttpResponse<String> response = Unirest.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewBlockchain")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(blockchain)).asString();

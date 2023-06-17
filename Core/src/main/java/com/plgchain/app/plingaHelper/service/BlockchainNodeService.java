@@ -52,4 +52,8 @@ public class BlockchainNodeService extends BaseService implements Serializable {
 		return blockchainNodeDao.findAll();
 	}
 
+	public long countByBlockchain(Blockchain blockchain) {
+		return blockchainNodeDao.countByBlockchain(blockchain);
+	}
+
 }
