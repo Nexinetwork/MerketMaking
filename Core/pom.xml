@@ -262,7 +262,6 @@
 			<groupId>com.github.mwiede</groupId>
 			<artifactId>jsch</artifactId>
 		</dependency>
-
 	</dependencies>
 	<build>
 		<plugins>

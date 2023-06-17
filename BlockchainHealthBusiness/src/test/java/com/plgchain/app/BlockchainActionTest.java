@@ -12,6 +12,7 @@ import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
+import com.plgchain.app.plingaHelper.util.BlockscoutUtil;
 import com.plgchain.app.plingaHelper.util.SecurityUtil;
 
 import kong.unirest.HttpResponse;
@@ -59,17 +60,22 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void createNodeTestCase() {
 		var node = BlockchainNode.builder().blockchainId(Long.valueOf(1)).enabled(true).validator(true)
-				.serverIp("185.128.137.240").sshPort(22).rpcUrl("http://185.128.137.240:8545").nodeType(BlockchainNodeType.BLOCKCHAINNODE)
-				.serviceNeme("plgchain1.service").mustCheck(true).build();
+				.serverIp("185.128.137.241").sshPort(22).rpcUrl("http://185.128.137.241:4000").nodeType(BlockchainNodeType.BLOCKSCOUT).validator(false)
+				.serviceNeme("plgscan.service").mustCheck(true).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewNode")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(node)).asString();
 		System.out.println("Result is : " + response.getBody());
+	}
+
+	@Test
+	public void getBlockscoutResult() {
+		System.out.println("Result is : " + BlockscoutUtil.getLatestBlock("https://www.plgscan.com"));
 	}
 
 }

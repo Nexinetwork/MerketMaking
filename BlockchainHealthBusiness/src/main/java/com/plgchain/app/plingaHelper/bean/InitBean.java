@@ -4,9 +4,7 @@
 package com.plgchain.app.plingaHelper.bean;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
-import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.service.BlockchainNodeService;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
@@ -56,16 +53,20 @@ public class InitBean implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void writeBlockchainToRedis() {
+		//Predicate<Blockchain> mustCheck = blockchain -> blockchain.isEnabled() && blockchain.isMustCheck();
 		HashOperations<String, String, String> blockchainDataString = redisTemplate.opsForHash();
-		for (Blockchain blockchain : blockchainService.findAll()) {
+		blockchainService.findAll().stream().filter(blockchain -> blockchain.isEnabled() && blockchain.isMustCheck()).forEach(blockchain -> {
 			if (blockchainDataString.hasKey(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName()))
 				blockchainDataString.delete(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName());
 			blockchainDataString.put(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName(), JSON.toJSONString(blockchain));
 			List<BlockchainNode> blNodeList = blockchainNodeService.findByBlockchain(blockchain);
 			if (!blNodeList.isEmpty()) {
+				logger.info(String.format("There is %s node for blockchain %s", blNodeList.size(),blockchain.getName()));
 				blockchainDataString.put(SysConstant.REDIS_NODE_DATA, blockchain.getName(), JSON.toJSONString(blNodeList));
+			} else {
+				logger.info(String.format("There is not any node for blockchain %s", blockchain.getName()));
 			}
-		}
+		});
 	}
 
 }
