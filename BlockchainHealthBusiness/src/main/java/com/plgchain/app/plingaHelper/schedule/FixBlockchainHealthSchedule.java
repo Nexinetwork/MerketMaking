@@ -112,6 +112,12 @@ public class FixBlockchainHealthSchedule implements Serializable {
 										ServiceUtil.restartService(blockchainNode.getServerIp(),
 												blockchainNode.getSshPort(), initBean.getPrivateKey(),
 												blockchainNode.getServiceNeme());
+										try {
+											Thread.sleep(initBean.getDelayForCheckInSecond() * 1000);
+										} catch (InterruptedException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
 										logger.info(String.format(
 												"Blockscout Server %s with service %s has been restarted.",
 												blockchainNode.getServerIp(), blockchainNode.getServiceNeme()));
@@ -128,6 +134,12 @@ public class FixBlockchainHealthSchedule implements Serializable {
 										ServiceUtil.restartService(blockchainNode.getServerIp(),
 												blockchainNode.getSshPort(), initBean.getPrivateKey(),
 												blockchainNode.getServiceNeme());
+										try {
+											Thread.sleep(initBean.getDelayForCheckInSecond() * 1000);
+										} catch (InterruptedException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}
 										logger.info(String.format(
 												"Blockscout Server %s with service %s has been restarted.",
 												blockchainNode.getServerIp(), blockchainNode.getServiceNeme()));
@@ -145,6 +157,15 @@ public class FixBlockchainHealthSchedule implements Serializable {
 													"SBlockscout erver %s with service %s has been has been same block %s after %s try to restart it",
 													blockchainNode.getServerIp(), blockchainNode.getServiceNeme(),
 													newBlock.toString(), initBean.getDelayForCheckInSecond()));
+											ServiceUtil.restartService(blockchainNode.getServerIp(),
+													blockchainNode.getSshPort(), initBean.getPrivateKey(),
+													blockchainNode.getServiceNeme());
+											try {
+												Thread.sleep(initBean.getDelayForCheckInSecond() * 1000);
+											} catch (InterruptedException e) {
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
 										} else {
 											logger.info(String.format(
 													"Blockscout Server %s with service %s are healthy block changed from %s to %s after %s seconds",
@@ -156,6 +177,9 @@ public class FixBlockchainHealthSchedule implements Serializable {
 									} catch (InterruptedException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
+									} catch (JSchException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
 									}
 								}
 							}
