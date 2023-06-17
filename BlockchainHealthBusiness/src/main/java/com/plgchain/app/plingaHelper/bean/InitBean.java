@@ -54,7 +54,9 @@ public class InitBean implements Serializable {
 
 	private String coingeckoBaseApi;
 
-	private int delayForCheckInSecond = 5;
+	private int delayForCheckInSecond = 10;
+
+	private boolean initCoingecko = false;
 
 	@PostConstruct
 	public void init() {
@@ -63,6 +65,8 @@ public class InitBean implements Serializable {
 			privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
 		if (systemConfigService.isByConfigNameExist("coingeckoBaseFreeApi"))
 			coingeckoBaseApi = systemConfigService.findByConfigName("coingeckoBaseFreeApi").getConfigStringValue();
+		if (systemConfigService.isByConfigNameExist("initCoingecko"))
+			initCoingecko = systemConfigService.findByConfigName("coingeckoBaseFreeApi").getConfigBooleanValue();
 	}
 
 	@SuppressWarnings("unchecked")

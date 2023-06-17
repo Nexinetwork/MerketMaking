@@ -79,4 +79,12 @@ public class BlockchainService extends BaseService implements Serializable {
 		return blockchainDao.findByIsEvm(isEvm);
 	}
 
+	public Optional<Blockchain> findByCoingeckoId(String coingeckoId) {
+		return blockchainDao.findByCoingeckoId(coingeckoId);
+	}
+
+	public boolean existsBlockchainByCoingeckoId(String coingeckoId) {
+		return blockchainDao.existsBlockchainByCoingeckoId(coingeckoId);
+	}
+
 }

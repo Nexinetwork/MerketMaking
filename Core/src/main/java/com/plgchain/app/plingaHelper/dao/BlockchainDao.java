@@ -16,5 +16,7 @@ public interface BlockchainDao extends BaseLongDao<Blockchain> {
 	public Optional<Blockchain> findByChainId(BigInteger chainId);
 	public boolean existsBlockchainByChainId(BigInteger chainId);
 	public List<Blockchain> findByIsEvm(boolean isEvm);
+	public Optional<Blockchain> findByCoingeckoId(String coingeckoId);
+	public boolean existsBlockchainByCoingeckoId(String coingeckoId);
 
 }

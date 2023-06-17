@@ -98,7 +98,7 @@ public class FixBlockchainHealthSchedule implements Serializable {
 									}
 								} catch (InterruptedException e) {
 									// TODO Auto-generated catch block
-									e.printStackTrace();
+									logger.error(e.getMessage());
 								}
 							}
 						} else {
@@ -112,12 +112,6 @@ public class FixBlockchainHealthSchedule implements Serializable {
 										ServiceUtil.restartService(blockchainNode.getServerIp(),
 												blockchainNode.getSshPort(), initBean.getPrivateKey(),
 												blockchainNode.getServiceNeme());
-										try {
-											Thread.sleep(initBean.getDelayForCheckInSecond() * 1000);
-										} catch (InterruptedException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										}
 										logger.info(String.format(
 												"Blockscout Server %s with service %s has been restarted.",
 												blockchainNode.getServerIp(), blockchainNode.getServiceNeme()));
@@ -126,19 +120,25 @@ public class FixBlockchainHealthSchedule implements Serializable {
 										logger.error(e.getMessage());
 										// e.printStackTrace();
 									}
+									try {
+										Thread.sleep(20000);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										logger.error(e.getMessage());
+									}
 								} else if (currentBlock.equals(BigInteger.ZERO)) {
 									logger.info(String.format(
-											"Blockscout Server %s with service %s return block null try to restart service.",
+											"Blockscout Server %s with service %s return block 0 try to restart service.",
 											blockchainNode.getServerIp(), blockchainNode.getServiceNeme()));
 									try {
 										ServiceUtil.restartService(blockchainNode.getServerIp(),
 												blockchainNode.getSshPort(), initBean.getPrivateKey(),
 												blockchainNode.getServiceNeme());
 										try {
-											Thread.sleep(initBean.getDelayForCheckInSecond() * 1000);
+											Thread.sleep(20000);
 										} catch (InterruptedException e) {
 											// TODO Auto-generated catch block
-											e.printStackTrace();
+											logger.error(e.getMessage());
 										}
 										logger.info(String.format(
 												"Blockscout Server %s with service %s has been restarted.",
@@ -161,10 +161,10 @@ public class FixBlockchainHealthSchedule implements Serializable {
 													blockchainNode.getSshPort(), initBean.getPrivateKey(),
 													blockchainNode.getServiceNeme());
 											try {
-												Thread.sleep(initBean.getDelayForCheckInSecond() * 1000);
+												Thread.sleep(20000);
 											} catch (InterruptedException e) {
 												// TODO Auto-generated catch block
-												e.printStackTrace();
+												logger.error(e.getMessage());
 											}
 										} else {
 											logger.info(String.format(
@@ -176,10 +176,10 @@ public class FixBlockchainHealthSchedule implements Serializable {
 										}
 									} catch (InterruptedException e) {
 										// TODO Auto-generated catch block
-										e.printStackTrace();
-									} catch (JSchException e1) {
+										logger.error(e.getMessage());
+									} catch (JSchException e) {
 										// TODO Auto-generated catch block
-										e1.printStackTrace();
+										logger.error(e.getMessage());
 									}
 								}
 							}
