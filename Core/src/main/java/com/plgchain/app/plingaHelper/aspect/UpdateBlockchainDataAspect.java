@@ -32,7 +32,7 @@ public class UpdateBlockchainDataAspect implements Serializable{
 	public void updateBlockchainData() {
 	}
 
-	@AfterReturning(pointcut = "(updateBlockchainData()")
+	@AfterReturning(pointcut = "updateBlockchainData()")
 	public void adviceAfterReturning(JoinPoint jp) {
 		logger.info("Update BlockchainData has been invoked.");
 
