@@ -14,6 +14,7 @@ import com.alibaba.fastjson2.JSON;
 import com.google.common.base.Strings;
 import com.google.common.net.InetAddresses;
 import com.plgchain.app.plingaHelper.annotation.LogMethod;
+import com.plgchain.app.plingaHelper.annotation.UpdateBlockchainData;
 import com.plgchain.app.plingaHelper.constant.AdminCommandType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
@@ -82,6 +83,7 @@ public class BlockchainBean implements Serializable {
 	}
 
 	@LogMethod
+	@UpdateBlockchainData
 	public BlockchainNode createBlockchainNode(BlockchainNode blockchainNode) throws RestActionError {
 		if (blockchainNode == null)
 			throw new RestActionError("Blockchain node is Null");
