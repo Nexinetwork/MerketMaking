@@ -60,10 +60,10 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	@Test
 	public void createNodeTestCase() {
 		var node = BlockchainNode.builder().blockchainId(Long.valueOf(1)).enabled(true).validator(true)
-				.serverIp("185.128.137.241").sshPort(22).rpcUrl("http://185.128.137.241:4000").nodeType(BlockchainNodeType.BLOCKSCOUT).validator(false)
+				.serverIp("185.128.137.241").sshPort(22).rpcUrl("http://www.plgscan.com").nodeType(BlockchainNodeType.BLOCKSCOUT).validator(false)
 				.serviceNeme("plgscan.service").mustCheck(true).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewNode")
