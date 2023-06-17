@@ -34,7 +34,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Data
 @ToString
-@Table(name = "\"tblBlockchain\"", schema = "\"schSevice\"")
+@Table(name = "\"tblNode\"", schema = "\"schSevice\"")
 public class BlockchainNode implements Serializable {
 
 	private static final long serialVersionUID = 2558511015942442055L;
