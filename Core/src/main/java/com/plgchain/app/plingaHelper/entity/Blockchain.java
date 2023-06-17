@@ -73,6 +73,12 @@ public class Blockchain implements Serializable {
 	@Column(name = "\"chainId\"")
 	private BigInteger chainId;
 
+	@Column(name = "\"coingeckoId\"")
+	private String coingeckoId;
+
+	@Column(name = "\"rpcUrl\"")
+	private String rpcUrl;
+
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "\"tech\"",nullable = false)
 	private BlockchainTechType blockchainType;
