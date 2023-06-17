@@ -3,6 +3,7 @@
  */
 package com.plgchain.app.plingaHelper.util.blockchain;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
 
@@ -18,14 +19,21 @@ public class BlockchainUtil implements Serializable {
 
 	private static final long serialVersionUID = -7284069974541384059L;
 
-	public static BigInteger getLatestBlockNumber(String rpcUrl) throws Exception {
+	public static BigInteger getLatestBlockNumber(String rpcUrl){
         Web3j web3j = Web3j.build(new HttpService(rpcUrl));
 
         Request<?, EthBlockNumber> request = web3j.ethBlockNumber();
 
-        EthBlockNumber response = request.send();
+        EthBlockNumber response;
+		try {
+			response = request.send();
+			return response.getBlockNumber();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-        return response.getBlockNumber();
+        return null;
     }
 
 }

@@ -15,6 +15,7 @@ import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.service.BlockchainNodeService;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
+import com.plgchain.app.plingaHelper.service.SystemConfigService;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
@@ -40,15 +41,24 @@ public class InitBean implements Serializable {
 	private BlockchainService blockchainService;
 
 	@Autowired
+	private SystemConfigService systemConfigService;
+
+	@Autowired
 	private BlockchainNodeService blockchainNodeService;
 
 	@SuppressWarnings("rawtypes")
 	@Autowired
 	private RedisTemplate redisTemplate;
 
+	private String privateKey;
+
+	private int delayForCheckInSecond = 5;
+
 	@PostConstruct
 	public void init() {
 		writeBlockchainToRedis();
+		if (systemConfigService.isByConfigNameExist("ssh-key-path"))
+			privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
 	}
 
 	@SuppressWarnings("unchecked")
