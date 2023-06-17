@@ -33,7 +33,7 @@ public class FixBlockchainHealthSchedule implements Serializable {
 		Map<String, String> entries = blockchainDataString.entries(SysConstant.REDIS_NODE_DATA);
 		entries.forEach((key, value) -> {
 			List<BlockchainNode> blnLst = ArrayListHelper.parseJsonToArrayList(value, BlockchainNode.class);
-			logger.info(String.format("Blockchain %s has %s node and node lists are %s", key,blnLst.size().blnLst));
+			logger.info(String.format("Blockchain %s has %s node and node lists are %s", key,blnLst.size(),blnLst));
 		});
 	}
 
