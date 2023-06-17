@@ -35,7 +35,7 @@ public class BlockchainNodeService extends BaseService implements Serializable {
 		return blockchainNodeDao.findByBlockchain(blockchain);
 	}
 
-	public List<Blockchain> findByBlockchainAndMustCheck(Blockchain blockchain,boolean mustCheck) {
+	public List<BlockchainNode> findByBlockchainAndMustCheck(Blockchain blockchain,boolean mustCheck) {
 		return blockchainNodeDao.findByBlockchainAndMustCheck(blockchain,mustCheck);
 	}
 

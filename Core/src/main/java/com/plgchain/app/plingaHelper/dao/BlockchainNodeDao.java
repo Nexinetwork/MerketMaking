@@ -7,6 +7,6 @@ import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 
 public interface BlockchainNodeDao extends BaseLongDao<BlockchainNode> {
 	public List<BlockchainNode> findByBlockchain(Blockchain blockchain);
-	public List<Blockchain> findByBlockchainAndMustCheck(Blockchain blockchain,boolean mustCheck);
+	public List<BlockchainNode> findByBlockchainAndMustCheck(Blockchain blockchain,boolean mustCheck);
 
 }

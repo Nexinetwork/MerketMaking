@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
+import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
 import com.plgchain.app.plingaHelper.util.SecurityUtil;
 
@@ -36,7 +37,7 @@ public class BlockchainActionTest implements Serializable {
 		return jToken;
 	}
 
-	@Test
+	//@Test
 	public void createBlockchaintestCase() {
 		Blockchain blockchain = new Blockchain();
 		blockchain.setName("Plinga");
@@ -53,6 +54,18 @@ public class BlockchainActionTest implements Serializable {
 				.header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(blockchain))
+				.asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	@Test
+	public void createNodeTestCase() {
+		var node = BlockchainNode.builder().blockchainId(Long.valueOf(1)).enabled(true).validator(true).serverIp("185.128.137.240").sshPort(22).rpcUrl("http://185.128.137.240:8545").serviceNeme("plgchain1.service").mustCheck(true).build();
+		HttpResponse<String> response = Unirest.post("http://185.173.129.244:7001/api/v1/godaction//blockchain/createNewNode")
+				.header("content-type", "application/json")
+				.header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(JSON.toJSONString(node))
 				.asString();
 		System.out.println("Result is : " + response.getBody());
 	}
