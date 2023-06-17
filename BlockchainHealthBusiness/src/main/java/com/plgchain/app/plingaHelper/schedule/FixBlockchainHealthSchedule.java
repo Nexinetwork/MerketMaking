@@ -19,6 +19,7 @@ import com.plgchain.app.plingaHelper.constant.BlockchainNodeType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.util.ArrayListHelper;
+import com.plgchain.app.plingaHelper.util.BlockscoutUtil;
 import com.plgchain.app.plingaHelper.util.ServiceUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.BlockchainUtil;
 
@@ -42,7 +43,7 @@ public class FixBlockchainHealthSchedule implements Serializable {
 		Map<String, String> entries = blockchainDataString.entries(SysConstant.REDIS_NODE_DATA);
 		entries.forEach((key, value) -> {
 			List<BlockchainNode> blnLst = ArrayListHelper.parseJsonToArrayList(value, BlockchainNode.class);
-			logger.info(String.format("Blockchain %s has %s node and node lists are %s", key,blnLst.size(),blnLst));
+			//logger.info(String.format("Blockchain %s has %s node and node lists are %s", key,blnLst.size(),blnLst));
 			ArrayListHelper.parseJsonToArrayList(value, BlockchainNode.class).parallelStream().filter(blchNode -> blchNode.isEnabled() && blchNode.isMustCheck()).forEach(blockchainNode -> {
 				if (blockchainNode.getNodeType().equals(BlockchainNodeType.BLOCKCHAINNODE)) {
 					BigInteger currentBlock = BlockchainUtil.getLatestBlockNumber(blockchainNode.getRpcUrl());
@@ -50,7 +51,7 @@ public class FixBlockchainHealthSchedule implements Serializable {
 						logger.info(String.format("Server %s with service %s return block null try to restart service.", blockchainNode.getServerIp(),blockchainNode.getServiceNeme()));
 						try {
 							ServiceUtil.restartService(blockchainNode.getServerIp(), blockchainNode.getSshPort(), initBean.getPrivateKey(), blockchainNode.getServiceNeme());
-							logger.info(String.format("Server %s with service %s has been restartede.", blockchainNode.getServerIp(),blockchainNode.getServiceNeme()));
+							logger.info(String.format("Server %s with service %s has been restarted.", blockchainNode.getServerIp(),blockchainNode.getServiceNeme()));
 						} catch (JSchException e) {
 							// TODO Auto-generated catch block
 							logger.error(e.getMessage());
@@ -60,7 +61,7 @@ public class FixBlockchainHealthSchedule implements Serializable {
 						logger.info(String.format("Server %s with service %s return block null try to restart service.", blockchainNode.getServerIp(),blockchainNode.getServiceNeme()));
 						try {
 							ServiceUtil.restartService(blockchainNode.getServerIp(), blockchainNode.getSshPort(), initBean.getPrivateKey(), blockchainNode.getServiceNeme());
-							logger.info(String.format("Server %s with service %s has been restartede.", blockchainNode.getServerIp(),blockchainNode.getServiceNeme()));
+							logger.info(String.format("Server %s with service %s has been restarted.", blockchainNode.getServerIp(),blockchainNode.getServiceNeme()));
 						} catch (JSchException e) {
 							// TODO Auto-generated catch block
 							logger.error(e.getMessage());
@@ -73,7 +74,7 @@ public class FixBlockchainHealthSchedule implements Serializable {
 							if (newBlock.equals(currentBlock)) {
 								logger.info(String.format("Server %s with service %s has been has been same block %s after %s try to restart it", blockchainNode.getServerIp(),blockchainNode.getServiceNeme(),newBlock.toString(),initBean.getDelayForCheckInSecond()));
 							} else {
-								logger.info(String.format("Server %s with service %s are healthy block changed from %s to %s after %s secondest", blockchainNode.getServerIp(),blockchainNode.getServiceNeme(),currentBlock.toString(),newBlock.toString(),initBean.getDelayForCheckInSecond()));
+								logger.info(String.format("Server %s with service %s are healthy block changed from %s to %s after %s seconds", blockchainNode.getServerIp(),blockchainNode.getServiceNeme(),currentBlock.toString(),newBlock.toString(),initBean.getDelayForCheckInSecond()));
 							}
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
@@ -81,7 +82,41 @@ public class FixBlockchainHealthSchedule implements Serializable {
 						}
 					}
 				} else {
-
+					BigInteger currentBlock = BlockscoutUtil.getLatestBlock(blockchainNode.getRpcUrl());
+					if (currentBlock == null) {
+						logger.info(String.format("Blockscout Server %s with service %s return block null try to restart service.", blockchainNode.getServerIp(),blockchainNode.getServiceNeme()));
+						try {
+							ServiceUtil.restartService(blockchainNode.getServerIp(), blockchainNode.getSshPort(), initBean.getPrivateKey(), blockchainNode.getServiceNeme());
+							logger.info(String.format("Blockscout Server %s with service %s has been restarted.", blockchainNode.getServerIp(),blockchainNode.getServiceNeme()));
+						} catch (JSchException e) {
+							// TODO Auto-generated catch block
+							logger.error(e.getMessage());
+							//e.printStackTrace();
+						}
+					} else if (currentBlock.equals(BigInteger.ZERO)) {
+						logger.info(String.format("Blockscout Server %s with service %s return block null try to restart service.", blockchainNode.getServerIp(),blockchainNode.getServiceNeme()));
+						try {
+							ServiceUtil.restartService(blockchainNode.getServerIp(), blockchainNode.getSshPort(), initBean.getPrivateKey(), blockchainNode.getServiceNeme());
+							logger.info(String.format("Blockscout Server %s with service %s has been restarted.", blockchainNode.getServerIp(),blockchainNode.getServiceNeme()));
+						} catch (JSchException e) {
+							// TODO Auto-generated catch block
+							logger.error(e.getMessage());
+							//e.printStackTrace();
+						}
+					} else {
+						try {
+							Thread.sleep(initBean.getDelayForCheckInSecond() * 1000);
+							BigInteger newBlock = BlockscoutUtil.getLatestBlock(blockchainNode.getRpcUrl());
+							if (newBlock.equals(currentBlock)) {
+								logger.info(String.format("SBlockscout erver %s with service %s has been has been same block %s after %s try to restart it", blockchainNode.getServerIp(),blockchainNode.getServiceNeme(),newBlock.toString(),initBean.getDelayForCheckInSecond()));
+							} else {
+								logger.info(String.format("Blockscout Server %s with service %s are healthy block changed from %s to %s after %s seconds", blockchainNode.getServerIp(),blockchainNode.getServiceNeme(),currentBlock.toString(),newBlock.toString(),initBean.getDelayForCheckInSecond()));
+							}
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
 				}
 			});
 		});
