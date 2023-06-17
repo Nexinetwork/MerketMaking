@@ -4,17 +4,21 @@ import java.io.Serializable;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.constant.AdminCommandType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 
+@Aspect
+@Component
 public class UpdateBlockchainDataAspect implements Serializable{
 
 	private static final long serialVersionUID = 7574366958683551337L;
