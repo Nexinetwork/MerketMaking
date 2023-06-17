@@ -62,6 +62,8 @@ public class InitBean implements Serializable {
 			List<BlockchainNode> blNodeList = blockchainNodeService.findByBlockchain(blockchain);
 			if (!blNodeList.isEmpty()) {
 				logger.info(String.format("There is %s node for blockchain %s", blNodeList.size(),blockchain.getName()));
+				if (blockchainDataString.hasKey(SysConstant.REDIS_NODE_DATA, blockchain.getName()))
+					blockchainDataString.delete(SysConstant.REDIS_NODE_DATA, blockchain.getName());
 				blockchainDataString.put(SysConstant.REDIS_NODE_DATA, blockchain.getName(), JSON.toJSONString(blNodeList));
 			} else {
 				logger.info(String.format("There is not any node for blockchain %s", blockchain.getName()));
