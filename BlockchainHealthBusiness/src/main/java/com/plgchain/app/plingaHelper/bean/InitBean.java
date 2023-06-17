@@ -52,6 +52,8 @@ public class InitBean implements Serializable {
 
 	private String privateKey;
 
+	private String coingeckoBaseApi;
+
 	private int delayForCheckInSecond = 5;
 
 	@PostConstruct
@@ -59,6 +61,8 @@ public class InitBean implements Serializable {
 		writeBlockchainToRedis();
 		if (systemConfigService.isByConfigNameExist("ssh-key-path"))
 			privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
+		if (systemConfigService.isByConfigNameExist("coingeckoBaseFreeApi"))
+			coingeckoBaseApi = systemConfigService.findByConfigName("coingeckoBaseFreeApi").getConfigStringValue();
 	}
 
 	@SuppressWarnings("unchecked")

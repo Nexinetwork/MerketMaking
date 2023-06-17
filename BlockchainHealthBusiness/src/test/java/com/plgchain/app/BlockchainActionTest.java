@@ -42,7 +42,7 @@ public class BlockchainActionTest implements Serializable {
 		return jToken;
 	}
 
-	@Test
+	//@Test
 	public void createBlockchaintestCase() {
 		Blockchain blockchain = new Blockchain();
 		blockchain.setName("bsc");
@@ -76,7 +76,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	@Test
 	public void getBlockscoutResult() {
 		System.out.println("Result is : " + BlockscoutUtil.getLatestBlock("https://www.plgscan.com"));
 	}
