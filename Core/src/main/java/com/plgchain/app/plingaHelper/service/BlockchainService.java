@@ -31,6 +31,10 @@ public class BlockchainService extends BaseService implements Serializable {
 		return blockchainDao.findById(id).get();
 	}
 
+	public boolean existById(Long id) {
+		return blockchainDao.existsById(id);
+	}
+
 	public Optional<Blockchain> findByName(String name) {
 		return blockchainDao.findByName(name);
 	}

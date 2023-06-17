@@ -20,6 +20,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -82,11 +83,17 @@ public class BlockchainNode implements Serializable {
 	@Column(name = "\"serverIp\"",nullable = false)
 	private String serverIp;
 
+	@Column(name = "\"sshPort\"",nullable = false)
+	private Integer sshPort;
+
 	@Column(name = "\"serviceNeme\"",nullable = false)
 	private String serviceNeme;
 
 	@Column(name = "\"validator\"",nullable = false)
 	private boolean validator;
+
+	@Transient
+	private Long blockchainId;
 
 
 
