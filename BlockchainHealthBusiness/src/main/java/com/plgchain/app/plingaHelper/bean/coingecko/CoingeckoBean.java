@@ -4,6 +4,8 @@
 package com.plgchain.app.plingaHelper.bean.coingecko;
 
 import java.io.Serializable;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +101,20 @@ public class CoingeckoBean implements Serializable {
 				coin = coinService.save(coin);
 				logger.info(String.format("coin %s has been added.", coin.toString()));
 			}
+		});
+	}
+
+	public void updateCoingeckoCoinListNetwork() {
+		var url = initBean.getCoingeckoBaseApi() + "/coins/list?include_platform=true";
+		var json = CoingeckoUtil.runGetCommand(url);
+
+		JSON.parseArray(json, Coin.class).stream().forEach(coin -> {
+			logger.info(String.format("Coin %s has Platforms :", coin.getCoingeckoId()));
+			for (Map.Entry<String, Object> entry : coin.getPlatforms().entrySet()) {
+	            String key = entry.getKey();
+	            Object value = entry.getValue();
+	            logger.info(String.format("Network : %s ,ContractAddress : %s", key,value));
+	        }
 		});
 	}
 
