@@ -6,6 +6,7 @@ package com.plgchain.app.plingaHelper.bean;
 import java.io.Serializable;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.bean.coingecko.CoingeckoBean;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
+import com.plgchain.app.plingaHelper.entity.SystemConfig;
 import com.plgchain.app.plingaHelper.service.BlockchainNodeService;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
 import com.plgchain.app.plingaHelper.service.SystemConfigService;
@@ -52,7 +54,7 @@ public class InitBean implements Serializable {
 	private RedisTemplate redisTemplate;
 
 	@Autowired
-	private CoingeckoBean coingeckoBean;
+	private @Lazy CoingeckoBean coingeckoBean;
 
 	private String privateKey;
 
@@ -71,8 +73,11 @@ public class InitBean implements Serializable {
 			coingeckoBaseApi = systemConfigService.findByConfigName("coingeckoBaseFreeApi").getConfigStringValue();
 		if (systemConfigService.isByConfigNameExist("initCoingecko"))
 			initCoingecko = systemConfigService.findByConfigName("coingeckoBaseFreeApi").getConfigBooleanValue();
-		if (systemConfigService.isByConfigNameExist("coingeckoNetworksInit"))
+		if (systemConfigService.isByConfigNameExist("coingeckoNetworksInit")) {
 			coingeckoBean.updateCoingeckoNetworks();
+			var sc = SystemConfig.builder().configName("coingeckoNetworksInit").configBooleanValue(true).build();
+			sc = systemConfigService.save(sc);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
