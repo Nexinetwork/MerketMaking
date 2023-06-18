@@ -45,7 +45,7 @@ public class CoingeckoBean implements Serializable {
 			if (!blockchainService.existsBlockchainByCoingeckoId(network.getId())) {
 				var blockchain = Blockchain.builder().mustCheck(false).coingeckoId(network.getId())
 						.isEvm(network.getChain_identifier() != null)
-						.name(Strings.isNullOrEmpty(network.getShortname()) ? network.getShortname()
+						.name(!Strings.isNullOrEmpty(network.getShortname()) ? network.getShortname()
 								: network.getName())
 						.fullName(network.getName()).enabled(false).chainId(network.getChain_identifier())
 						.blockchainType((network.getChain_identifier() != null) ? BlockchainTechType.DPOS
