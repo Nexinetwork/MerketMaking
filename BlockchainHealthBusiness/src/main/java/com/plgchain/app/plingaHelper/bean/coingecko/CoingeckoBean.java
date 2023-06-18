@@ -20,7 +20,9 @@ import com.plgchain.app.plingaHelper.coingecko.type.CoingeckoUtil;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.SystemConfig;
+import com.plgchain.app.plingaHelper.entity.category.CoingeckoCategory;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
+import com.plgchain.app.plingaHelper.service.CoingeckoCategoryService;
 import com.plgchain.app.plingaHelper.service.SystemConfigService;
 
 /**
@@ -38,6 +40,9 @@ public class CoingeckoBean implements Serializable {
 	@Autowired
 	private BlockchainService blockchainService;
 
+	@Autowired
+	private CoingeckoCategoryService coingeckoCategoryService;
+
 	public void updateCoingeckoNetworks() {
 		var url = initBean.getCoingeckoBaseApi() + "/asset_platforms";
 		var json = CoingeckoUtil.runGetCommand(url);
@@ -53,6 +58,17 @@ public class CoingeckoBean implements Serializable {
 						.build();
 				blockchain = blockchainService.save(blockchain);
 				logger.info(String.format("Blockchain %s has been saved in System", blockchain));
+			}
+		});
+	}
+
+	public void updateCoingeckoCategoriesList() {
+		var url = initBean.getCoingeckoBaseApi() + "/coins/categories/list";
+		var json = CoingeckoUtil.runGetCommand(url);
+		JSON.parseArray(json, CoingeckoCategory.class).stream().forEach(category -> {
+			if (!coingeckoCategoryService.existById(category.getCategory_id())) {
+				coingeckoCategoryService.save(category);
+				logger.info(String.format("CoingeckoCategory %s has been added.", category.toString()));
 			}
 		});
 	}

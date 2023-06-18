@@ -3,6 +3,7 @@ package com.plgchain.app.plingaHelper.aspect;
 import java.io.Serializable;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -32,8 +33,8 @@ public class UpdateBlockchainDataAspect implements Serializable{
 	public void updateBlockchainData() {
 	}
 
-	@AfterReturning(pointcut = "updateBlockchainData()")
-	public void adviceAfterReturning(JoinPoint jp) {
+	@After("updateBlockchainData()")
+	public void adviceAfter(JoinPoint jp) {
 		logger.info("Update BlockchainData has been invoked.");
 
 		CommandToRun ctr = new CommandToRun();
