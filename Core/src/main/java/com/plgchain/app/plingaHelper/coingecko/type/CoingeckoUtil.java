@@ -19,7 +19,8 @@ public class CoingeckoUtil implements Serializable {
 		while (true) {
 			try {
 				HttpResponse<String> response = Unirest.get(url).asString();
-				return response.getBody();
+				if (!response.getBody().contains("exceeded the Rate Limit"))
+					return response.getBody();
 			} catch (Exception e) {
 				try {
 					Thread.sleep(5000);
