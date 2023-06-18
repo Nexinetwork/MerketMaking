@@ -73,7 +73,7 @@ public class InitBean implements Serializable {
 			coingeckoBaseApi = systemConfigService.findByConfigName("coingeckoBaseFreeApi").getConfigStringValue();
 		if (systemConfigService.isByConfigNameExist("initCoingecko"))
 			initCoingecko = systemConfigService.findByConfigName("coingeckoBaseFreeApi").getConfigBooleanValue();
-		if (systemConfigService.isByConfigNameExist("coingeckoNetworksInit")) {
+		if (!systemConfigService.isByConfigNameExist("coingeckoNetworksInit")) {
 			coingeckoBean.updateCoingeckoNetworks();
 			var sc = SystemConfig.builder().configName("coingeckoNetworksInit").configBooleanValue(true).build();
 			sc = systemConfigService.save(sc);
