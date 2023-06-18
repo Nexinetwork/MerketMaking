@@ -62,7 +62,6 @@ public class Blockchain implements Serializable {
 	@Column(name = "\"mainCoin\"")
 	private String mainCoin;
 
-	@NotBlank(message = "Blockexplorer may not be blank")
 	@Column(name = "\"blockExplorer\"")
 	private String blockExplorer;
 
