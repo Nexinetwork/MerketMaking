@@ -91,7 +91,7 @@ public class CoingeckoBean implements Serializable {
 	}
 
 	public void updateCoingeckoCoinList() {
-		var url = initBean.getCoingeckoBaseApi() + "coins/list";
+		var url = initBean.getCoingeckoBaseApi() + "/coins/list";
 		var json = CoingeckoUtil.runGetCommand(url);
 
 		JSON.parseArray(json, Coin.class).stream().forEach(coin -> {
