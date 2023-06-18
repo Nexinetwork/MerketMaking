@@ -10,9 +10,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.plgchain.app.plingaHelper.annotation.LogMethod;
 import com.plgchain.app.plingaHelper.dao.CoinDao;
-import com.plgchain.app.plingaHelper.dao.LogDao;
-import com.plgchain.app.plingaHelper.entity.Log;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.service.Base.BaseService;
 
@@ -32,7 +31,7 @@ public class CoinService extends BaseService implements Serializable {
 		return coinDao.findById(id).get();
 	}
 
-
+	@LogMethod
 	public Coin save(Coin coin) {
 		return coinDao.save(coin);
 	}

@@ -16,9 +16,11 @@ import com.plgchain.app.plingaHelper.coingecko.type.AssetPlatform;
 import com.plgchain.app.plingaHelper.coingecko.type.CoingeckoUtil;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
+import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.CoingeckoCategory;
 import com.plgchain.app.plingaHelper.entity.coingecko.Currency;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
+import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.CoingeckoCategoryService;
 import com.plgchain.app.plingaHelper.service.CurrencyService;
 
@@ -42,6 +44,9 @@ public class CoingeckoBean implements Serializable {
 
 	@Autowired
 	private CurrencyService currencyService;
+
+	@Autowired
+	private CoinService coinService;
 
 	public void updateCoingeckoNetworks() {
 		var url = initBean.getCoingeckoBaseApi() + "/asset_platforms";
@@ -81,6 +86,18 @@ public class CoingeckoBean implements Serializable {
 				var currency = Currency.builder().currencyId(currencyIso).build();
 				currency = currencyService.save(currency);
 				logger.info(String.format("currency %s has been added.", currency.toString()));
+			}
+		});
+	}
+
+	public void updateCoingeckoCoinList() {
+		var url = initBean.getCoingeckoBaseApi() + "coins/list";
+		var json = CoingeckoUtil.runGetCommand(url);
+
+		JSON.parseArray(json, Coin.class).stream().forEach(coin -> {
+			if (!coinService.existsCoinByCoingeckoId(coin.getCoingeckoId())) {
+				coin = coinService.save(coin);
+				logger.info(String.format("coin %s has been added.", coin.toString()));
 			}
 		});
 	}
