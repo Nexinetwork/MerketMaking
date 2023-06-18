@@ -2,7 +2,6 @@ package com.plgchain.app.plingaHelper.schedule;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -37,12 +36,13 @@ public class FixBlockchainHealthSchedule implements Serializable {
 	@Autowired
 	private InitBean initBean;
 
+	@SuppressWarnings("unchecked")
 	@Scheduled(cron = "0 */15 * * * *")
 	public void fixBlockchainHealth() {
 		HashOperations<String, String, String> blockchainDataString = redisTemplate.opsForHash();
 		Map<String, String> entries = blockchainDataString.entries(SysConstant.REDIS_NODE_DATA);
 		entries.forEach((key, value) -> {
-			List<BlockchainNode> blnLst = ArrayListHelper.parseJsonToArrayList(value, BlockchainNode.class);
+			//List<BlockchainNode> blnLst = ArrayListHelper.parseJsonToArrayList(value, BlockchainNode.class);
 			// logger.info(String.format("Blockchain %s has %s node and node lists are %s",
 			// key,blnLst.size(),blnLst));
 			ArrayListHelper.parseJsonToArrayList(value, BlockchainNode.class).parallelStream()

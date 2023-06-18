@@ -60,14 +60,14 @@ public class Blockchain implements Serializable {
 	private String name;
 
 	@NotBlank(message = "Main coin may not be blank")
-	@Column(name = "\"mainCoin\"",nullable = false)
+	@Column(name = "\"mainCoin\"")
 	private String mainCoin;
 
 	@NotBlank(message = "Blockexplorer may not be blank")
-	@Column(name = "\"blockExplorer\"",nullable = false)
+	@Column(name = "\"blockExplorer\"")
 	private String blockExplorer;
 
-	@Column(name = "\"height\"",nullable = false)
+	@Column(name = "\"height\"")
 	private BigInteger height;
 
 	@Column(name = "\"chainId\"")
@@ -86,10 +86,10 @@ public class Blockchain implements Serializable {
 	@Column(name = "\"tech\"",nullable = false)
 	private BlockchainTechType blockchainType;
 
-	@Column(name = "\"blockDuration\"",nullable = false)
+	@Column(name = "\"blockDuration\"")
 	private int blockDuration;
 
-	@Column(name = "\"healthy\"",nullable = false)
+	@Column(name = "\"healthy\"")
 	private boolean healthy;
 
 	@Column(name = "\"mustCheck\"",nullable = false)
@@ -98,7 +98,7 @@ public class Blockchain implements Serializable {
 	@Column(name = "\"isEvm\"",nullable = false)
 	private boolean isEvm;
 
-	@Column(name = "\"nodeCount\"",nullable = false)
+	@Column(name = "\"nodeCount\"")
 	private int nodeCount;
 
 	@Column(name = "\"enabled\"",nullable = false)

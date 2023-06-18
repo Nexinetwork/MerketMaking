@@ -2,11 +2,14 @@ package com.plgchain.app;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
 
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 
 import com.alibaba.fastjson2.JSON;
+import com.plgchain.app.plingaHelper.coingecko.type.AssetPlatform;
+import com.plgchain.app.plingaHelper.coingecko.type.CoingeckoUtil;
 import com.plgchain.app.plingaHelper.constant.BlockchainNodeType;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
@@ -76,7 +79,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void getBlockscoutResult() {
 		System.out.println("Result is : " + BlockscoutUtil.getLatestBlock("https://www.plgscan.com"));
 	}
@@ -84,6 +87,13 @@ public class BlockchainActionTest implements Serializable {
 	//@Test
 	public void LastBlockTest() {
 		System.out.println(BlockchainUtil.getLatestBlockNumber("https://bsc.publicnode.com"));
+	}
+
+	@Test
+	public void getCoingeckoNetworks() {
+		var res = CoingeckoUtil.runGetCommand("https://api.coingecko.com/api/v3/asset_platforms");
+		List<AssetPlatform> lst = JSON.parseArray(res, AssetPlatform.class);
+		System.out.println(lst);
 	}
 
 

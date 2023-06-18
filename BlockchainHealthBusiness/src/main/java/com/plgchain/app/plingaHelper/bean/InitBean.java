@@ -11,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson2.JSON;
+import com.plgchain.app.plingaHelper.bean.coingecko.CoingeckoBean;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.service.BlockchainNodeService;
@@ -50,6 +51,9 @@ public class InitBean implements Serializable {
 	@Autowired
 	private RedisTemplate redisTemplate;
 
+	@Autowired
+	private CoingeckoBean coingeckoBean;
+
 	private String privateKey;
 
 	private String coingeckoBaseApi;
@@ -67,6 +71,8 @@ public class InitBean implements Serializable {
 			coingeckoBaseApi = systemConfigService.findByConfigName("coingeckoBaseFreeApi").getConfigStringValue();
 		if (systemConfigService.isByConfigNameExist("initCoingecko"))
 			initCoingecko = systemConfigService.findByConfigName("coingeckoBaseFreeApi").getConfigBooleanValue();
+		if (systemConfigService.isByConfigNameExist("coingeckoNetworksInit"))
+			coingeckoBean.updateCoingeckoNetworks();
 	}
 
 	@SuppressWarnings("unchecked")
