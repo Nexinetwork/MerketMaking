@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.annotation.LogMethod;
 import com.plgchain.app.plingaHelper.dao.CoingeckoCategoryDao;
-import com.plgchain.app.plingaHelper.entity.category.CoingeckoCategory;
+import com.plgchain.app.plingaHelper.entity.coingecko.CoingeckoCategory;
 import com.plgchain.app.plingaHelper.service.Base.BaseService;
 
 /**

@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.plgchain.app.plingaHelper.entity.category;
+package com.plgchain.app.plingaHelper.entity.coingecko;
 
 import java.io.Serializable;
 import jakarta.persistence.Column;
