@@ -38,7 +38,6 @@ public class CoingeckoBean implements Serializable {
 	@Autowired
 	private BlockchainService blockchainService;
 
-	@Async
 	public void updateCoingeckoNetworks() {
 		var url = initBean.getCoingeckoBaseApi() + "/asset_platforms";
 		var json = CoingeckoUtil.runGetCommand(url);
