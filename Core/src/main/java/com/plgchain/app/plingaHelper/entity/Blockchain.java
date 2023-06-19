@@ -81,7 +81,7 @@ public class Blockchain implements Serializable {
 	@Column(name = "\"fullName\"")
 	private String fullName;
 
-	@OneToMany(mappedBy = "blockchain")
+	@OneToMany(mappedBy = "blockchain",fetch = FetchType.LAZY)
 	private List<SmartContract> contractList;
 
 	@Enumerated(EnumType.ORDINAL)
