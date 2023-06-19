@@ -116,18 +116,22 @@ public class CoingeckoBean implements Serializable {
 
 		JSON.parseArray(json, CoinNetwork.class).stream().forEach(coinNetwork -> {
 			logger.info(String.format("Coin %s has Platforms :", coinNetwork.getId()));
-			Coin coin = coinService.findByCoingeckoId(coinNetwork.getId()).get();
-			for (Map.Entry<String, Object> entry : coinNetwork.getPlatforms().entrySet()) {
-				String key = entry.getKey();
-				Object value = entry.getValue();
-				Blockchain blockchain = blockchainService.findByCoingeckoId(key).get();
-				if (!smartContractService.existsSmartContractByBlockchainAndCoinAndContractsAddress(blockchain, coin,
-						value.toString())) {
-					var sc = SmartContract.builder().blockchain(blockchain).coin(coin)
-							.contractsAddress(value.toString()).isMain(false).mustCheck(false).build();
-					sc = smartContractService.save(sc);
-					logger.info(String.format("SmartContract %s has been added", sc));
+			try {
+				Coin coin = coinService.findByCoingeckoId(coinNetwork.getId()).get();
+				for (Map.Entry<String, Object> entry : coinNetwork.getPlatforms().entrySet()) {
+					String key = entry.getKey();
+					Object value = entry.getValue();
+					Blockchain blockchain = blockchainService.findByCoingeckoId(key).get();
+					if (!smartContractService.existsSmartContractByBlockchainAndCoinAndContractsAddress(blockchain,
+							coin, value.toString())) {
+						var sc = SmartContract.builder().blockchain(blockchain).coin(coin)
+								.contractsAddress(value.toString()).isMain(false).mustCheck(false).build();
+						sc = smartContractService.save(sc);
+						logger.info(String.format("SmartContract %s has been added", sc));
+					}
 				}
+			} catch (Exception e) {
+				logger.error(String.format("Error in coinnetwork %s", coinNetwork.toString()));
 			}
 		});
 	}
