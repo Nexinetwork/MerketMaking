@@ -1,0 +1,21 @@
+package com.plgchain.app.plingaHelper.dao;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.plgchain.app.plingaHelper.dao.base.BaseLongDao;
+import com.plgchain.app.plingaHelper.entity.Blockchain;
+import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
+import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
+
+public interface SmartContractDao extends BaseLongDao<SmartContract> {
+	public List<SmartContract> findByContractsAddress(String contractsAddress);
+	public boolean existsSmartContractByContractsAddress(String contractsAddress);
+	public Optional<SmartContract> findByBlockchainAndContractsAddress(Blockchain blockchain,String contractsAddress);
+	public boolean existsSmartContractByBlockchainAndContractsAddress(Blockchain blockchain,String contractsAddress);
+	public List<SmartContract> findByCoinAndContractsAddress(Coin coin,String contractsAddress);
+	public boolean existsSmartContractByCoinAndContractsAddress(Coin coin,String contractsAddress);
+	public Optional<SmartContract> findByBlockchainAndCoinAndContractsAddress(Blockchain blockchain,Coin coin,String contractsAddress);
+	public boolean existsSmartContractByBlockchainAndCoinAndContractsAddress(Blockchain blockchain,Coin coin,String contractsAddress);
+
+}

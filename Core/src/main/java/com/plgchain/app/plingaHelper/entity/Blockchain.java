@@ -15,6 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
+import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -43,7 +44,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ToString(exclude = {"nodeList"})
+@ToString(exclude = {"nodeList","contractList"})
 @Table(name = "\"tblBlockchain\"", schema = "\"schSevice\"")
 public class Blockchain implements Serializable {
 
@@ -79,6 +80,9 @@ public class Blockchain implements Serializable {
 
 	@Column(name = "\"fullName\"")
 	private String fullName;
+
+	@OneToMany(mappedBy = "blockchain")
+	private List<SmartContract> contractList;
 
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "\"tech\"",nullable = false)

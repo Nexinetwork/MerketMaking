@@ -6,22 +6,24 @@ package com.plgchain.app.plingaHelper.entity.coingecko;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.plgchain.app.plingaHelper.entity.CoinPrice;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,7 +37,7 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = {"priceList","contractList"})
 @Data
 @Table(name = "\"tblCoin\"", schema = "\"schCoingecko\"")
 public class Coin implements Serializable {
@@ -55,6 +57,12 @@ public class Coin implements Serializable {
 	private String symbol;
 
 	private String name;
+
+	@OneToMany(mappedBy = "coin")
+	private List<SmartContract> contractList;
+
+	@OneToMany(mappedBy = "coin")
+	private List<CoinPrice> priceList;
 
 	@Column(name = "\"mustCheck\"",nullable = false)
 	private boolean mustCheck;
@@ -79,7 +87,17 @@ public class Coin implements Serializable {
 	@Column(name = "\"lastUpdateDate\"")
 	private LocalDateTime lastUpdateDate;
 
-	@Transient
-	private JSONObject platforms;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof Coin))
+			return false;
+		Coin other = (Coin) obj;
+		return coinId == other.coinId || Objects.equals(coingeckoId, other.coingeckoId);
+	}
+
+
+
 
 }
