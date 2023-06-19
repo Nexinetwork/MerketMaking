@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.dao.CoinPriceDao;
-import com.plgchain.app.plingaHelper.dao.LogDao;
 import com.plgchain.app.plingaHelper.entity.CoinPrice;
-import com.plgchain.app.plingaHelper.entity.Log;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.Currency;
 import com.plgchain.app.plingaHelper.service.Base.BaseService;

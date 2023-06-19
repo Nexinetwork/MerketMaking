@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson2.JSON;
 import com.netflix.servo.util.Strings;
 import com.plgchain.app.plingaHelper.bean.InitBean;
+import com.plgchain.app.plingaHelper.coingecko.request.CoinNetwork;
 import com.plgchain.app.plingaHelper.coingecko.type.AssetPlatform;
 import com.plgchain.app.plingaHelper.coingecko.type.CoingeckoUtil;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
@@ -21,10 +22,12 @@ import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.CoingeckoCategory;
 import com.plgchain.app.plingaHelper.entity.coingecko.Currency;
+import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.CoingeckoCategoryService;
 import com.plgchain.app.plingaHelper.service.CurrencyService;
+import com.plgchain.app.plingaHelper.service.SmartContractService;
 
 /**
  *
@@ -49,6 +52,9 @@ public class CoingeckoBean implements Serializable {
 
 	@Autowired
 	private CoinService coinService;
+
+	@Autowired
+	private SmartContractService smartContractService;
 
 	public void updateCoingeckoNetworks() {
 		var url = initBean.getCoingeckoBaseApi() + "/asset_platforms";
@@ -108,13 +114,21 @@ public class CoingeckoBean implements Serializable {
 		var url = initBean.getCoingeckoBaseApi() + "/coins/list?include_platform=true";
 		var json = CoingeckoUtil.runGetCommand(url);
 
-		JSON.parseArray(json, Coin.class).stream().forEach(coin -> {
-			logger.info(String.format("Coin %s has Platforms :", coin.getCoingeckoId()));
-			for (Map.Entry<String, Object> entry : coin.getPlatforms().entrySet()) {
-	            String key = entry.getKey();
-	            Object value = entry.getValue();
-	            logger.info(String.format("Network : %s ,ContractAddress : %s", key,value));
-	        }
+		JSON.parseArray(json, CoinNetwork.class).stream().forEach(coinNetwork -> {
+			logger.info(String.format("Coin %s has Platforms :", coinNetwork.getId()));
+			Coin coin = coinService.findByCoingeckoId(coinNetwork.getId()).get();
+			for (Map.Entry<String, Object> entry : coinNetwork.getPlatforms().entrySet()) {
+				String key = entry.getKey();
+				Object value = entry.getValue();
+				Blockchain blockchain = blockchainService.findByCoingeckoId(key).get();
+				if (!smartContractService.existsSmartContractByBlockchainAndCoinAndContractsAddress(blockchain, coin,
+						value.toString())) {
+					var sc = SmartContract.builder().blockchain(blockchain).coin(coin)
+							.contractsAddress(value.toString()).isMain(false).mustCheck(false).build();
+					sc = smartContractService.save(sc);
+					logger.info(String.format("SmartContract %s has been added", sc));
+				}
+			}
 		});
 	}
 
