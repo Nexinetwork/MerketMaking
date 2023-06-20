@@ -65,6 +65,9 @@ public class SmartContract implements Serializable {
 	@Column(name = "\"mustCheck\"",nullable = false)
 	private boolean mustCheck;
 
+	@Column(name = "\"mustAdd\"",nullable = false)
+	private boolean mustAdd;
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	@Column(name = "\"lastCheck\"")
 	private LocalDateTime lastCheck;
@@ -78,6 +81,8 @@ public class SmartContract implements Serializable {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	@Column(name = "\"lastUpdateDate\"")
 	private LocalDateTime lastUpdateDate;
+
+	private Integer decimal;
 
 
 

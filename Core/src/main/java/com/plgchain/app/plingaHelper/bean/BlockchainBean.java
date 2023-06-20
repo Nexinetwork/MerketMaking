@@ -19,10 +19,15 @@ import com.plgchain.app.plingaHelper.constant.AdminCommandType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
+import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
+import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.exception.RestActionError;
 import com.plgchain.app.plingaHelper.service.BlockchainNodeService;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
+import com.plgchain.app.plingaHelper.service.CoinService;
+import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
+import com.plgchain.app.plingaHelper.type.request.ContractReq;
 
 /**
  *
@@ -34,6 +39,12 @@ public class BlockchainBean implements Serializable {
 
 	@Autowired
 	private BlockchainService blockchainService;
+
+	@Autowired
+	private CoinService coinService;
+
+	@Autowired
+	private SmartContractService smartContractService;
 
 	@Autowired
 	private BlockchainNodeService blockchainNodeService;
@@ -111,6 +122,33 @@ public class BlockchainBean implements Serializable {
 		blockchainNode.setLastBlock(BigInteger.ZERO);
 		blockchainNode = blockchainNodeService.save(blockchainNode);
 		return blockchainNode;
+	}
+
+	@LogMethod
+	@UpdateBlockchainData
+	public SmartContract createSmartContract(ContractReq contractReq) throws RestActionError {
+		if (contractReq == null)
+			throw new RestActionError("Contract Object is Null");
+		if (Strings.isNullOrEmpty(contractReq.getBlockchainCoingeckoId()))
+			throw new RestActionError("Blockchain is blank");
+		if (Strings.isNullOrEmpty(contractReq.getCoinCoingeckoId()))
+			throw new RestActionError("Coin is blank");
+		if (Strings.isNullOrEmpty(contractReq.getContract()))
+			throw new RestActionError("Contract is blank");
+		if (!blockchainService.existsBlockchainByCoingeckoId(contractReq.getBlockchainCoingeckoId()))
+			throw new RestActionError("Blockchain does not exist");
+		if (!coinService.existsCoinByCoingeckoId(contractReq.getCoinCoingeckoId()))
+			throw new RestActionError("Coin does not exist");
+		Blockchain blockchain = blockchainService.findByCoingeckoId(contractReq.getBlockchainCoingeckoId()).get();
+		Coin coin = coinService.findByCoingeckoId(contractReq.getCoinCoingeckoId()).get();
+		if (smartContractService.existsSmartContractByBlockchainAndCoin(blockchain, coin))
+			throw new RestActionError("Coin exist on blockchain");
+		var sm = SmartContract.builder().coin(coin).blockchain(blockchain).contractsAddress(contractReq.getContract())
+				.decimal(contractReq.getDecimal() != null ? contractReq.getDecimal() : 18)
+				.mustCheck(contractReq.isMustCheck()).isMain(contractReq.isMustCheck()).mustAdd(contractReq.isMustAdd())
+				.build();
+		sm = smartContractService.save(sm);
+		return sm;
 	}
 
 }

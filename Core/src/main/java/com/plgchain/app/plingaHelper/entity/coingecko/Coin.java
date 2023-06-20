@@ -58,6 +58,9 @@ public class Coin implements Serializable {
 
 	private String name;
 
+	@Column(name = "\"coingeckoJson\"")
+	private String coingeckoJson;
+
 	@OneToMany(mappedBy = "coin")
 	private List<SmartContract> contractList;
 
