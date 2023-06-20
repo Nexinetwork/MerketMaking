@@ -85,4 +85,8 @@ public class SmartContractService extends BaseService implements Serializable {
 		return smartContractDao.existsSmartContractByBlockchainAndCoin(blockchain,coin);
 	}
 
+	public List<SmartContract> findByMustAdd(boolean mustAdd) {
+		return smartContractDao.findByMustAdd(mustAdd);
+	}
+
 }

@@ -19,5 +19,6 @@ public interface SmartContractDao extends BaseLongDao<SmartContract> {
 	public boolean existsSmartContractByBlockchainAndCoinAndContractsAddress(Blockchain blockchain,Coin coin,String contractsAddress);
 	public Optional<SmartContract> findByBlockchainAndCoin(Blockchain blockchain,Coin coin);
 	public boolean existsSmartContractByBlockchainAndCoin(Blockchain blockchain,Coin coin);
+	public List<SmartContract> findByMustAdd(boolean mustAdd);
 
 }

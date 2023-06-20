@@ -14,11 +14,14 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.bean.coingecko.CoingeckoBean;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
+import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.entity.SystemConfig;
 import com.plgchain.app.plingaHelper.service.BlockchainNodeService;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
+import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.service.SystemConfigService;
+import com.plgchain.app.plingaHelper.type.response.ContractMustAddResponse;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
@@ -53,6 +56,9 @@ public class InitBean implements Serializable {
 	@Autowired
 	private RedisTemplate redisTemplate;
 
+	@Autowired
+	private SmartContractService smartContractService;
+
 	private String privateKey;
 
 	private String coingeckoBaseApi;
@@ -74,21 +80,39 @@ public class InitBean implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void writeBlockchainToRedis() {
-		//Predicate<Blockchain> mustCheck = blockchain -> blockchain.isEnabled() && blockchain.isMustCheck();
+		// Predicate<Blockchain> mustCheck = blockchain -> blockchain.isEnabled() &&
+		// blockchain.isMustCheck();
 		HashOperations<String, String, String> blockchainDataString = redisTemplate.opsForHash();
-		blockchainService.findAll().stream().filter(blockchain -> blockchain.isEnabled() && blockchain.isMustCheck()).forEach(blockchain -> {
-			if (blockchainDataString.hasKey(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName()))
-				blockchainDataString.delete(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName());
-			blockchainDataString.put(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName(), JSON.toJSONString(blockchain));
-			List<BlockchainNode> blNodeList = blockchainNodeService.findByBlockchain(blockchain);
-			if (!blNodeList.isEmpty()) {
-				logger.info(String.format("There is %s node for blockchain %s", blNodeList.size(),blockchain.getName()));
-				if (blockchainDataString.hasKey(SysConstant.REDIS_NODE_DATA, blockchain.getName()))
-					blockchainDataString.delete(SysConstant.REDIS_NODE_DATA, blockchain.getName());
-				blockchainDataString.put(SysConstant.REDIS_NODE_DATA, blockchain.getName(), JSON.toJSONString(blNodeList));
-			} else {
-				logger.info(String.format("There is not any node for blockchain %s", blockchain.getName()));
-			}
+		blockchainService.findAll().stream().filter(blockchain -> blockchain.isEnabled() && blockchain.isMustCheck())
+				.forEach(blockchain -> {
+					if (blockchainDataString.hasKey(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName()))
+						blockchainDataString.delete(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName());
+					blockchainDataString.put(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName(),
+							JSON.toJSONString(blockchain));
+					List<BlockchainNode> blNodeList = blockchainNodeService.findByBlockchain(blockchain);
+					if (!blNodeList.isEmpty()) {
+						logger.info(String.format("There is %s node for blockchain %s", blNodeList.size(),
+								blockchain.getName()));
+						if (blockchainDataString.hasKey(SysConstant.REDIS_NODE_DATA, blockchain.getName()))
+							blockchainDataString.delete(SysConstant.REDIS_NODE_DATA, blockchain.getName());
+						blockchainDataString.put(SysConstant.REDIS_NODE_DATA, blockchain.getName(),
+								JSON.toJSONString(blNodeList));
+					} else {
+						logger.info(String.format("There is not any node for blockchain %s", blockchain.getName()));
+					}
+				});
+		smartContractService.findByMustAdd(true).stream().forEach(smartContract -> {
+			if (blockchainDataString.hasKey(SysConstant.REDIS_CONTRACTS_MUSTADD_DATA,
+					smartContract.getCoin().getCoingeckoId()))
+				blockchainDataString.delete(SysConstant.REDIS_CONTRACTS_MUSTADD_DATA,
+						smartContract.getCoin().getCoingeckoId());
+			var smc = ContractMustAddResponse.builder()
+					.blockchainCoingeckoId(smartContract.getBlockchain().getCoingeckoId())
+					.contract(smartContract.getContractsAddress())
+					.coinCoingeckoId(smartContract.getCoin().getCoingeckoId()).decimal(smartContract.getDecimal())
+					.build();
+			blockchainDataString.put(SysConstant.REDIS_CONTRACTS_MUSTADD_DATA, smartContract.getCoin().getCoingeckoId(),
+					JSON.toJSONString(smc));
 		});
 	}
 

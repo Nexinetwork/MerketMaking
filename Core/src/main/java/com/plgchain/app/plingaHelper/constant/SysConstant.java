@@ -19,6 +19,8 @@ public class SysConstant implements Serializable {
 
 	public static String REDIS_NODE_DATA = "REDIS-NODE-DATA";
 
+	public static String REDIS_CONTRACTS_MUSTADD_DATA = "REDIS-CONTRACTS-MUSTADD-DATA";
+
 	public static String REDIS_COIN_DATA = "REDIS-COIN-DATA";
 
 	public static String REDIS_WALLET_DATA = "REDIS-WALLET-DATA";
