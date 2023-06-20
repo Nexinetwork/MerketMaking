@@ -15,6 +15,7 @@ import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
+import com.plgchain.app.plingaHelper.type.request.ContractReq;
 import com.plgchain.app.plingaHelper.util.BlockscoutUtil;
 import com.plgchain.app.plingaHelper.util.SecurityUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.BlockchainUtil;
@@ -45,7 +46,7 @@ public class BlockchainActionTest implements Serializable {
 		return jToken;
 	}
 
-	//@Test
+	// @Test
 	public void createBlockchaintestCase() {
 		Blockchain blockchain = new Blockchain();
 		blockchain.setName("bsc");
@@ -59,18 +60,20 @@ public class BlockchainActionTest implements Serializable {
 		blockchain.setRpcUrl("\"https://bsc.publicnode.com\"");
 		blockchain.setHeight(new BigInteger("0"));
 		blockchain.setCoingeckoId("binance-smart-chain");
-		HttpResponse<String> response = Unirest.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewBlockchain")
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewBlockchain")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(blockchain)).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void createNodeTestCase() {
 		var node = BlockchainNode.builder().blockchainId(Long.valueOf(1)).enabled(true).validator(true)
-				.serverIp("185.128.137.241").sshPort(22).rpcUrl("http://www.plgscan.com").nodeType(BlockchainNodeType.BLOCKSCOUT).validator(false)
-				.serviceNeme("plgscan.service").mustCheck(true).build();
+				.serverIp("185.128.137.241").sshPort(22).rpcUrl("http://www.plgscan.com")
+				.nodeType(BlockchainNodeType.BLOCKSCOUT).validator(false).serviceNeme("plgscan.service").mustCheck(true)
+				.build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewNode")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -79,23 +82,34 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void getBlockscoutResult() {
 		System.out.println("Result is : " + BlockscoutUtil.getLatestBlock("https://www.plgscan.com"));
 	}
 
-	//@Test
+	// @Test
 	public void LastBlockTest() {
 		System.out.println(BlockchainUtil.getLatestBlockNumber("https://bsc.publicnode.com"));
 	}
 
-	@Test
+	// @Test
 	public void getCoingeckoNetworks() {
 		var res = CoingeckoUtil.runGetCommand("https://api.coingecko.com/api/v3/asset_platforms");
 		List<AssetPlatform> lst = JSON.parseArray(res, AssetPlatform.class);
 		System.out.println(lst);
 	}
 
-
+	@Test
+	public void generateSmartContract() {
+		var contract = ContractReq.builder().blockchainCoingeckoId("plinga").coinCoingeckoId("tether")
+				.contract("0xbD07cf23A43f13078716A015F3Cc27F7a1661e65").decimal(18).mustAdd(true).mustCheck(true)
+				.isMain(false).build();
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.244:7001/api/v1/godaction/token/createNewContract")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(JSON.toJSONString(contract)).asString();
+		System.out.println("Result is : " + response.getBody());
+	}
 
 }

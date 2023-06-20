@@ -44,7 +44,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ToString(exclude = {"nodeList","contractList"})
+@ToString(exclude = {"nodeList"})
 @Table(name = "\"tblBlockchain\"", schema = "\"schSevice\"")
 public class Blockchain implements Serializable {
 
