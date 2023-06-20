@@ -45,8 +45,8 @@ public class CoinPrice implements Serializable {
 	private static final long serialVersionUID = -5680240281640861401L;
 
 	@Id
-	@SequenceGenerator(name = "TBLSMARTCONTRACT_SMARTCONTRACTID_GENERATOR", sequenceName = "\"seqCoinPriceConinPriceId\"", schema = "\"schCoingecko\"", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TBLSMARTCONTRACT_SMARTCONTRACTID_GENERATOR")
+	@SequenceGenerator(name = "TBLCOINPRICE_COINPRICEID_GENERATOR", sequenceName = "\"seqCoinPriceConinPriceId\"", schema = "\"schCoingecko\"", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TBLCOINPRICE_COINPRICEID_GENERATOR")
 	@Column(name = "\"contractId\"")
 	private long coinPriceId;
 
