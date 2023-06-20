@@ -41,7 +41,7 @@ public class TokenControler extends BaseController implements Serializable {
 	public MessageResult createNewContract(@RequestBody ContractReq contract) {
 		try {
 			var contractRes = blockchainBean.createSmartContract(contract);
-			return success(String.format("Contract %s has been created.", contractRes));
+			return success("okkkkkk");
 		} catch (RestActionError e) {
 			// TODO Auto-generated catch block
 			error(e.getMessage());
