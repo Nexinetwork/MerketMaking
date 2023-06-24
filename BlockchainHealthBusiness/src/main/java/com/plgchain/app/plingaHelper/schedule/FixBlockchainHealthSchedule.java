@@ -152,9 +152,23 @@ public class FixBlockchainHealthSchedule implements Serializable {
 									try {
 										Thread.sleep(initBean.getDelayForCheckInSecond() * 1000);
 										BigInteger newBlock = BlockscoutUtil.getLatestBlock(blockchainNode.getRpcUrl());
-										if (newBlock.equals(currentBlock)) {
+										if (newBlock == null) {
 											logger.info(String.format(
-													"SBlockscout erver %s with service %s has been has been same block %s after %s try to restart it",
+													"Blockscout Server %s with service %s return block null try to restart service.",
+													blockchainNode.getServerIp(), blockchainNode.getServiceNeme()));
+											ServiceUtil.restartService(blockchainNode.getServerIp(),
+													blockchainNode.getSshPort(), initBean.getPrivateKey(),
+													blockchainNode.getServiceNeme());
+											try {
+												Thread.sleep(20000);
+											} catch (InterruptedException e) {
+												// TODO Auto-generated catch block
+												logger.error(e.getMessage());
+											}
+										}
+										else if (newBlock.equals(currentBlock)) {
+											logger.info(String.format(
+													"Blockscout Server %s with service %s has been has been same block %s after %s try to restart it",
 													blockchainNode.getServerIp(), blockchainNode.getServiceNeme(),
 													newBlock.toString(), initBean.getDelayForCheckInSecond()));
 											ServiceUtil.restartService(blockchainNode.getServerIp(),
