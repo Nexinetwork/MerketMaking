@@ -4,12 +4,9 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Repository;
-
 import com.plgchain.app.plingaHelper.dao.base.BaseLongDao;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 
-@Repository
 public interface BlockchainDao extends BaseLongDao<Blockchain> {
 	public Optional<Blockchain> findByName(String name);
 	public boolean existsBlockchainByName(String name);

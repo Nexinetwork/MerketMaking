@@ -46,20 +46,20 @@ public class BlockchainActionTest implements Serializable {
 		return jToken;
 	}
 
-	// @Test
+	//@Test
 	public void createBlockchaintestCase() {
 		Blockchain blockchain = new Blockchain();
-		blockchain.setName("bsc");
+		blockchain.setName("Nexi");
 		blockchain.setEvm(true);
-		blockchain.setMustCheck(false);
-		blockchain.setChainId(new BigInteger("56"));
-		blockchain.setMainCoin("BNB");
-		blockchain.setBlockExplorer("https://bscscan.com");
+		blockchain.setMustCheck(true);
+		blockchain.setChainId(new BigInteger("4242"));
+		blockchain.setMainCoin("NEXI");
+		blockchain.setBlockExplorer("https://www.nexiscan.com");
 		blockchain.setBlockchainType(BlockchainTechType.DPOS);
 		blockchain.setBlockDuration(2);
-		blockchain.setRpcUrl("\"https://bsc.publicnode.com\"");
+		blockchain.setRpcUrl("\"https://rpc.chain.nexi.technology");
 		blockchain.setHeight(new BigInteger("0"));
-		blockchain.setCoingeckoId("binance-smart-chain");
+		blockchain.setCoingeckoId("nexi");
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewBlockchain")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -68,11 +68,11 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	// @Test
+	@Test
 	public void createNodeTestCase() {
-		var node = BlockchainNode.builder().blockchainId(Long.valueOf(1)).enabled(true).validator(true)
-				.serverIp("185.128.137.241").sshPort(22).rpcUrl("http://www.plgscan.com")
-				.nodeType(BlockchainNodeType.BLOCKSCOUT).validator(false).serviceNeme("plgscan.service").mustCheck(true)
+		var node = BlockchainNode.builder().blockchainId(Long.valueOf(154)).enabled(true)
+				.serverIp("185.110.191.217").sshPort(22424).rpcUrl("http://185.110.191.217:18545")
+				.nodeType(BlockchainNodeType.BLOCKCHAINNODE).validator(true).serviceNeme("nexichain1.service").mustCheck(true)
 				.build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewNode")
@@ -99,10 +99,10 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println(lst);
 	}
 
-	@Test
+	//@Test
 	public void generateSmartContract() {
-		var contract = ContractReq.builder().blockchainCoingeckoId("plinga").coinCoingeckoId("tether")
-				.contract("0xbD07cf23A43f13078716A015F3Cc27F7a1661e65").decimal(18).mustAdd(true).mustCheck(true)
+		var contract = ContractReq.builder().blockchainCoingeckoId("nexi").coinCoingeckoId("tether")
+				.contract("0xA60e7e82560165a150F05e75F59bb8499D76AE12").decimal(18).mustAdd(true).mustCheck(true)
 				.isMain(false).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/token/createNewContract")
