@@ -8,8 +8,6 @@ import java.io.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.plgchain.app.plingaHelper.bean.InitBean;
-
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 
