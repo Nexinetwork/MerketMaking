@@ -41,7 +41,7 @@ public class InitCoingeckoSchedule implements Serializable {
 						.build();
 				sc = systemConfigService.save(sc);
 			} else if (!systemConfigService.isByConfigNameExist("coingeckoCurrencyListInit")) {
-				coingeckoBean.updateCoingeckoCurrenciest();
+				coingeckoBean.updateCoingeckoCurrencyList();
 				var sc = SystemConfig.builder().configName("coingeckoCurrencyListInit").configBooleanValue(true)
 						.build();
 				sc = systemConfigService.save(sc);
@@ -55,12 +55,10 @@ public class InitCoingeckoSchedule implements Serializable {
 						.build();
 				sc = systemConfigService.save(sc);
 			} else if (!systemConfigService.isByConfigNameExist("coingeckoCoinListMongoInit")) {
-				boolean res = coingeckoBean.checkAndUpdateCoingeckoCoinListFull();
-				if (res) {
-					var sc = SystemConfig.builder().configName("coingeckoCoinListMongoInit").configBooleanValue(true)
-							.build();
-					sc = systemConfigService.save(sc);
-				}
+				coingeckoBean.checkAndUpdateCoingeckoCoinListFull();
+				var sc = SystemConfig.builder().configName("coingeckoCoinListMongoInit").configBooleanValue(true)
+						.build();
+				sc = systemConfigService.save(sc);
 			}
 		}
 	}

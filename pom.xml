@@ -60,11 +60,33 @@
 		<dependencies>
 			<!--
 			https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons-core -->
+
+			<!--
+			https://mvnrepository.com/artifact/org.springframework.integration/spring-integration-core -->
+
 			<dependency>
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-commons-core</artifactId>
 				<version>1.4.1.RELEASE</version>
 			</dependency>
+
+			<!--
+			https://mvnrepository.com/artifact/net.javacrumbs.shedlock/shedlock-spring -->
+			<dependency>
+				<groupId>net.javacrumbs.shedlock</groupId>
+				<artifactId>shedlock-spring</artifactId>
+				<version>5.5.0</version>
+			</dependency>
+
+			<!--
+			https://mvnrepository.com/artifact/net.javacrumbs.shedlock/shedlock-provider-jdbc-template -->
+			<dependency>
+				<groupId>net.javacrumbs.shedlock</groupId>
+				<artifactId>shedlock-provider-jdbc-template</artifactId>
+				<version>5.5.0</version>
+			</dependency>
+
+
 			<!--
 			https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
 			<dependency>

@@ -103,7 +103,7 @@ public class CoingeckoBean implements Serializable {
 		});
 	}
 
-	public void updateCoingeckoCurrenciest() {
+	public void updateCoingeckoCurrencyList() {
 		var url = initBean.getCoingeckoBaseApi() + "/simple/supported_vs_currencies";
 		var json = CoingeckoUtil.runGetCommand(url);
 		JSON.parseArray(json, String.class).stream().forEach(currencyIso -> {
@@ -157,22 +157,21 @@ public class CoingeckoBean implements Serializable {
 		return lst.stream().filter(mac -> mac.getCoin().equalsIgnoreCase(coin)).collect(Collectors.toList());
 	}
 
-	public boolean checkAndUpdateCoingeckoCoinListFull() {
+	public void checkAndUpdateCoingeckoCoinListFull() {
 		// var url = initBean.getCoingeckoBaseApi() + "/coins/list";
-		if (initBean.doesActionRunning("checkAndUpdateCoingeckoCoinListFull")) {
-			logger.info("**********************\" checkAndUpdateCoingeckoCoinListFull Method Already running skip**********************");
-			return false;
-		}
-		logger.info("**********************\" Run checkAndUpdateCoingeckoCoinListFull Method **********************");
 		initBean.startActionRunning("checkAndUpdateCoingeckoCoinListFull");
 		try {
 			var coinList = CoingeckoUtil.runGetCommand(initBean.getCoingeckoBaseApi() + "/coins/list");
-			logger.info("000000000000000000000000000000000000000");
 			var coinListWithNetwork = CoingeckoUtil
 					.runGetCommand(initBean.getCoingeckoBaseApi() + "/coins/list?include_platform=true");
-			logger.info("111111111111111111111111111111111111111111");
 			var mustAddContracts = smartContractService.findByMustAddAsMustAddContractReq();
-			logger.info("222222222222222222222222222222222222222222222222");
+			JSON.parseArray(coinList, Coin.class).stream().forEach(coin -> {
+				if (!coinService.existsCoinByCoingeckoId(coin.getCoingeckoId())) {
+					coin = coinService.save(coin);
+					logger.info(String.format("coin %s has been added.", coin.toString()));
+				}
+			});
+
 			JSONArray jsonArray = JSON.parseArray(coinListWithNetwork);
 
 			List<JSONObject> resultList = jsonArray.stream().map(obj -> {
@@ -188,7 +187,6 @@ public class CoingeckoBean implements Serializable {
 				});
 			}).map(AbstractMap.SimpleEntry::getKey).collect(Collectors.toList());
 			String modifiedJCoinListWithNetwork = JSON.toJSONString(resultList);
-			logger.info("333333333333333333333333333333333333333333");
 			var coinListObject = CoinList.builder().currenOriginaltCoinList(coinList)
 					.currenOriginaltCoinListWithPlatform(coinListWithNetwork).currentCoinList(coinList)
 					.currentCoinListWithPlatform(modifiedJCoinListWithNetwork).build();
@@ -201,14 +199,30 @@ public class CoingeckoBean implements Serializable {
 					coinListHistoryService.save(currentCoinListObject);
 				}
 			}
-			logger.info("44444444444444444444444444444444444444444444444444");
-			return true;
+			JSON.parseArray(coinListWithNetwork, CoinNetwork.class).stream().forEach(coinNetwork -> {
+				logger.info(String.format("Coin %s has Platforms :", coinNetwork.getId()));
+				try {
+					Coin coin = coinService.findByCoingeckoId(coinNetwork.getId()).get();
+					for (Map.Entry<String, Object> entry : coinNetwork.getPlatforms().entrySet()) {
+						String key = entry.getKey();
+						Object value = entry.getValue();
+						Blockchain blockchain = blockchainService.findByCoingeckoId(key).get();
+						if (!smartContractService.existsSmartContractByBlockchainAndCoinAndContractsAddress(blockchain,
+								coin, value.toString())) {
+							var sc = SmartContract.builder().blockchain(blockchain).coin(coin)
+									.contractsAddress(value.toString()).isMain(false).mustCheck(false).build();
+							sc = smartContractService.save(sc);
+							logger.info(String.format("SmartContract %s has been added", sc));
+						}
+					}
+				} catch (Exception e) {
+					logger.error(String.format("Error in coinnetwork %s", coinNetwork.toString()));
+				}
+			});
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
-		initBean.stopActionRunning("checkAndUpdateCoingeckoCoinListFull");
-		return false;
 	}
 
 }
