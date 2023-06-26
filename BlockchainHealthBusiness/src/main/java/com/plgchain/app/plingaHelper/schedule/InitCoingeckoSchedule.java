@@ -51,6 +51,10 @@ public class InitCoingeckoSchedule implements Serializable {
 				coingeckoBean.updateCoingeckoCoinListNetwork();
 				var sc = SystemConfig.builder().configName("coingeckoSmartcontractInit").configBooleanValue(true).build();
 				sc = systemConfigService.save(sc);
+			} else if (!systemConfigService.isByConfigNameExist("coingeckoCoinListInit")) {
+				coingeckoBean.checkAndUpdateCoingeckoCoinListFull();
+				var sc = SystemConfig.builder().configName("coingeckoCoinListInit").configBooleanValue(true).build();
+				sc = systemConfigService.save(sc);
 			}
 		}
 	}

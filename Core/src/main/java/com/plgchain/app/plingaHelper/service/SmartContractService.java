@@ -4,12 +4,15 @@
 package com.plgchain.app.plingaHelper.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.plgchain.app.plingaHelper.coingecko.request.MustAddContractReq;
 import com.plgchain.app.plingaHelper.dao.SmartContractDao;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
@@ -32,7 +35,6 @@ public class SmartContractService extends BaseService implements Serializable {
 		return smartContractDao.findById(id).get();
 	}
 
-
 	public SmartContract save(SmartContract smartContract) {
 		return smartContractDao.save(smartContract);
 	}
@@ -53,40 +55,55 @@ public class SmartContractService extends BaseService implements Serializable {
 		return smartContractDao.existsSmartContractByContractsAddress(contractsAddress);
 	}
 
-	public Optional<SmartContract> findByBlockchainAndContractsAddress(Blockchain blockchain,String contractsAddress) {
-		return smartContractDao.findByBlockchainAndContractsAddress(blockchain,contractsAddress);
+	public Optional<SmartContract> findByBlockchainAndContractsAddress(Blockchain blockchain, String contractsAddress) {
+		return smartContractDao.findByBlockchainAndContractsAddress(blockchain, contractsAddress);
 	}
 
-	public boolean existsSmartContractByBlockchainAndContractsAddress(Blockchain blockchain,String contractsAddress) {
-		return smartContractDao.existsSmartContractByBlockchainAndContractsAddress(blockchain,contractsAddress);
+	public boolean existsSmartContractByBlockchainAndContractsAddress(Blockchain blockchain, String contractsAddress) {
+		return smartContractDao.existsSmartContractByBlockchainAndContractsAddress(blockchain, contractsAddress);
 	}
 
-	public List<SmartContract> findByCoinAndContractsAddress(Coin coin,String contractsAddress) {
-		return smartContractDao.findByCoinAndContractsAddress(coin,contractsAddress);
+	public List<SmartContract> findByCoinAndContractsAddress(Coin coin, String contractsAddress) {
+		return smartContractDao.findByCoinAndContractsAddress(coin, contractsAddress);
 	}
 
-	public boolean existsSmartContractByCoinAndContractsAddress(Coin coin,String contractsAddress) {
-		return smartContractDao.existsSmartContractByCoinAndContractsAddress(coin,contractsAddress);
+	public boolean existsSmartContractByCoinAndContractsAddress(Coin coin, String contractsAddress) {
+		return smartContractDao.existsSmartContractByCoinAndContractsAddress(coin, contractsAddress);
 	}
 
-	public Optional<SmartContract> findByBlockchainAndCoinAndContractsAddress(Blockchain blockchain,Coin coin,String contractsAddress) {
-		return smartContractDao.findByBlockchainAndCoinAndContractsAddress(blockchain,coin,contractsAddress);
+	public Optional<SmartContract> findByBlockchainAndCoinAndContractsAddress(Blockchain blockchain, Coin coin,
+			String contractsAddress) {
+		return smartContractDao.findByBlockchainAndCoinAndContractsAddress(blockchain, coin, contractsAddress);
 	}
 
-	public boolean existsSmartContractByBlockchainAndCoinAndContractsAddress(Blockchain blockchain,Coin coin,String contractsAddress) {
-		return smartContractDao.existsSmartContractByBlockchainAndCoinAndContractsAddress(blockchain,coin,contractsAddress);
+	public boolean existsSmartContractByBlockchainAndCoinAndContractsAddress(Blockchain blockchain, Coin coin,
+			String contractsAddress) {
+		return smartContractDao.existsSmartContractByBlockchainAndCoinAndContractsAddress(blockchain, coin,
+				contractsAddress);
 	}
 
-	public Optional<SmartContract> findByBlockchainAndCoin(Blockchain blockchain,Coin coin) {
-		return smartContractDao.findByBlockchainAndCoin(blockchain,coin);
+	public Optional<SmartContract> findByBlockchainAndCoin(Blockchain blockchain, Coin coin) {
+		return smartContractDao.findByBlockchainAndCoin(blockchain, coin);
 	}
 
-	public boolean existsSmartContractByBlockchainAndCoin(Blockchain blockchain,Coin coin) {
-		return smartContractDao.existsSmartContractByBlockchainAndCoin(blockchain,coin);
+	public boolean existsSmartContractByBlockchainAndCoin(Blockchain blockchain, Coin coin) {
+		return smartContractDao.existsSmartContractByBlockchainAndCoin(blockchain, coin);
 	}
 
 	public List<SmartContract> findByMustAdd(boolean mustAdd) {
 		return smartContractDao.findByMustAdd(mustAdd);
+	}
+
+	@Transactional
+	public List<MustAddContractReq> findByMustAddAsMustAddContractReq() {
+		List<MustAddContractReq> lst = new ArrayList<MustAddContractReq>();
+		smartContractDao.findByMustAdd(true).stream().forEach(contract -> {
+			var mac = MustAddContractReq.builder().coin(contract.getCoin().getCoingeckoId())
+					.blockchain(contract.getBlockchain().getCoingeckoId())
+					.contractAddress(contract.getContractsAddress()).decimal(contract.getDecimal()).build();
+			lst.add(mac);
+		});
+		return lst;
 	}
 
 }

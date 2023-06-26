@@ -4,7 +4,10 @@
 package com.plgchain.app.plingaHelper.bean.coingecko;
 
 import java.io.Serializable;
+import java.util.AbstractMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,22 +15,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.netflix.servo.util.Strings;
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.coingecko.request.CoinNetwork;
+import com.plgchain.app.plingaHelper.coingecko.request.MustAddContractReq;
 import com.plgchain.app.plingaHelper.coingecko.type.AssetPlatform;
 import com.plgchain.app.plingaHelper.coingecko.type.CoingeckoUtil;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
+import com.plgchain.app.plingaHelper.entity.coingecko.CoinList;
 import com.plgchain.app.plingaHelper.entity.coingecko.CoingeckoCategory;
 import com.plgchain.app.plingaHelper.entity.coingecko.Currency;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
+import com.plgchain.app.plingaHelper.service.CoinListHistoryService;
+import com.plgchain.app.plingaHelper.service.CoinListService;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.CoingeckoCategoryService;
 import com.plgchain.app.plingaHelper.service.CurrencyService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
+
+import jakarta.inject.Inject;
 
 /**
  *
@@ -55,6 +66,12 @@ public class CoingeckoBean implements Serializable {
 
 	@Autowired
 	private SmartContractService smartContractService;
+
+	@Inject
+	private CoinListService coinListService;
+
+	@Inject
+	private CoinListHistoryService coinListHistoryService;
 
 	public void updateCoingeckoNetworks() {
 		var url = initBean.getCoingeckoBaseApi() + "/asset_platforms";
@@ -134,6 +151,45 @@ public class CoingeckoBean implements Serializable {
 				logger.error(String.format("Error in coinnetwork %s", coinNetwork.toString()));
 			}
 		});
+	}
+
+	public List<MustAddContractReq> getContractMustAddToCoinNetwork(String coin, List<MustAddContractReq> lst) {
+		return lst.stream().filter(mac -> mac.getCoin().equalsIgnoreCase(coin)).collect(Collectors.toList());
+	}
+
+	public void checkAndUpdateCoingeckoCoinListFull() {
+		// var url = initBean.getCoingeckoBaseApi() + "/coins/list";
+		var coinList = CoingeckoUtil.runGetCommand(initBean.getCoingeckoBaseApi() + "/coins/list");
+		var coinListWithNetwork = CoingeckoUtil
+				.runGetCommand(initBean.getCoingeckoBaseApi() + "/coins/list?include_platform=true");
+		var mustAddContracts = smartContractService.findByMustAddAsMustAddContractReq();
+		JSONArray jsonArray = JSON.parseArray(coinListWithNetwork);
+
+		List<JSONObject> resultList = jsonArray.stream().map(obj -> {
+			JSONObject jsonObject = (JSONObject) obj;
+			String id = jsonObject.getString("id");
+			List<MustAddContractReq> mustAddContractsForCoin = getContractMustAddToCoinNetwork(id, mustAddContracts);
+			return new AbstractMap.SimpleEntry<>(jsonObject, mustAddContractsForCoin);
+		}).filter(entry -> !entry.getValue().isEmpty()).peek(entry -> {
+			JSONObject obj = entry.getKey();
+			entry.getValue().forEach(mac -> {
+				obj.getJSONObject("platforms").put(mac.getBlockchain(), mac.getContractAddress());
+			});
+		}).map(AbstractMap.SimpleEntry::getKey).collect(Collectors.toList());
+		String modifiedJCoinListWithNetwork = JSON.toJSONString(resultList);
+		var coinListObject = CoinList.builder().currenOriginaltCoinList(coinList)
+				.currenOriginaltCoinListWithPlatform(coinListWithNetwork).currentCoinList(coinList)
+				.currentCoinListWithPlatform(modifiedJCoinListWithNetwork).build();
+		if (coinListService.isEmptyDocument()) {
+			coinListService.save(coinListObject);
+		} else {
+			var currentCoinListObject = coinListService.findFirst();
+			if (!currentCoinListObject.equals(coinListObject)) {
+				coinListService.save(coinListObject);
+				coinListHistoryService.save(currentCoinListObject);
+			}
+		}
+
 	}
 
 }

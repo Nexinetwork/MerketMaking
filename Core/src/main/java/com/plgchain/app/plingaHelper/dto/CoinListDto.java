@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.plgchain.app.plingaHelper.entity.coingecko.CoinList;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,5 +46,12 @@ public class CoinListDto implements Serializable {
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	private LocalDateTime lastCheck;
+
+	public CoinList getAsObject() {
+		return CoinList.builder().creationDate(creationDate).lastCheck(lastCheck).lastUpdateDate(lastUpdateDate).id(id)
+				.currenOriginaltCoinList(currenOriginaltCoinList).currenOriginaltCoinListWithPlatform(currenOriginaltCoinListWithPlatform)
+				.currentCoinList(currentCoinList).currentCoinListWithPlatform(currentCoinListWithPlatform).build();
+
+	}
 
 }

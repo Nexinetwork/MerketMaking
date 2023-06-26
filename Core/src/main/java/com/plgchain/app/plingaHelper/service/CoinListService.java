@@ -29,7 +29,7 @@ public class CoinListService extends BaseService<CoinList> implements Serializab
 	    return coinListDao.count() == 0;
 	}
 
-	public CoinList saveCoinList(CoinList cl) {
+	public CoinList save(CoinList cl) {
 		if (cl.getId() <= 0)
 			cl.setId(sequenceGeneratorService.generateSequence(CoinList.SEQUENCE_NAME));
 		return coinListDao.save(cl);

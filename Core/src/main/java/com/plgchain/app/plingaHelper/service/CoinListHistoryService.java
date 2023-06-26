@@ -26,8 +26,12 @@ public class CoinListHistoryService extends BaseService<CoinListHistory> impleme
 	@Inject
 	private CoinListHistoryDao coinListHistoryDao;
 
-	public CoinListHistory findFirstBy() {
+	public CoinListHistory findFirst() {
 		return coinListHistoryDao.findFirstBy();
+	}
+
+	public boolean isEmptyDocument() {
+	    return coinListHistoryDao.count() == 0;
 	}
 
 	public CoinListHistory save(CoinList coinList) {
