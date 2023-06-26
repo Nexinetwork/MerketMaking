@@ -4,7 +4,10 @@
 package com.plgchain.app.plingaHelper.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.HashOperations;
@@ -67,6 +70,8 @@ public class InitBean implements Serializable {
 
 	private boolean initCoingecko = false;
 
+	private List<String> runLongRunningCommands = new ArrayList<String>();
+
 	@PostConstruct
 	public void init() {
 		writeBlockchainToRedis();
@@ -76,6 +81,18 @@ public class InitBean implements Serializable {
 			coingeckoBaseApi = systemConfigService.findByConfigName("coingeckoBaseFreeApi").getConfigStringValue();
 		if (systemConfigService.isByConfigNameExist("initCoingecko"))
 			initCoingecko = systemConfigService.findByConfigName("coingeckoBaseFreeApi").getConfigBooleanValue();
+	}
+
+	public boolean doesActionRunning(String action) {
+		return runLongRunningCommands.contains(action);
+	}
+
+	public void startActionRunning(String action) {
+		runLongRunningCommands.add(action);
+	}
+
+	public void stopActionRunning(String action) {
+		runLongRunningCommands.remove(action);
 	}
 
 	@SuppressWarnings("unchecked")

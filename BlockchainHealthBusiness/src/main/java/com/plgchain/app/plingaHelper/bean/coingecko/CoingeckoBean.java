@@ -157,9 +157,14 @@ public class CoingeckoBean implements Serializable {
 		return lst.stream().filter(mac -> mac.getCoin().equalsIgnoreCase(coin)).collect(Collectors.toList());
 	}
 
-	public void checkAndUpdateCoingeckoCoinListFull() {
+	public boolean checkAndUpdateCoingeckoCoinListFull() {
 		// var url = initBean.getCoingeckoBaseApi() + "/coins/list";
+		if (initBean.doesActionRunning("checkAndUpdateCoingeckoCoinListFull")) {
+			logger.info("**********************\" checkAndUpdateCoingeckoCoinListFull Method Already running skip**********************");
+			return false;
+		}
 		logger.info("**********************\" Run checkAndUpdateCoingeckoCoinListFull Method **********************");
+		initBean.startActionRunning("checkAndUpdateCoingeckoCoinListFull");
 		try {
 			var coinList = CoingeckoUtil.runGetCommand(initBean.getCoingeckoBaseApi() + "/coins/list");
 			logger.info("000000000000000000000000000000000000000");
@@ -197,11 +202,13 @@ public class CoingeckoBean implements Serializable {
 				}
 			}
 			logger.info("44444444444444444444444444444444444444444444444444");
+			return true;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
-
+		initBean.stopActionRunning("checkAndUpdateCoingeckoCoinListFull");
+		return false;
 	}
 
 }

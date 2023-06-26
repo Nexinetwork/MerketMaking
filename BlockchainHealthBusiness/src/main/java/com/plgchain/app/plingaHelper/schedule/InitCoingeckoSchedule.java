@@ -37,11 +37,13 @@ public class InitCoingeckoSchedule implements Serializable {
 				sc = systemConfigService.save(sc);
 			} else if (!systemConfigService.isByConfigNameExist("coingeckocategoriesListInit")) {
 				coingeckoBean.updateCoingeckoCategoriesList();
-				var sc = SystemConfig.builder().configName("coingeckocategoriesListInit").configBooleanValue(true).build();
+				var sc = SystemConfig.builder().configName("coingeckocategoriesListInit").configBooleanValue(true)
+						.build();
 				sc = systemConfigService.save(sc);
 			} else if (!systemConfigService.isByConfigNameExist("coingeckoCurrencyListInit")) {
 				coingeckoBean.updateCoingeckoCurrenciest();
-				var sc = SystemConfig.builder().configName("coingeckoCurrencyListInit").configBooleanValue(true).build();
+				var sc = SystemConfig.builder().configName("coingeckoCurrencyListInit").configBooleanValue(true)
+						.build();
 				sc = systemConfigService.save(sc);
 			} else if (!systemConfigService.isByConfigNameExist("coingeckoCoinListInit")) {
 				coingeckoBean.updateCoingeckoCoinList();
@@ -49,12 +51,16 @@ public class InitCoingeckoSchedule implements Serializable {
 				sc = systemConfigService.save(sc);
 			} else if (!systemConfigService.isByConfigNameExist("coingeckoSmartcontractInit")) {
 				coingeckoBean.updateCoingeckoCoinListNetwork();
-				var sc = SystemConfig.builder().configName("coingeckoSmartcontractInit").configBooleanValue(true).build();
+				var sc = SystemConfig.builder().configName("coingeckoSmartcontractInit").configBooleanValue(true)
+						.build();
 				sc = systemConfigService.save(sc);
 			} else if (!systemConfigService.isByConfigNameExist("coingeckoCoinListMongoInit")) {
-				coingeckoBean.checkAndUpdateCoingeckoCoinListFull();
-				var sc = SystemConfig.builder().configName("coingeckoCoinListMongoInit").configBooleanValue(true).build();
-				sc = systemConfigService.save(sc);
+				boolean res = coingeckoBean.checkAndUpdateCoingeckoCoinListFull();
+				if (res) {
+					var sc = SystemConfig.builder().configName("coingeckoCoinListMongoInit").configBooleanValue(true)
+							.build();
+					sc = systemConfigService.save(sc);
+				}
 			}
 		}
 	}
