@@ -159,35 +159,42 @@ public class CoingeckoBean implements Serializable {
 
 	public void checkAndUpdateCoingeckoCoinListFull() {
 		// var url = initBean.getCoingeckoBaseApi() + "/coins/list";
-		var coinList = CoingeckoUtil.runGetCommand(initBean.getCoingeckoBaseApi() + "/coins/list");
-		var coinListWithNetwork = CoingeckoUtil
-				.runGetCommand(initBean.getCoingeckoBaseApi() + "/coins/list?include_platform=true");
-		var mustAddContracts = smartContractService.findByMustAddAsMustAddContractReq();
-		JSONArray jsonArray = JSON.parseArray(coinListWithNetwork);
+		logger.info("**********************\" Run checkAndUpdateCoingeckoCoinListFull Method **********************");
+		try {
+			var coinList = CoingeckoUtil.runGetCommand(initBean.getCoingeckoBaseApi() + "/coins/list");
+			var coinListWithNetwork = CoingeckoUtil
+					.runGetCommand(initBean.getCoingeckoBaseApi() + "/coins/list?include_platform=true");
+			var mustAddContracts = smartContractService.findByMustAddAsMustAddContractReq();
+			JSONArray jsonArray = JSON.parseArray(coinListWithNetwork);
 
-		List<JSONObject> resultList = jsonArray.stream().map(obj -> {
-			JSONObject jsonObject = (JSONObject) obj;
-			String id = jsonObject.getString("id");
-			List<MustAddContractReq> mustAddContractsForCoin = getContractMustAddToCoinNetwork(id, mustAddContracts);
-			return new AbstractMap.SimpleEntry<>(jsonObject, mustAddContractsForCoin);
-		}).filter(entry -> !entry.getValue().isEmpty()).peek(entry -> {
-			JSONObject obj = entry.getKey();
-			entry.getValue().forEach(mac -> {
-				obj.getJSONObject("platforms").put(mac.getBlockchain(), mac.getContractAddress());
-			});
-		}).map(AbstractMap.SimpleEntry::getKey).collect(Collectors.toList());
-		String modifiedJCoinListWithNetwork = JSON.toJSONString(resultList);
-		var coinListObject = CoinList.builder().currenOriginaltCoinList(coinList)
-				.currenOriginaltCoinListWithPlatform(coinListWithNetwork).currentCoinList(coinList)
-				.currentCoinListWithPlatform(modifiedJCoinListWithNetwork).build();
-		if (coinListService.isEmptyDocument()) {
-			coinListService.save(coinListObject);
-		} else {
-			var currentCoinListObject = coinListService.findFirst();
-			if (!currentCoinListObject.equals(coinListObject)) {
+			List<JSONObject> resultList = jsonArray.stream().map(obj -> {
+				JSONObject jsonObject = (JSONObject) obj;
+				String id = jsonObject.getString("id");
+				List<MustAddContractReq> mustAddContractsForCoin = getContractMustAddToCoinNetwork(id,
+						mustAddContracts);
+				return new AbstractMap.SimpleEntry<>(jsonObject, mustAddContractsForCoin);
+			}).filter(entry -> !entry.getValue().isEmpty()).peek(entry -> {
+				JSONObject obj = entry.getKey();
+				entry.getValue().forEach(mac -> {
+					obj.getJSONObject("platforms").put(mac.getBlockchain(), mac.getContractAddress());
+				});
+			}).map(AbstractMap.SimpleEntry::getKey).collect(Collectors.toList());
+			String modifiedJCoinListWithNetwork = JSON.toJSONString(resultList);
+			var coinListObject = CoinList.builder().currenOriginaltCoinList(coinList)
+					.currenOriginaltCoinListWithPlatform(coinListWithNetwork).currentCoinList(coinList)
+					.currentCoinListWithPlatform(modifiedJCoinListWithNetwork).build();
+			if (coinListService.isEmptyDocument()) {
 				coinListService.save(coinListObject);
-				coinListHistoryService.save(currentCoinListObject);
+			} else {
+				var currentCoinListObject = coinListService.findFirst();
+				if (!currentCoinListObject.equals(coinListObject)) {
+					coinListService.save(coinListObject);
+					coinListHistoryService.save(currentCoinListObject);
+				}
 			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
 		}
 
 	}
