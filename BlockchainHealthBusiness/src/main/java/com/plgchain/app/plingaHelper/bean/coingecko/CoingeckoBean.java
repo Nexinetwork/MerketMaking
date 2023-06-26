@@ -162,9 +162,12 @@ public class CoingeckoBean implements Serializable {
 		logger.info("**********************\" Run checkAndUpdateCoingeckoCoinListFull Method **********************");
 		try {
 			var coinList = CoingeckoUtil.runGetCommand(initBean.getCoingeckoBaseApi() + "/coins/list");
+			logger.info("000000000000000000000000000000000000000");
 			var coinListWithNetwork = CoingeckoUtil
 					.runGetCommand(initBean.getCoingeckoBaseApi() + "/coins/list?include_platform=true");
+			logger.info("111111111111111111111111111111111111111111");
 			var mustAddContracts = smartContractService.findByMustAddAsMustAddContractReq();
+			logger.info("222222222222222222222222222222222222222222222222");
 			JSONArray jsonArray = JSON.parseArray(coinListWithNetwork);
 
 			List<JSONObject> resultList = jsonArray.stream().map(obj -> {
@@ -180,6 +183,7 @@ public class CoingeckoBean implements Serializable {
 				});
 			}).map(AbstractMap.SimpleEntry::getKey).collect(Collectors.toList());
 			String modifiedJCoinListWithNetwork = JSON.toJSONString(resultList);
+			logger.info("333333333333333333333333333333333333333333");
 			var coinListObject = CoinList.builder().currenOriginaltCoinList(coinList)
 					.currenOriginaltCoinListWithPlatform(coinListWithNetwork).currentCoinList(coinList)
 					.currentCoinListWithPlatform(modifiedJCoinListWithNetwork).build();
@@ -192,6 +196,7 @@ public class CoingeckoBean implements Serializable {
 					coinListHistoryService.save(currentCoinListObject);
 				}
 			}
+			logger.info("44444444444444444444444444444444444444444444444444");
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
