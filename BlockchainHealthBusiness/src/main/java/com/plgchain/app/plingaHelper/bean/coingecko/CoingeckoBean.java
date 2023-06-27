@@ -4,14 +4,15 @@
 package com.plgchain.app.plingaHelper.bean.coingecko;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson2.JSON;
@@ -28,6 +29,8 @@ import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.CoinList;
 import com.plgchain.app.plingaHelper.entity.coingecko.CoingeckoCategory;
+import com.plgchain.app.plingaHelper.entity.coingecko.CoingeckoCoin;
+import com.plgchain.app.plingaHelper.entity.coingecko.CoingeckoCoinHistory;
 import com.plgchain.app.plingaHelper.entity.coingecko.Currency;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
@@ -35,10 +38,13 @@ import com.plgchain.app.plingaHelper.service.CoinListHistoryService;
 import com.plgchain.app.plingaHelper.service.CoinListService;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.CoingeckoCategoryService;
+import com.plgchain.app.plingaHelper.service.CoingeckoCoinService;
+import com.plgchain.app.plingaHelper.service.CoingeckoCoinHistoryService;
 import com.plgchain.app.plingaHelper.service.CurrencyService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
 
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 /**
  *
@@ -49,22 +55,22 @@ public class CoingeckoBean implements Serializable {
 	private static final long serialVersionUID = 5927815418621440349L;
 	private final static Logger logger = LoggerFactory.getLogger(CoingeckoBean.class);
 
-	@Autowired
+	@Inject
 	private InitBean initBean;
 
-	@Autowired
+	@Inject
 	private BlockchainService blockchainService;
 
-	@Autowired
+	@Inject
 	private CoingeckoCategoryService coingeckoCategoryService;
 
-	@Autowired
+	@Inject
 	private CurrencyService currencyService;
 
-	@Autowired
+	@Inject
 	private CoinService coinService;
 
-	@Autowired
+	@Inject
 	private SmartContractService smartContractService;
 
 	@Inject
@@ -72,6 +78,12 @@ public class CoingeckoBean implements Serializable {
 
 	@Inject
 	private CoinListHistoryService coinListHistoryService;
+
+	@Inject
+	private CoingeckoCoinService coingeckoCoinService;
+
+	@Inject
+	private CoingeckoCoinHistoryService coingeckoCoinHistoryService;
 
 	public void updateCoingeckoNetworks() {
 		var url = initBean.getCoingeckoBaseApi() + "/asset_platforms";
@@ -187,8 +199,8 @@ public class CoingeckoBean implements Serializable {
 				});
 			}).map(AbstractMap.SimpleEntry::getKey).collect(Collectors.toList());
 			String modifiedJCoinListWithNetwork = JSON.toJSONString(resultList);
-			var coinListObject = CoinList.builder().currenOriginaltCoinList(coinList)
-					.currenOriginaltCoinListWithPlatform(coinListWithNetwork).currentCoinList(coinList)
+			var coinListObject = CoinList.builder().currentOriginalCoinList(coinList)
+					.currentOriginalCoinListWithPlatform(coinListWithNetwork).currentCoinList(coinList)
 					.currentCoinListWithPlatform(modifiedJCoinListWithNetwork).build();
 			if (coinListService.isEmptyDocument()) {
 				coinListService.save(coinListObject);
@@ -223,6 +235,60 @@ public class CoingeckoBean implements Serializable {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	@Transactional
+	public CoingeckoCoin createOrUpdateCoingeckoCoin(String coinId) {
+		var url = initBean.getCoingeckoBaseApi() + "/coins/" + coinId;
+		var json = CoingeckoUtil.runGetCommand(url);
+		JSONObject jo = JSON.parseObject(json);
+		Coin coin = coinService.findByCoingeckoId(coinId).orElseThrow();
+		List<SmartContract> contractList = coin.getContractList();
+		contractList.forEach(contract -> {
+			jo.getJSONObject("platforms").put(contract.getBlockchain().getName(), contract.getContractsAddress());
+			JSONObject blockchainObject = new JSONObject();
+			blockchainObject.put("decimal_place", contract.getDecimal());
+			blockchainObject.put("contract_address", contract.getContractsAddress());
+			jo.getJSONObject("detail_platforms").put(contract.getBlockchain().getName(), blockchainObject);
+		});
+		var editedJson = JSON.toJSONString(jo);
+		Optional<CoingeckoCoin> coinGeckoCoinOp = coingeckoCoinService.findById(coinId);
+		CoingeckoCoin coingeckoCoin = null;
+		if (coinGeckoCoinOp.isPresent()) {
+			var currentObject = coinGeckoCoinOp.get();
+			if (!(currentObject.getOriginalJson().equals(json) && currentObject.getEditedJson().equals(editedJson))) {
+				coingeckoCoin = new CoingeckoCoin(jo);
+				coingeckoCoin.setOriginalJson(json);
+				coingeckoCoin.setEditedJson(editedJson);
+				coin.setCoingeckoJson(editedJson);
+				coin.setLastCheck(LocalDateTime.now());
+				coin.setPriceInUsd(coingeckoCoin.getPriceInUsd());
+				coin = coinService.save(coin);
+				coingeckoCoin = coingeckoCoinService.save(coingeckoCoin);
+				logger.info(String.format("coingeckoCoin %s has been updated.", coingeckoCoin));
+				CoingeckoCoinHistory cgh = coingeckoCoinHistoryService.findById(coinId).orElseThrow();
+				cgh.addCoingeckoCoin(coingeckoCoin);
+				coingeckoCoinHistoryService.save(cgh);
+			} else {
+				coin.setLastCheck(LocalDateTime.now());
+				coin = coinService.save(coin);
+			}
+		} else {
+			coingeckoCoin = new CoingeckoCoin(jo);
+			coingeckoCoin.setOriginalJson(json);
+			coingeckoCoin.setEditedJson(editedJson);
+			coin.setCoingeckoJson(editedJson);
+			coin.setPriceInUsd(coingeckoCoin.getPriceInUsd());
+			coin.setLastCheck(LocalDateTime.now());
+			coin = coinService.save(coin);
+			coingeckoCoin = coingeckoCoinService.save(coingeckoCoin);
+			CoingeckoCoinHistory cgh = new CoingeckoCoinHistory(coingeckoCoin.getId(), coingeckoCoin.getSymbol(),
+					coingeckoCoin.getName());
+			cgh.addCoingeckoCoin(coingeckoCoin);
+			coingeckoCoinHistoryService.save(cgh);
+			logger.info(String.format("coingeckoCoin %s has been added", coingeckoCoin));
+		}
+		return coingeckoCoin;
 	}
 
 }

@@ -30,11 +30,11 @@ public class CoinListDto implements Serializable {
 	private long id;
 
 
-	private String currenOriginaltCoinList;
+	private String currentOriginalCoinList;
 
 	private String currentCoinList;
 
-	private String currenOriginaltCoinListWithPlatform;
+	private String currentOriginalCoinListWithPlatform;
 
 	private String currentCoinListWithPlatform;;
 
@@ -49,7 +49,7 @@ public class CoinListDto implements Serializable {
 
 	public CoinList getAsObject() {
 		return CoinList.builder().creationDate(creationDate).lastCheck(lastCheck).lastUpdateDate(lastUpdateDate).id(id)
-				.currenOriginaltCoinList(currenOriginaltCoinList).currenOriginaltCoinListWithPlatform(currenOriginaltCoinListWithPlatform)
+				.currentOriginalCoinList(currentOriginalCoinList).currentOriginalCoinListWithPlatform(currentOriginalCoinListWithPlatform)
 				.currentCoinList(currentCoinList).currentCoinListWithPlatform(currentCoinListWithPlatform).build();
 
 	}

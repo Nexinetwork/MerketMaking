@@ -3,12 +3,12 @@ package com.plgchain.app.plingaHelper.schedule;
 import java.io.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.plgchain.app.plingaHelper.bean.coingecko.CoingeckoBean;
 
+import jakarta.inject.Inject;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @Component
@@ -18,7 +18,7 @@ public class UpdateCoingeckoCategorySchedule implements Serializable {
 
 	private final static Logger logger = LoggerFactory.getLogger(UpdateCoingeckoCategorySchedule.class);
 
-	@Autowired
+	@Inject
 	private CoingeckoBean coingeckoBean;
 
 

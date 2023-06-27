@@ -39,11 +39,11 @@ public class CoinList implements Serializable {
 	@Id
 	private long id;
 
-	private String currenOriginaltCoinList;
+	private String currentOriginalCoinList;
 
 	private String currentCoinList;
 
-	private String currenOriginaltCoinListWithPlatform;
+	private String currentOriginalCoinListWithPlatform;
 
 	private String currentCoinListWithPlatform;;
 
@@ -61,8 +61,8 @@ public class CoinList implements Serializable {
 	private LocalDateTime lastCheck;
 
 	public CoinListDto getAsDto() {
-		return CoinListDto.builder().id(id).currenOriginaltCoinList(currenOriginaltCoinList)
-				.currenOriginaltCoinListWithPlatform(currenOriginaltCoinListWithPlatform)
+		return CoinListDto.builder().id(id).currentOriginalCoinList(currentOriginalCoinList)
+				.currentOriginalCoinListWithPlatform(currentOriginalCoinListWithPlatform)
 				.currentCoinList(currentCoinList).currentCoinListWithPlatform(currentCoinListWithPlatform)
 				.creationDate(creationDate).lastUpdateDate(lastUpdateDate).lastCheck(lastCheck).build();
 	}
@@ -74,15 +74,15 @@ public class CoinList implements Serializable {
 		if (!(obj instanceof CoinList))
 			return false;
 		CoinList other = (CoinList) obj;
-		return Objects.equals(currenOriginaltCoinList, other.currenOriginaltCoinList)
-				&& Objects.equals(currenOriginaltCoinListWithPlatform, other.currenOriginaltCoinListWithPlatform)
+		return Objects.equals(currentOriginalCoinList, other.currentOriginalCoinList)
+				&& Objects.equals(currentOriginalCoinListWithPlatform, other.currentOriginalCoinListWithPlatform)
 				&& Objects.equals(currentCoinList, other.currentCoinList)
 				&& Objects.equals(currentCoinListWithPlatform, other.currentCoinListWithPlatform) || (id == other.id && id > 0 && other.id > 0);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(currenOriginaltCoinList, currenOriginaltCoinListWithPlatform, currentCoinList,
+		return Objects.hash(currentOriginalCoinList, currentOriginalCoinListWithPlatform, currentCoinList,
 				currentCoinListWithPlatform, id);
 	}
 

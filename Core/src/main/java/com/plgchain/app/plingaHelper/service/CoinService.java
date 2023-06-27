@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.annotation.LogMethod;
@@ -67,5 +70,15 @@ public class CoinService extends BaseService implements Serializable {
 	public boolean existsCoinByCoingeckoId(String coingeckoId) {
 		return coinDao.existsCoinByCoingeckoId(coingeckoId);
 	}
+
+	public List<Coin> findByCoingeckoJsonIsNull() {
+		return coinDao.findByCoingeckoJsonIsNull();
+	}
+
+    public List<Coin> findByCoingeckoJsonIsNull(int count) {
+    	Pageable pageable = PageRequest.of(0, count);
+        Page<Coin> page = coinDao.findByCoingeckoJsonIsNull(pageable);
+        return page.getContent();
+    }
 
 }
