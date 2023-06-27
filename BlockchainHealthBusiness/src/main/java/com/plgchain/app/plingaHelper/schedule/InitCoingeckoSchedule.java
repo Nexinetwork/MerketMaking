@@ -28,7 +28,7 @@ public class InitCoingeckoSchedule implements Serializable {
 	@Autowired
 	private SystemConfigService systemConfigService;
 
-	@Scheduled(cron = "0 */10 * * * *")
+	@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
 	public void initCoingecko() {
 		if (!initBean.isInitCoingecko()) {
 			if (!systemConfigService.isByConfigNameExist("coingeckoNetworksInit")) {

@@ -22,7 +22,7 @@ public class UpdateCoingeckoCurrencySchedule implements Serializable {
 	private CoingeckoBean coingeckoBean;
 
 
-	@Scheduled(cron = "0 0 1 * * *")
+	@Scheduled(cron = "0 0 1 * * *", zone = "GMT")
     @SchedulerLock(name = "TaskScheduler_scheduledTask", lockAtMostFor = "60m", lockAtLeastFor = "30m" )
 	public void updateCoingeckoCurrency() {
 		logger.info("Run Method updateCoingeckoCurrency...........");

@@ -38,7 +38,7 @@ public class BlockchainUpdateDetailsSchedule implements Serializable {
 	@Autowired
 	private BlockchainNodeService blockchainNodeService;
 
-	@Scheduled(cron = "0 1 */2 * * *")
+	@Scheduled(cron = "0 1 */2 * * *", zone = "GMT")
 	public void blockchainUpdateDetails() {
 		blockchainService.findAll().stream().filter(blockchain -> blockchain.isEvm()).forEach(blockchain -> {
 			try {

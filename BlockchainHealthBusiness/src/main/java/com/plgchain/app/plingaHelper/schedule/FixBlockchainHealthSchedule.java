@@ -37,7 +37,7 @@ public class FixBlockchainHealthSchedule implements Serializable {
 	private InitBean initBean;
 
 	@SuppressWarnings("unchecked")
-	@Scheduled(cron = "0 */15 * * * *")
+	@Scheduled(cron = "0 */15 * * * *", zone = "GMT")
 	public void fixBlockchainHealth() {
 		HashOperations<String, String, String> blockchainDataString = redisTemplate.opsForHash();
 		Map<String, String> entries = blockchainDataString.entries(SysConstant.REDIS_NODE_DATA);
