@@ -104,34 +104,60 @@ public class CoingeckoCoin implements Serializable {
 	private LocalDateTime lastCheck;
 
 	public CoingeckoCoin(JSONObject jo) {
-		this.id = jo.getString("id");
-		this.symbol = jo.getString("symbol");
-		this.name = jo.getString("symbol");
-		this.mainPlatform = jo.getString("asset_platform_id");
-		this.platforms = jo.getJSONObject("platforms");
-		this.detail_platforms = jo.getJSONObject("detail_platforms");
-		this.market_data = jo.getJSONObject("market_data");
-		if (jo.getJSONObject("market_data").getJSONObject("current_price") != null)
-			this.current_price = jo.getJSONObject("market_data").getJSONObject("current_price");
-		if (jo.getJSONObject("market_data").getJSONObject("market_cap") != null)
-			this.market_cap = jo.getJSONObject("market_data").getJSONObject("market_cap");
-		this.market_cap_rank = jo.getInteger("market_cap_rank");
-		if (jo.getJSONObject("market_data").getBigDecimal("total_supply") != null)
-			this.total_supply = jo.getJSONObject("market_data").getBigDecimal("total_supply");
-		this.max_supply = jo.getJSONObject("market_data").getBigDecimal("max_supply");
-		this.priceInUsd = jo.getJSONObject("market_data").getJSONObject("current_price").getBigDecimal("usd");
-		this.image = jo.getJSONObject("image");
-		this.total_volume = jo.getJSONObject("market_data").getJSONObject("total_volume");
-		this.high_24h = jo.getJSONObject("market_data").getJSONObject("high_24h");
-		this.high24HInUsd = jo.getJSONObject("market_data").getJSONObject("high_24h").getBigDecimal("usd");
-		this.low_24h = jo.getJSONObject("market_data").getJSONObject("low_24h");
-		this.low24HInUsd = jo.getJSONObject("market_data").getJSONObject("low_24h").getBigDecimal("usd");
-		this.price_change_24h = jo.getJSONObject("market_data").getBigDecimal("price_change_24h");
-		this.price_change_percentage_24h = jo.getJSONObject("market_data").getBigDecimal("price_change_percentage_24h");
-		this.market_cap_change_24h = jo.getJSONObject("market_data").getBigDecimal("market_cap_change_24h");
-		this.market_cap_change_percentage_24h = jo.getJSONObject("market_data")
-				.getBigDecimal("market_cap_change_percentage_24h");
-		this.mainContractAddress = jo.getString("contract_address");
+		if (jo != null) {
+			this.id = jo.getString("id");
+			this.symbol = jo.getString("symbol");
+			this.name = jo.getString("symbol");
+			this.mainPlatform = jo.getString("asset_platform_id");
+			this.platforms = jo.getJSONObject("platforms");
+			this.detail_platforms = jo.getJSONObject("detail_platforms");
+			this.market_data = jo.getJSONObject("market_data");
+
+			JSONObject marketData = jo.getJSONObject("market_data");
+			if (marketData != null) {
+				this.current_price = marketData.getJSONObject("current_price");
+
+				JSONObject marketCap = marketData.getJSONObject("market_cap");
+				if (marketCap != null) {
+					this.market_cap = marketCap;
+				}
+
+				this.market_cap_rank = jo.getInteger("market_cap_rank");
+
+				BigDecimal totalSupply = marketData.getBigDecimal("total_supply");
+				if (totalSupply != null) {
+					this.total_supply = totalSupply;
+				}
+
+				this.max_supply = marketData.getBigDecimal("max_supply");
+
+				if (this.current_price != null) {
+					this.priceInUsd = this.current_price.getBigDecimal("usd");
+				}
+
+				this.image = jo.getJSONObject("image");
+				this.total_volume = marketData.getJSONObject("total_volume");
+
+				JSONObject high24h = marketData.getJSONObject("high_24h");
+				if (high24h != null) {
+					this.high_24h = high24h;
+					this.high24HInUsd = high24h.getBigDecimal("usd");
+				}
+
+				JSONObject low24h = marketData.getJSONObject("low_24h");
+				if (low24h != null) {
+					this.low_24h = low24h;
+					this.low24HInUsd = low24h.getBigDecimal("usd");
+				}
+
+				this.price_change_24h = marketData.getBigDecimal("price_change_24h");
+				this.price_change_percentage_24h = marketData.getBigDecimal("price_change_percentage_24h");
+				this.market_cap_change_24h = marketData.getBigDecimal("market_cap_change_24h");
+				this.market_cap_change_percentage_24h = marketData.getBigDecimal("market_cap_change_percentage_24h");
+			}
+
+			this.mainContractAddress = jo.getString("contract_address");
+		}
 	}
 
 	public CoingeckoCoin(CoingeckoCoinAssetDto dto) {
