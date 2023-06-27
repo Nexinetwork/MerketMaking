@@ -25,7 +25,7 @@ public class FillEmptyCoingeckoCoinSchedule {
 	}
 
 	@Scheduled(cron = "0 */5 * * * *", zone = "GMT")
-	@SchedulerLock(name = "TaskScheduler_scheduledTask", lockAtMostFor = "60m", lockAtLeastFor = "30m" )
+	@SchedulerLock(name = "TaskScheduler_scheduledTask", lockAtMostFor = "10m", lockAtLeastFor = "5m" )
 	public void fillEmptyCoingeckoCoin() {
 		coinService.findByCoingeckoJsonIsNull(10).forEach(coin -> {
 			coingeckoBean.createOrUpdateCoingeckoCoin(coin.getCoingeckoId());
