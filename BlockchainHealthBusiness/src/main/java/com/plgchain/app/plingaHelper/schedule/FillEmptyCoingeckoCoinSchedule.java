@@ -24,7 +24,7 @@ public class FillEmptyCoingeckoCoinSchedule {
 		this.coingeckoBean = coingeckoBean;
 	}
 
-	@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
+	@Scheduled(cron = "0 */5 * * * *", zone = "GMT")
 	@SchedulerLock(name = "TaskScheduler_scheduledTask", lockAtMostFor = "60m", lockAtLeastFor = "30m" )
 	public void fillEmptyCoingeckoCoin() {
 		coinService.findByCoingeckoJsonIsNull(10).forEach(coin -> {
