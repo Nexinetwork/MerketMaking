@@ -247,9 +247,12 @@ public class CoingeckoBean implements Serializable {
 		contractList.forEach(contract -> {
 			jo.getJSONObject("platforms").put(contract.getBlockchain().getName(), contract.getContractsAddress());
 			JSONObject blockchainObject = new JSONObject();
-			blockchainObject.put("decimal_place", contract.getDecimal());
-			blockchainObject.put("contract_address", contract.getContractsAddress());
-			jo.getJSONObject("detail_platforms").put(contract.getBlockchain().getName(), blockchainObject);
+			if (contract.getDecimal() != null)
+				blockchainObject.put("decimal_place", contract.getDecimal());
+			if (contract.getContractsAddress() != null)
+				blockchainObject.put("contract_address", contract.getContractsAddress());
+			if (blockchainObject != null)
+				jo.getJSONObject("detail_platforms").put(contract.getBlockchain().getName(), blockchainObject);
 		});
 		var editedJson = JSON.toJSONString(jo);
 		Optional<CoingeckoCoin> coinGeckoCoinOp = coingeckoCoinService.findById(coinId);
