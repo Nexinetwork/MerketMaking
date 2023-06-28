@@ -94,7 +94,13 @@ public class BlockchainActionTest implements Serializable {
 
 	// @Test
 	public void getCoingeckoNetworks() {
-		var res = CoingeckoUtil.runGetCommand("https://api.coingecko.com/api/v3/asset_platforms");
+		String res = "";
+		try {
+			res = CoingeckoUtil.runGetCommand("https://api.coingecko.com/api/v3/asset_platforms");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		List<AssetPlatform> lst = JSON.parseArray(res, AssetPlatform.class);
 		System.out.println(lst);
 	}
