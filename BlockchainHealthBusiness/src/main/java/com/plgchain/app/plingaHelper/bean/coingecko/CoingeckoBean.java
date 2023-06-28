@@ -86,83 +86,98 @@ public class CoingeckoBean implements Serializable {
 	private CoingeckoCoinHistoryService coingeckoCoinHistoryService;
 
 	public void updateCoingeckoNetworks() {
-		var url = initBean.getCoingeckoBaseApi() + "/asset_platforms";
-		var json = CoingeckoUtil.runGetCommand(url);
-		JSON.parseArray(json, AssetPlatform.class).stream().forEach(network -> {
-			if (!blockchainService.existsBlockchainByCoingeckoId(network.getId())) {
-				var blockchain = Blockchain.builder().mustCheck(false).coingeckoId(network.getId())
-						.isEvm(network.getChain_identifier() != null)
-						.name(!Strings.isNullOrEmpty(network.getShortname()) ? network.getShortname()
-								: network.getName())
-						.fullName(network.getName()).enabled(false).chainId(network.getChain_identifier())
-						.blockchainType((network.getChain_identifier() != null) ? BlockchainTechType.DPOS
-								: BlockchainTechType.POW)
-						.build();
-				blockchain = blockchainService.save(blockchain);
-				logger.info(String.format("Blockchain %s has been saved in System", blockchain));
-			}
-		});
+		try {
+			var url = initBean.getCoingeckoBaseApi() + "/asset_platforms";
+			var json = CoingeckoUtil.runGetCommand(url);
+			JSON.parseArray(json, AssetPlatform.class).stream().forEach(network -> {
+				if (!blockchainService.existsBlockchainByCoingeckoId(network.getId())) {
+					var blockchain = Blockchain.builder().mustCheck(false).coingeckoId(network.getId())
+							.isEvm(network.getChain_identifier() != null)
+							.name(!Strings.isNullOrEmpty(network.getShortname()) ? network.getShortname()
+									: network.getName())
+							.fullName(network.getName()).enabled(false).chainId(network.getChain_identifier())
+							.blockchainType((network.getChain_identifier() != null) ? BlockchainTechType.DPOS
+									: BlockchainTechType.POW)
+							.build();
+					blockchain = blockchainService.save(blockchain);
+					logger.info(String.format("Blockchain %s has been saved in System", blockchain));
+				}
+			});
+		} catch (Exception e) {
+		}
 	}
 
 	public void updateCoingeckoCategoriesList() {
-		var url = initBean.getCoingeckoBaseApi() + "/coins/categories/list";
-		var json = CoingeckoUtil.runGetCommand(url);
-		JSON.parseArray(json, CoingeckoCategory.class).stream().forEach(category -> {
-			if (!coingeckoCategoryService.existById(category.getCategory_id())) {
-				coingeckoCategoryService.save(category);
-				logger.info(String.format("CoingeckoCategory %s has been added.", category.toString()));
-			}
-		});
+		try {
+			var url = initBean.getCoingeckoBaseApi() + "/coins/categories/list";
+			var json = CoingeckoUtil.runGetCommand(url);
+			JSON.parseArray(json, CoingeckoCategory.class).stream().forEach(category -> {
+				if (!coingeckoCategoryService.existById(category.getCategory_id())) {
+					coingeckoCategoryService.save(category);
+					logger.info(String.format("CoingeckoCategory %s has been added.", category.toString()));
+				}
+			});
+		} catch (Exception e) {
+		}
 	}
 
 	public void updateCoingeckoCurrencyList() {
-		var url = initBean.getCoingeckoBaseApi() + "/simple/supported_vs_currencies";
-		var json = CoingeckoUtil.runGetCommand(url);
-		JSON.parseArray(json, String.class).stream().forEach(currencyIso -> {
-			if (!currencyService.existById(currencyIso)) {
-				var currency = Currency.builder().currencyId(currencyIso).build();
-				currency = currencyService.save(currency);
-				logger.info(String.format("currency %s has been added.", currency.toString()));
-			}
-		});
+		try {
+			var url = initBean.getCoingeckoBaseApi() + "/simple/supported_vs_currencies";
+			var json = CoingeckoUtil.runGetCommand(url);
+			JSON.parseArray(json, String.class).stream().forEach(currencyIso -> {
+				if (!currencyService.existById(currencyIso)) {
+					var currency = Currency.builder().currencyId(currencyIso).build();
+					currency = currencyService.save(currency);
+					logger.info(String.format("currency %s has been added.", currency.toString()));
+				}
+			});
+		} catch (Exception e) {
+		}
 	}
 
 	public void updateCoingeckoCoinList() {
-		var url = initBean.getCoingeckoBaseApi() + "/coins/list";
-		var json = CoingeckoUtil.runGetCommand(url);
+		try {
+			var url = initBean.getCoingeckoBaseApi() + "/coins/list";
+			var json = CoingeckoUtil.runGetCommand(url);
 
-		JSON.parseArray(json, Coin.class).stream().forEach(coin -> {
-			if (!coinService.existsCoinByCoingeckoId(coin.getCoingeckoId())) {
-				coin = coinService.save(coin);
-				logger.info(String.format("coin %s has been added.", coin.toString()));
-			}
-		});
+			JSON.parseArray(json, Coin.class).stream().forEach(coin -> {
+				if (!coinService.existsCoinByCoingeckoId(coin.getCoingeckoId())) {
+					coin = coinService.save(coin);
+					logger.info(String.format("coin %s has been added.", coin.toString()));
+				}
+			});
+		} catch (Exception e) {
+		}
 	}
 
 	public void updateCoingeckoCoinListNetwork() {
-		var url = initBean.getCoingeckoBaseApi() + "/coins/list?include_platform=true";
-		var json = CoingeckoUtil.runGetCommand(url);
+		try {
+			var url = initBean.getCoingeckoBaseApi() + "/coins/list?include_platform=true";
+			var json = CoingeckoUtil.runGetCommand(url);
 
-		JSON.parseArray(json, CoinNetwork.class).stream().forEach(coinNetwork -> {
-			logger.info(String.format("Coin %s has Platforms :", coinNetwork.getId()));
-			try {
-				Coin coin = coinService.findByCoingeckoId(coinNetwork.getId()).get();
-				for (Map.Entry<String, Object> entry : coinNetwork.getPlatforms().entrySet()) {
-					String key = entry.getKey();
-					Object value = entry.getValue();
-					Blockchain blockchain = blockchainService.findByCoingeckoId(key).get();
-					if (!smartContractService.existsSmartContractByBlockchainAndCoinAndContractsAddress(blockchain,
-							coin, value.toString())) {
-						var sc = SmartContract.builder().blockchain(blockchain).coin(coin)
-								.contractsAddress(value.toString()).isMain(false).mustCheck(false).build();
-						sc = smartContractService.save(sc);
-						logger.info(String.format("SmartContract %s has been added", sc));
+			JSON.parseArray(json, CoinNetwork.class).stream().forEach(coinNetwork -> {
+				logger.info(String.format("Coin %s has Platforms :", coinNetwork.getId()));
+				try {
+					Coin coin = coinService.findByCoingeckoId(coinNetwork.getId()).get();
+					for (Map.Entry<String, Object> entry : coinNetwork.getPlatforms().entrySet()) {
+						String key = entry.getKey();
+						Object value = entry.getValue();
+						Blockchain blockchain = blockchainService.findByCoingeckoId(key).get();
+						if (!smartContractService.existsSmartContractByBlockchainAndCoinAndContractsAddress(blockchain,
+								coin, value.toString())) {
+							var sc = SmartContract.builder().blockchain(blockchain).coin(coin)
+									.contractsAddress(value.toString()).isMain(false).mustCheck(false).build();
+							sc = smartContractService.save(sc);
+							logger.info(String.format("SmartContract %s has been added", sc));
+						}
 					}
+				} catch (Exception e) {
+					logger.error(String.format("Error in coinnetwork %s", coinNetwork.toString()));
 				}
-			} catch (Exception e) {
-				logger.error(String.format("Error in coinnetwork %s", coinNetwork.toString()));
-			}
-		});
+			});
+		} catch (Exception e) {
+		}
 	}
 
 	public List<MustAddContractReq> getContractMustAddToCoinNetwork(String coin, List<MustAddContractReq> lst) {
@@ -239,63 +254,69 @@ public class CoingeckoBean implements Serializable {
 
 	@Transactional
 	public CoingeckoCoin createOrUpdateCoingeckoCoin(String coinId) {
-		var url = initBean.getCoingeckoBaseApi() + "/coins/" + coinId;
-		var json = CoingeckoUtil.runGetCommand(url);
-		JSONObject jo = JSON.parseObject(json);
-		Coin coin = coinService.findByCoingeckoId(coinId).orElseThrow();
-		List<SmartContract> contractList = coin.getContractList();
-		contractList.forEach(contract -> {
-			if (jo.getJSONObject("platforms") != null) {
-				jo.getJSONObject("platforms").put(contract.getBlockchain().getName(), contract.getContractsAddress());
-			}
-			if (jo.getJSONObject("detail_platforms") != null) {
-				JSONObject blockchainObject = new JSONObject();
-				if (contract.getDecimal() != null)
-					blockchainObject.put("decimal_place", contract.getDecimal());
-				if (contract.getContractsAddress() != null)
-					blockchainObject.put("contract_address", contract.getContractsAddress());
-				if (blockchainObject != null)
-					jo.getJSONObject("detail_platforms").put(contract.getBlockchain().getName(), blockchainObject);
-			}
-		});
-		var editedJson = JSON.toJSONString(jo);
-		Optional<CoingeckoCoin> coinGeckoCoinOp = coingeckoCoinService.findById(coinId);
-		CoingeckoCoin coingeckoCoin = null;
-		if (coinGeckoCoinOp.isPresent()) {
-			var currentObject = coinGeckoCoinOp.get();
-			if (!(currentObject.getOriginalJson().equals(json) && currentObject.getEditedJson().equals(editedJson))) {
+		try {
+			var url = initBean.getCoingeckoBaseApi() + "/coins/" + coinId;
+			var json = CoingeckoUtil.runGetCommand(url);
+			JSONObject jo = JSON.parseObject(json);
+			Coin coin = coinService.findByCoingeckoId(coinId).orElseThrow();
+			List<SmartContract> contractList = coin.getContractList();
+			contractList.forEach(contract -> {
+				if (jo.getJSONObject("platforms") != null) {
+					jo.getJSONObject("platforms").put(contract.getBlockchain().getName(),
+							contract.getContractsAddress());
+				}
+				if (jo.getJSONObject("detail_platforms") != null) {
+					JSONObject blockchainObject = new JSONObject();
+					if (contract.getDecimal() != null)
+						blockchainObject.put("decimal_place", contract.getDecimal());
+					if (contract.getContractsAddress() != null)
+						blockchainObject.put("contract_address", contract.getContractsAddress());
+					if (blockchainObject != null)
+						jo.getJSONObject("detail_platforms").put(contract.getBlockchain().getName(), blockchainObject);
+				}
+			});
+			var editedJson = JSON.toJSONString(jo);
+			Optional<CoingeckoCoin> coinGeckoCoinOp = coingeckoCoinService.findById(coinId);
+			CoingeckoCoin coingeckoCoin = null;
+			if (coinGeckoCoinOp.isPresent()) {
+				var currentObject = coinGeckoCoinOp.get();
+				if (!(currentObject.getOriginalJson().equals(json)
+						&& currentObject.getEditedJson().equals(editedJson))) {
+					coingeckoCoin = new CoingeckoCoin(jo);
+					coingeckoCoin.setOriginalJson(json);
+					coingeckoCoin.setEditedJson(editedJson);
+					coin.setCoingeckoJson(editedJson);
+					coin.setLastCheck(LocalDateTime.now());
+					coin.setPriceInUsd(coingeckoCoin.getPriceInUsd());
+					coin = coinService.save(coin);
+					coingeckoCoin = coingeckoCoinService.save(coingeckoCoin);
+					logger.info(String.format("coingeckoCoin %s has been updated.", coingeckoCoin));
+					CoingeckoCoinHistory cgh = coingeckoCoinHistoryService.findById(coinId).orElseThrow();
+					cgh.addCoingeckoCoin(coingeckoCoin);
+					coingeckoCoinHistoryService.save(cgh);
+				} else {
+					coin.setLastCheck(LocalDateTime.now());
+					coin = coinService.save(coin);
+				}
+			} else {
 				coingeckoCoin = new CoingeckoCoin(jo);
 				coingeckoCoin.setOriginalJson(json);
 				coingeckoCoin.setEditedJson(editedJson);
 				coin.setCoingeckoJson(editedJson);
-				coin.setLastCheck(LocalDateTime.now());
 				coin.setPriceInUsd(coingeckoCoin.getPriceInUsd());
+				coin.setLastCheck(LocalDateTime.now());
 				coin = coinService.save(coin);
 				coingeckoCoin = coingeckoCoinService.save(coingeckoCoin);
-				logger.info(String.format("coingeckoCoin %s has been updated.", coingeckoCoin));
-				CoingeckoCoinHistory cgh = coingeckoCoinHistoryService.findById(coinId).orElseThrow();
+				CoingeckoCoinHistory cgh = new CoingeckoCoinHistory(coingeckoCoin.getId(), coingeckoCoin.getSymbol(),
+						coingeckoCoin.getName());
 				cgh.addCoingeckoCoin(coingeckoCoin);
 				coingeckoCoinHistoryService.save(cgh);
-			} else {
-				coin.setLastCheck(LocalDateTime.now());
-				coin = coinService.save(coin);
+				logger.info(String.format("coingeckoCoin %s has been added", coingeckoCoin));
 			}
-		} else {
-			coingeckoCoin = new CoingeckoCoin(jo);
-			coingeckoCoin.setOriginalJson(json);
-			coingeckoCoin.setEditedJson(editedJson);
-			coin.setCoingeckoJson(editedJson);
-			coin.setPriceInUsd(coingeckoCoin.getPriceInUsd());
-			coin.setLastCheck(LocalDateTime.now());
-			coin = coinService.save(coin);
-			coingeckoCoin = coingeckoCoinService.save(coingeckoCoin);
-			CoingeckoCoinHistory cgh = new CoingeckoCoinHistory(coingeckoCoin.getId(), coingeckoCoin.getSymbol(),
-					coingeckoCoin.getName());
-			cgh.addCoingeckoCoin(coingeckoCoin);
-			coingeckoCoinHistoryService.save(cgh);
-			logger.info(String.format("coingeckoCoin %s has been added", coingeckoCoin));
+			return coingeckoCoin;
+		} catch (Exception e) {
+			return null;
 		}
-		return coingeckoCoin;
 	}
 
 }

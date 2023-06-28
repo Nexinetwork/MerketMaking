@@ -19,22 +19,31 @@ public class CoingeckoUtil implements Serializable {
 	private static final long serialVersionUID = 175672548050317226L;
 	private final static Logger logger = LoggerFactory.getLogger(CoingeckoUtil.class);
 
-	public static String runGetCommand(String url) {
-		while (true) {
-			try {
-				HttpResponse<String> response = Unirest.get(url).asString();
-				if (!response.getBody().contains("exceeded the Rate Limit"))
-					return response.getBody();
-			} catch (Exception e) {
-				try {
-					Thread.sleep(5000);
-					logger.error("Coingecko error : " + e.getMessage());
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		}
+	public static String runGetCommand(String url) throws Exception {
+	    int maxRetries = 50;
+	    int retryCount = 0;
+
+	    while (retryCount < maxRetries) {
+	        try {
+	            HttpResponse<String> response = Unirest.get(url).asString();
+	            if (!response.getBody().contains("exceeded the Rate Limit")) {
+	                return response.getBody();
+	            }
+	        } catch (Exception e) {
+	            logger.error("Coingecko error: " + e.getMessage());
+	        }
+
+	        retryCount++;
+
+	        try {
+	            Thread.sleep(5000);
+	        } catch (InterruptedException e) {
+	            Thread.currentThread().interrupt();
+	        }
+	    }
+
+	    throw new Exception("Exceeded maximum retry count");
 	}
+
 
 }
