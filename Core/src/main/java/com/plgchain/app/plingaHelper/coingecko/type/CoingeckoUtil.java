@@ -20,7 +20,7 @@ public class CoingeckoUtil implements Serializable {
 	private final static Logger logger = LoggerFactory.getLogger(CoingeckoUtil.class);
 
 	public static String runGetCommand(String url) throws Exception {
-	    int maxRetries = 50;
+	    int maxRetries = 10;
 	    int retryCount = 0;
 
 	    while (retryCount < maxRetries) {
