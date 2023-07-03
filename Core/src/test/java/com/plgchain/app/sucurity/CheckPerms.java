@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.plgchain.app.simple;
+package com.plgchain.app.sucurity;
 
 import java.io.Serializable;
 

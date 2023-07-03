@@ -327,7 +327,7 @@
 			<dependency>
 				<groupId>org.pac4j</groupId>
 				<artifactId>pac4j-cas</artifactId>
-				<version>6.0.0-RC5</version>
+				<version>6.0.0-RC7</version>
 			</dependency>
 			<dependency>
 				<groupId>io.buji</groupId>
@@ -394,7 +394,7 @@
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>32.0.1-jre</version>
+				<version>32.1.1-jre</version>
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 			<dependency>
