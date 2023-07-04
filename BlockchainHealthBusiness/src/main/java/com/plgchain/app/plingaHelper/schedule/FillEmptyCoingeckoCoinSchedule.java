@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.bean.coingecko.CoingeckoBean;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import jakarta.inject.Inject;
@@ -19,17 +20,25 @@ public class FillEmptyCoingeckoCoinSchedule {
 	private final CoingeckoBean coingeckoBean;
 
 	@Inject
+	private InitBean initBean;
+
+	@Inject
 	public FillEmptyCoingeckoCoinSchedule(CoinService coinService, CoingeckoBean coingeckoBean) {
 		this.coinService = coinService;
 		this.coingeckoBean = coingeckoBean;
 	}
 
 	@Scheduled(cron = "0 */5 * * * *", zone = "GMT")
-	@SchedulerLock(name = "TaskScheduler_scheduledTask", lockAtMostFor = "10m", lockAtLeastFor = "5m" )
 	public void fillEmptyCoingeckoCoin() {
-		coinService.findByCoingeckoJsonIsNull(10).forEach(coin -> {
-			coingeckoBean.createOrUpdateCoingeckoCoin(coin.getCoingeckoId());
-		});
+		if (!initBean.doesActionRunning("fillEmptyCoingeckoCoin")) {
+			initBean.startActionRunning("fillEmptyCoingeckoCoin");
+			coinService.findByCoingeckoJsonIsNull(10).forEach(coin -> {
+				coingeckoBean.createOrUpdateCoingeckoCoin(coin.getCoingeckoId());
+			});
+			initBean.stopActionRunning("fillEmptyCoingeckoCoin");
+		} else {
+			logger.info("fillEmptyCoingeckoCoin already running skip it.");
+		}
 	}
 
 }

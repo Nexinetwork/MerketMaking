@@ -89,14 +89,14 @@ public class BlockchainActionTest implements Serializable {
 
 	// @Test
 	public void LastBlockTest() {
-		System.out.println(BlockchainUtil.getLatestBlockNumber("https://bsc.publicnode.com"));
+		//System.out.println(BlockchainUtil.getLatestBlockNumber("https://bsc.publicnode.com"));
 	}
 
 	// @Test
 	public void getCoingeckoNetworks() {
 		String res = "";
 		try {
-			res = CoingeckoUtil.runGetCommand("https://api.coingecko.com/api/v3/asset_platforms");
+			//res = CoingeckoUtil.runGetCommand("https://api.coingecko.com/api/v3/asset_platforms");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
