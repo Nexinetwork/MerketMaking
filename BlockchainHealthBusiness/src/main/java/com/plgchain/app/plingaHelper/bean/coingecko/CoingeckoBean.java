@@ -23,7 +23,7 @@ import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.coingecko.request.CoinNetwork;
 import com.plgchain.app.plingaHelper.coingecko.request.MustAddContractReq;
 import com.plgchain.app.plingaHelper.coingecko.type.AssetPlatform;
-import com.plgchain.app.plingaHelper.coingecko.type.CoingeckoUtil;
+import com.plgchain.app.plingaHelper.coingecko.util.CoingeckoUtil;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;

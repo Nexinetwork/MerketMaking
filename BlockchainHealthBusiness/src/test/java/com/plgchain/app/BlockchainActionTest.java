@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.coingecko.type.AssetPlatform;
-import com.plgchain.app.plingaHelper.coingecko.type.CoingeckoUtil;
+import com.plgchain.app.plingaHelper.coingecko.util.CoingeckoUtil;
 import com.plgchain.app.plingaHelper.constant.BlockchainNodeType;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
