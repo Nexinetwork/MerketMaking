@@ -48,11 +48,10 @@ public class CoingeckoUtil implements Serializable {
 
             retryCount++;
 
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+			/*
+			 * try { Thread.sleep(5000); } catch (InterruptedException e) {
+			 * Thread.currentThread().interrupt(); }
+			 */
         }
 
         throw new Exception("Exceeded maximum retry count");
