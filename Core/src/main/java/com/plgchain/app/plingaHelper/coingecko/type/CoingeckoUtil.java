@@ -30,6 +30,9 @@ public class CoingeckoUtil implements Serializable {
 	                return response.getBody();
 	            }
 	        } catch (Exception e) {
+	        	if (e.getMessage().contains("Illegal character")) {
+	        		logger.info("Invalid charachther in Url " + url) ;
+	        	}
 	            logger.error("Coingecko error: " + e.getMessage());
 	        }
 
