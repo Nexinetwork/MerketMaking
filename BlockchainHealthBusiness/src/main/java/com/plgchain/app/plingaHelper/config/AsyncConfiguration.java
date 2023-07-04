@@ -21,10 +21,10 @@ import lombok.Data;
  * @author eae966
  *
  */
-@Data
-@EnableAsync
-@Configuration
-@ConfigurationProperties(prefix = "spring.async.thread.pool")
+//@Data
+//@EnableAsync
+//@Configuration
+//@ConfigurationProperties(prefix = "spring.async.thread.pool")
 public class AsyncConfiguration implements AsyncConfigurer {
 
 	private final static Logger logger = LoggerFactory.getLogger(AsyncConfiguration.class);
