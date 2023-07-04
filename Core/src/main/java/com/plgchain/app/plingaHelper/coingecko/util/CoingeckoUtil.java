@@ -25,8 +25,10 @@ public class CoingeckoUtil implements Serializable {
         while (retryCount < maxRetries) {
             HttpResponse<String> response = null;
             try {
+            	String encodedUrl = url.replace("[", "%5B").replace("]", "%5D");
+
                 HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(url))
+                        .uri(URI.create(encodedUrl))
                         .build();
 
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
