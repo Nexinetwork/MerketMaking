@@ -168,4 +168,15 @@ public class EVMUtil implements Serializable {
 		return null;
 	}
 
+	public static int hexToDecimal(String hex) {
+	    int decimal;
+	    if (hex.startsWith("0x")) {
+	        decimal = Integer.parseInt(hex.substring(2), 16);
+	    } else {
+	        decimal = Integer.parseInt(hex, 16);
+	    }
+	    return decimal;
+	}
+
+
 }

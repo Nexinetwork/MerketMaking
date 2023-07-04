@@ -2,6 +2,8 @@ package com.plgchain.app;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.net.http.HttpClient;
+import java.time.Duration;
 import java.util.List;
 
 import org.json.JSONException;
@@ -68,7 +70,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void createNodeTestCase() {
 		var node = BlockchainNode.builder().blockchainId(Long.valueOf(154)).enabled(true)
 				.serverIp("185.110.191.217").sshPort(22424).rpcUrl("http://185.110.191.217:18545")
@@ -87,9 +89,12 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + BlockscoutUtil.getLatestBlock("https://www.plgscan.com"));
 	}
 
-	// @Test
+	@Test
 	public void LastBlockTest() {
-		//System.out.println(BlockchainUtil.getLatestBlockNumber("https://bsc.publicnode.com"));
+		HttpClient httpClient = HttpClient.newBuilder()
+	            .connectTimeout(Duration.ofSeconds(10))
+	            .build();
+		System.out.println(BlockchainUtil.getLatestBlockNumber(httpClient,"http://185.173.129.80:8545"));
 	}
 
 	// @Test
