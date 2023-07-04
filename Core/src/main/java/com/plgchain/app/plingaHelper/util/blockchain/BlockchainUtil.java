@@ -1,11 +1,17 @@
 package com.plgchain.app.plingaHelper.util.blockchain;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.Request;
+import org.web3j.protocol.core.methods.response.EthBlockNumber;
+import org.web3j.protocol.http.HttpService;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -41,4 +47,24 @@ public class BlockchainUtil implements Serializable {
 
         return null;
     }
+
+    public static BigInteger getLatestBlockNumber(String rpcUrl) {
+        Web3j web3j = null;
+        try {
+            web3j = Web3j.build(new HttpService(rpcUrl));
+            Request<?, EthBlockNumber> request = web3j.ethBlockNumber();
+            EthBlockNumber response = request.send();
+            return response.getBlockNumber();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (web3j != null) {
+                web3j.shutdown();
+            }
+        }
+        return null;
+    }
+
+
+
 }
