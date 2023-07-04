@@ -1,39 +1,41 @@
-/**
- *
- */
 package com.plgchain.app.plingaHelper.util.blockchain;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.http.HttpService;
-import org.web3j.protocol.core.Request;
-import org.web3j.protocol.core.methods.response.EthBlockNumber;
-
-/**
- *
- */
 public class BlockchainUtil implements Serializable {
 
-	private static final long serialVersionUID = -7284069974541384059L;
+    private static final long serialVersionUID = -7284069974541384059L;
 
-	public static BigInteger getLatestBlockNumber(String rpcUrl){
-        Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+    public static BigInteger getLatestBlockNumber(HttpClient httpClient,String rpcUrl) {
 
-        Request<?, EthBlockNumber> request = web3j.ethBlockNumber();
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(rpcUrl))
+                    .POST(HttpRequest.BodyPublishers.ofString("{\"jsonrpc\":\"2.0\",\"method\":\"eth_blockNumber\",\"params\":[],\"id\":1}"))
+                    .header("Content-Type", "application/json")
+                    .build();
 
-        EthBlockNumber response;
-		try {
-			response = request.send();
-			return response.getBlockNumber();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                String responseBody = response.body();
+
+                // Parse the JSON response and extract the block number
+                // Assuming the response is in the format {"result":"0x123..."}
+                String blockNumberHex = responseBody.substring(responseBody.indexOf(':') + 3, responseBody.length() - 2);
+                return new BigInteger(blockNumberHex.substring(2), 16);
+            } else {
+                System.err.println("Error: " + response.statusCode() + " " + response.body());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return null;
     }
-
 }

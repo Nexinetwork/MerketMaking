@@ -43,7 +43,7 @@ public class BlockchainUpdateDetailsSchedule implements Serializable {
 		blockchainService.findAll().stream().filter(blockchain -> blockchain.isEvm()).forEach(blockchain -> {
 			try {
 				if (!Strings.isNullOrEmpty(blockchain.getRpcUrl())) {
-					BigInteger currentBlock = BlockchainUtil.getLatestBlockNumber(blockchain.getRpcUrl());
+					BigInteger currentBlock = BlockchainUtil.getLatestBlockNumber(initBean.getHttpClient(),blockchain.getRpcUrl());
 					long nodeCounts = blockchainNodeService.countByBlockchain(blockchain);
 					blockchain.setLastCheck(LocalDateTime.now());
 					blockchain.setHealthy(true);

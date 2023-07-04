@@ -13,7 +13,7 @@ import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 @EnableDiscoveryClient
 @EnableAsync
 @ComponentScan(basePackages={"com.plgchain.app"})
-@EnableSchedulerLock(defaultLockAtMostFor = "PT300S")
+//@EnableSchedulerLock(defaultLockAtMostFor = "PT300S")
 public class BlockchainHealthBusinessApplication {
 
 	public static void main(String[] args) {

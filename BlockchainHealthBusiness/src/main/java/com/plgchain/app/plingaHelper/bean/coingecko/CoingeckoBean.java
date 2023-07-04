@@ -88,7 +88,7 @@ public class CoingeckoBean implements Serializable {
 	public void updateCoingeckoNetworks() {
 		try {
 			var url = initBean.getCoingeckoBaseApi() + "/asset_platforms";
-			var json = CoingeckoUtil.runGetCommand(url);
+			var json = CoingeckoUtil.runGetCommand(initBean.getHttpClient(),url);
 			JSON.parseArray(json, AssetPlatform.class).stream().forEach(network -> {
 				if (!blockchainService.existsBlockchainByCoingeckoId(network.getId())) {
 					var blockchain = Blockchain.builder().mustCheck(false).coingeckoId(network.getId())
@@ -110,7 +110,7 @@ public class CoingeckoBean implements Serializable {
 	public void updateCoingeckoCategoriesList() {
 		try {
 			var url = initBean.getCoingeckoBaseApi() + "/coins/categories/list";
-			var json = CoingeckoUtil.runGetCommand(url);
+			var json = CoingeckoUtil.runGetCommand(initBean.getHttpClient(),url);
 			JSON.parseArray(json, CoingeckoCategory.class).stream().forEach(category -> {
 				if (!coingeckoCategoryService.existById(category.getCategory_id())) {
 					coingeckoCategoryService.save(category);
@@ -124,7 +124,7 @@ public class CoingeckoBean implements Serializable {
 	public void updateCoingeckoCurrencyList() {
 		try {
 			var url = initBean.getCoingeckoBaseApi() + "/simple/supported_vs_currencies";
-			var json = CoingeckoUtil.runGetCommand(url);
+			var json = CoingeckoUtil.runGetCommand(initBean.getHttpClient(),url);
 			JSON.parseArray(json, String.class).stream().forEach(currencyIso -> {
 				if (!currencyService.existById(currencyIso)) {
 					var currency = Currency.builder().currencyId(currencyIso).build();
@@ -139,7 +139,7 @@ public class CoingeckoBean implements Serializable {
 	public void updateCoingeckoCoinList() {
 		try {
 			var url = initBean.getCoingeckoBaseApi() + "/coins/list";
-			var json = CoingeckoUtil.runGetCommand(url);
+			var json = CoingeckoUtil.runGetCommand(initBean.getHttpClient(),url);
 
 			JSON.parseArray(json, Coin.class).stream().forEach(coin -> {
 				if (!coinService.existsCoinByCoingeckoId(coin.getCoingeckoId())) {
@@ -154,7 +154,7 @@ public class CoingeckoBean implements Serializable {
 	public void updateCoingeckoCoinListNetwork() {
 		try {
 			var url = initBean.getCoingeckoBaseApi() + "/coins/list?include_platform=true";
-			var json = CoingeckoUtil.runGetCommand(url);
+			var json = CoingeckoUtil.runGetCommand(initBean.getHttpClient(),url);
 
 			JSON.parseArray(json, CoinNetwork.class).stream().forEach(coinNetwork -> {
 				logger.info(String.format("Coin %s has Platforms :", coinNetwork.getId()));
@@ -188,9 +188,9 @@ public class CoingeckoBean implements Serializable {
 		// var url = initBean.getCoingeckoBaseApi() + "/coins/list";
 		initBean.startActionRunning("checkAndUpdateCoingeckoCoinListFull");
 		try {
-			var coinList = CoingeckoUtil.runGetCommand(initBean.getCoingeckoBaseApi() + "/coins/list");
+			var coinList = CoingeckoUtil.runGetCommand(initBean.getHttpClient(),initBean.getCoingeckoBaseApi() + "/coins/list");
 			var coinListWithNetwork = CoingeckoUtil
-					.runGetCommand(initBean.getCoingeckoBaseApi() + "/coins/list?include_platform=true");
+					.runGetCommand(initBean.getHttpClient(),initBean.getCoingeckoBaseApi() + "/coins/list?include_platform=true");
 			var mustAddContracts = smartContractService.findByMustAddAsMustAddContractReq();
 			JSON.parseArray(coinList, Coin.class).stream().forEach(coin -> {
 				if (!coinService.existsCoinByCoingeckoId(coin.getCoingeckoId())) {
@@ -256,7 +256,7 @@ public class CoingeckoBean implements Serializable {
 	public CoingeckoCoin createOrUpdateCoingeckoCoin(String coinId) {
 		try {
 			var url = initBean.getCoingeckoBaseApi() + "/coins/" + coinId;
-			var json = CoingeckoUtil.runGetCommand(url);
+			var json = CoingeckoUtil.runGetCommand(initBean.getHttpClient(),url);
 			JSONObject jo = JSON.parseObject(json);
 			Coin coin = coinService.findByCoingeckoId(coinId).orElseThrow();
 			List<SmartContract> contractList = coin.getContractList();

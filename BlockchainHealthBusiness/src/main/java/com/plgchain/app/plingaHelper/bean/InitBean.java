@@ -4,6 +4,8 @@
 package com.plgchain.app.plingaHelper.bean;
 
 import java.io.Serializable;
+import java.net.http.HttpClient;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +66,11 @@ public class InitBean implements Serializable {
 
 	private boolean initCoingecko = false;
 
-	private List<String> runLongRunningCommands = new ArrayList<String>();
+	private List<String> lockedMethod = new ArrayList<String>();
+
+	private HttpClient httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
 
 	@PostConstruct
 	public void init() {
@@ -78,15 +84,15 @@ public class InitBean implements Serializable {
 	}
 
 	public boolean doesActionRunning(String action) {
-		return runLongRunningCommands.contains(action);
+		return lockedMethod.contains(action);
 	}
 
 	public void startActionRunning(String action) {
-		runLongRunningCommands.add(action);
+		lockedMethod.add(action);
 	}
 
 	public void stopActionRunning(String action) {
-		runLongRunningCommands.remove(action);
+		lockedMethod.remove(action);
 	}
 
 	@SuppressWarnings("unchecked")
