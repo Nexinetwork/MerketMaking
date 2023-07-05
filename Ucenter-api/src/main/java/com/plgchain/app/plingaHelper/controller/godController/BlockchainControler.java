@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.plgchain.app.plingaHelper.bean.BlockchainBean;
 import com.plgchain.app.plingaHelper.controller.BaseController;
+import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.exception.RestActionError;
@@ -57,10 +58,10 @@ public class BlockchainControler extends BaseController implements Serializable 
 	}
 
 	@PostMapping("/blockchain/createNewNode")
-	public MessageResult createNewBlockchainNode(@RequestBody BlockchainNode node) {
+	public MessageResult createNewBlockchainNode(@RequestBody BlockchainNodeDto node) {
 		try {
-			node = blockchainBean.createBlockchainNode(node);
-			return success(String.format("Blockchain node %s has been created.", node));
+			var result = blockchainBean.createBlockchainNode(node);
+			return success(String.format("Blockchain node %s has been created.", result.getAsDto()));
 		} catch (RestActionError e) {
 			// TODO Auto-generated catch block
 			error(e.getMessage());

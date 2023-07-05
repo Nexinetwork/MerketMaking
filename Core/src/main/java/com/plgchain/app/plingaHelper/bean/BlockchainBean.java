@@ -5,6 +5,7 @@ package com.plgchain.app.plingaHelper.bean;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -17,6 +18,7 @@ import com.plgchain.app.plingaHelper.annotation.LogMethod;
 import com.plgchain.app.plingaHelper.annotation.UpdateBlockchainData;
 import com.plgchain.app.plingaHelper.constant.AdminCommandType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
+import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
@@ -114,7 +116,7 @@ public class BlockchainBean implements Serializable {
 			throw new RestActionError("Invalid ServerIp");
 		if (!blockchainService.existById(blockchainNode.getBlockchainId()))
 			throw new RestActionError("Blockchain does not exist");
-		blockchainNode.setBlockchain(blockchainService.findById(blockchainNode.getBlockchainId()));
+		blockchainNode.setBlockchain(blockchainService.findById(blockchainNode.getBlockchainId()).get());
 		if (blockchainNode.getSshPort() == null)
 			blockchainNode.setSshPort(22);
 		if (blockchainNode.getSshPort() <= 0)
@@ -122,6 +124,56 @@ public class BlockchainBean implements Serializable {
 		blockchainNode.setLastBlock(BigInteger.ZERO);
 		blockchainNode = blockchainNodeService.save(blockchainNode);
 		return blockchainNode;
+	}
+
+	@LogMethod
+	@UpdateBlockchainData
+	public BlockchainNode createBlockchainNode(BlockchainNodeDto blockchainNode) throws RestActionError {
+		if (blockchainNode == null)
+			throw new RestActionError("Blockchain node is Null");
+		if (blockchainNode.isBlockchainNull())
+			throw new RestActionError("Blockchain is Null");
+		if (blockchainNode.getNodeType() == null)
+			throw new RestActionError("Nodetype is Null");
+		if (Strings.isNullOrEmpty(blockchainNode.getRpcUrl()))
+			throw new RestActionError("RpcUrl is Null");
+		if (Strings.isNullOrEmpty(blockchainNode.getServiceNeme()))
+			throw new RestActionError("Servicename is Null");
+		if (Strings.isNullOrEmpty(blockchainNode.getServerIp()))
+			throw new RestActionError("ServerIp is Null");
+		if (!InetAddresses.isInetAddress(blockchainNode.getServerIp()))
+			throw new RestActionError("Invalid ServerIp");
+		if (!existBlockchain(blockchainNode.getBlockchainId(), blockchainNode.getBlockchain()))
+			throw new RestActionError("Blockchain does not exist");
+		if (blockchainNode.getSshPort() == null)
+			blockchainNode.setSshPort(22);
+		if (blockchainNode.getSshPort() <= 0)
+			blockchainNode.setSshPort(22);
+		blockchainNode.setLastBlock(BigInteger.ZERO);
+		var node = BlockchainNode.builder()
+				.blockchain(findBlockchain(blockchainNode.getBlockchainId(), blockchainNode.getBlockchain()).get())
+				.nodeType(blockchainNode.getNodeType()).rpcUrl(blockchainNode.getRpcUrl())
+				.serverIp(blockchainNode.getServerIp()).serviceNeme(blockchainNode.getServiceNeme())
+				.sshPort(blockchainNode.getSshPort()).validator(blockchainNode.isValidator())
+				.enabled(blockchainNode.isEnabled()).mustCheck(blockchainNode.isMustCheck()).build();
+		node = blockchainNodeService.save(node);
+		return node;
+	}
+
+	public boolean existBlockchain(Long blockchainId, String blockchainName) {
+		if (blockchainId != null && blockchainId > 0)
+			return blockchainService.existById(blockchainId);
+		if (!Strings.isNullOrEmpty(blockchainName))
+			return blockchainService.existsBlockchainByName(blockchainName);
+		return false;
+	}
+
+	public Optional<Blockchain> findBlockchain(Long blockchainId, String blockchainName) {
+		if (blockchainId != null && blockchainId > 0)
+			return blockchainService.findById(blockchainId);
+		if (!Strings.isNullOrEmpty(blockchainName))
+			return blockchainService.findByName(blockchainName);
+		return null;
 	}
 
 	@LogMethod

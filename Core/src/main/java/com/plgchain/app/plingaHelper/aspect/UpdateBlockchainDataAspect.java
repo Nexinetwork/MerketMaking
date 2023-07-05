@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
@@ -35,7 +34,7 @@ public class UpdateBlockchainDataAspect implements Serializable{
 
 	@After("updateBlockchainData()")
 	public void adviceAfter(JoinPoint jp) {
-		logger.info("Update BlockchainData has been invoked.");
+		logger.info("Update BlockchainData has been fired.");
 
 		CommandToRun ctr = new CommandToRun();
 		ctr.setAdminCommandType(AdminCommandType.UPDATEBLOCKCHAIN);

@@ -27,8 +27,8 @@ public class BlockchainService extends BaseService implements Serializable {
 	@Autowired
 	private BlockchainDao blockchainDao;
 
-	public Blockchain findById(Long id) {
-		return blockchainDao.findById(id).get();
+	public Optional<Blockchain> findById(Long id) {
+		return blockchainDao.findById(id);
 	}
 
 	public boolean existById(Long id) {

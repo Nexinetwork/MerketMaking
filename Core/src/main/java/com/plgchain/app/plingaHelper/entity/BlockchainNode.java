@@ -9,6 +9,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.constant.BlockchainNodeType;
+import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -50,24 +52,24 @@ public class BlockchainNode implements Serializable {
 	private Blockchain blockchain;
 
 	@Enumerated(EnumType.ORDINAL)
-	@Column(name = "\"nodeType\"",nullable = false)
+	@Column(name = "\"nodeType\"", nullable = false)
 	private BlockchainNodeType nodeType;
 
 	@NotBlank(message = "rpcUrl may not be blank")
-	@Column(name = "\"rpcUrl\"",nullable = false)
+	@Column(name = "\"rpcUrl\"", nullable = false)
 	private String rpcUrl;
 
-	@Column(name = "\"lastBlock\"",nullable = false)
+	@Column(name = "\"lastBlock\"", nullable = false)
 	private BigInteger lastBlock;
 
-	@Column(name = "\"enabled\"",nullable = false)
+	@Column(name = "\"enabled\"", nullable = false)
 	private boolean enabled;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	@Column(name = "\"lastCheck\"")
 	private LocalDateTime lastCheck;
 
-	@Column(name = "\"mustCheck\"",nullable = false)
+	@Column(name = "\"mustCheck\"", nullable = false)
 	private boolean mustCheck;
 
 	@CreationTimestamp
@@ -80,21 +82,28 @@ public class BlockchainNode implements Serializable {
 	@Column(name = "\"lastUpdateDate\"")
 	private LocalDateTime lastUpdateDate;
 
-	@Column(name = "\"serverIp\"",nullable = false)
+	@Column(name = "\"serverIp\"", nullable = false)
 	private String serverIp;
 
-	@Column(name = "\"sshPort\"",nullable = false)
+	@Column(name = "\"sshPort\"", nullable = false)
 	private Integer sshPort;
 
-	@Column(name = "\"serviceNeme\"",nullable = false)
+	@Column(name = "\"serviceNeme\"", nullable = false)
 	private String serviceNeme;
 
-	@Column(name = "\"validator\"",nullable = false)
+	@Column(name = "\"validator\"", nullable = false)
 	private boolean validator;
 
 	@Transient
 	private Long blockchainId;
 
+	public BlockchainNodeDto getAsDto() {
+		var result = BlockchainNodeDto.builder().blockchain(blockchain.getName())
+				.blockchainId(blockchain.getBlockchainId()).creationDate(creationDate).lastCheck(lastCheck)
+				.lastUpdateDate(lastUpdateDate).lastBlock(lastBlock).nodeType(nodeType).rpcUrl(rpcUrl)
+				.serverIp(serverIp).sshPort(sshPort).validator(validator).enabled(enabled).mustCheck(mustCheck).build();
+		return result;
+	}
 
 
 }
