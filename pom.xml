@@ -181,13 +181,6 @@
 				<version>${spring-boot_version}</version>
 			</dependency>
 			<!--
-			https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis -->
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-data-redis</artifactId>
-				<version>${spring-boot_version}</version>
-			</dependency>
-			<!--
 			https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-logging -->
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
@@ -516,12 +509,6 @@
 			<dependency>
 				<groupId>org.web3j</groupId>
 				<artifactId>rlp</artifactId>
-				<version>${web3j-version}</version>
-			</dependency>
-			<!-- https://mvnrepository.com/artifact/org.web3j/geth -->
-			<dependency>
-				<groupId>org.web3j</groupId>
-				<artifactId>geth</artifactId>
 				<version>${web3j-version}</version>
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/org.web3j/geth -->
