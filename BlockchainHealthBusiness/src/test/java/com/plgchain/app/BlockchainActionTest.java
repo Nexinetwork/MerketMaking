@@ -14,6 +14,7 @@ import com.plgchain.app.plingaHelper.coingecko.type.AssetPlatform;
 import com.plgchain.app.plingaHelper.coingecko.util.CoingeckoUtil;
 import com.plgchain.app.plingaHelper.constant.BlockchainNodeType;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
+import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
@@ -70,11 +71,11 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	@Test
 	public void createNodeTestCase() {
-		var node = BlockchainNode.builder().blockchainId(Long.valueOf(154)).enabled(true)
-				.serverIp("185.110.191.217").sshPort(22424).rpcUrl("http://185.110.191.217:18545")
-				.nodeType(BlockchainNodeType.BLOCKCHAINNODE).validator(true).serviceNeme("nexichain1.service").mustCheck(true)
+		var node = BlockchainNodeDto.builder().blockchain("Plinga-DPOS").enabled(true)
+				.serverIp("185.128.137.240").sshPort(22).rpcUrl("http://185.128.137.240:8549").enabled(true)
+				.nodeType(BlockchainNodeType.BLOCKCHAINNODE).validator(true).serviceNeme("nexichain5.service").mustCheck(true)
 				.build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewNode")
@@ -89,7 +90,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + BlockscoutUtil.getLatestBlock("https://www.plgscan.com"));
 	}
 
-	@Test
+	//@Test
 	public void LastBlockTest() {
 		HttpClient httpClient = HttpClient.newBuilder()
 	            .connectTimeout(Duration.ofSeconds(10))

@@ -155,7 +155,7 @@ public class BlockchainBean implements Serializable {
 				.nodeType(blockchainNode.getNodeType()).rpcUrl(blockchainNode.getRpcUrl())
 				.serverIp(blockchainNode.getServerIp()).serviceNeme(blockchainNode.getServiceNeme())
 				.sshPort(blockchainNode.getSshPort()).validator(blockchainNode.isValidator())
-				.enabled(blockchainNode.isEnabled()).mustCheck(blockchainNode.isMustCheck()).build();
+				.enabled(blockchainNode.isEnabled()).mustCheck(blockchainNode.isMustCheck()).lastBlock(BigInteger.ZERO).build();
 		node = blockchainNodeService.save(node);
 		return node;
 	}
