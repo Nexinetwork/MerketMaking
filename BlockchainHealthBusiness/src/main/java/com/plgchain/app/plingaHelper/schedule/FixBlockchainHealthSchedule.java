@@ -40,6 +40,8 @@ public class FixBlockchainHealthSchedule implements Serializable {
 	@Scheduled(cron = "0 */15 * * * *", zone = "GMT")
 	public void fixBlockchainHealth() {
 		if (!initBean.doesActionRunning("fixBlockchainHealth")) {
+			logger.info("Lock fixBlockchainHealth");
+			initBean.startActionRunning("fixBlockchainHealth");
 			HashOperations<String, String, String> blockchainDataString = redisTemplate.opsForHash();
 			Map<String, String> entries = blockchainDataString.entries(SysConstant.REDIS_NODE_DATA);
 			entries.forEach((key, value) -> {
@@ -176,6 +178,8 @@ public class FixBlockchainHealthSchedule implements Serializable {
 							}
 						});
 			});
+			logger.info("Unlock fixBlockchainHealth");
+			initBean.stopActionRunning("fixBlockchainHealth");
 		} else {
 			logger.info("Method fixBlockchainHealth already running skip it.");
 		}
