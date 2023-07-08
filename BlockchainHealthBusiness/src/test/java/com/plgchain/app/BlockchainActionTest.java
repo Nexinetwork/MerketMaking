@@ -52,17 +52,17 @@ public class BlockchainActionTest implements Serializable {
 	//@Test
 	public void createBlockchaintestCase() {
 		Blockchain blockchain = new Blockchain();
-		blockchain.setName("Nexi");
+		blockchain.setName("Nexilix-Pos-V1");
 		blockchain.setEvm(true);
 		blockchain.setMustCheck(true);
-		blockchain.setChainId(new BigInteger("4242"));
-		blockchain.setMainCoin("NEXI");
-		blockchain.setBlockExplorer("https://www.nexiscan.com");
-		blockchain.setBlockchainType(BlockchainTechType.DPOS);
+		blockchain.setChainId(new BigInteger("240"));
+		blockchain.setMainCoin("NEXILIX");
+		blockchain.setBlockExplorer("https://scan.nexilix.com");
+		blockchain.setBlockchainType(BlockchainTechType.POS);
 		blockchain.setBlockDuration(2);
-		blockchain.setRpcUrl("\"https://rpc.chain.nexi.technology");
+		blockchain.setRpcUrl("https://rpcurl.pos.nexilix.com/");
 		blockchain.setHeight(new BigInteger("0"));
-		blockchain.setCoingeckoId("nexi");
+		blockchain.setCoingeckoId("nexilix");
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewBlockchain")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -73,9 +73,9 @@ public class BlockchainActionTest implements Serializable {
 
 	@Test
 	public void createNodeTestCase() {
-		var node = BlockchainNodeDto.builder().blockchain("Plinga-DPOS").enabled(true)
-				.serverIp("185.128.137.240").sshPort(22).rpcUrl("http://185.128.137.240:8549").enabled(true)
-				.nodeType(BlockchainNodeType.BLOCKCHAINNODE).validator(true).serviceNeme("nexichain5.service").mustCheck(true)
+		var node = BlockchainNodeDto.builder().blockchain("Nexilix-Pos-V1").enabled(true)
+				.serverIp("185.110.191.217").sshPort(22424).rpcUrl("http://185.110.191.217:28545").enabled(true)
+				.nodeType(BlockchainNodeType.BLOCKCHAINNODE).validator(true).serviceNeme("nexilixchain1.service").mustCheck(true)
 				.build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewNode")

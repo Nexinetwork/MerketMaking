@@ -51,7 +51,7 @@ public class Coin implements Serializable {
 	private long coinId;
 
 	@JSONField(name = "id")
-	@Column(name = "\"coingeckoId\"",nullable = false,unique = true)
+	@Column(name = "\"coingeckoId\"",unique = true)
 	private String coingeckoId;
 
 	private String symbol;

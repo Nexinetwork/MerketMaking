@@ -4,6 +4,10 @@
 package com.plgchain.app.plingaHelper.util;
 
 import java.io.Serializable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -15,29 +19,43 @@ import com.jcraft.jsch.Session;
 public class ServiceUtil implements Serializable {
 
 	private static final long serialVersionUID = -4019077067217960978L;
+	private final static Logger logger = LoggerFactory.getLogger(ServiceUtil.class);
 
-	public static boolean restartService(String ip, int port, String privPath, String serviceName)
-			throws JSchException {
+	public static boolean restartService(String ip, int port, String privPath, String serviceName) {
 		boolean result = false;
 		JSch jSch = new JSch();
+		ChannelExec channel = null;
+		Session session = null;
+		try {
+			jSch.addIdentity(privPath);
+			session = jSch.getSession("root", ip, port);
+			session.setConfig("StrictHostKeyChecking", "no");
+			session.connect();
+			String command = "systemctl restart " + serviceName;
+			channel = (ChannelExec) session.openChannel("exec");
+			channel.setCommand(command);
+			channel.connect();
 
-		jSch.addIdentity(privPath);
-		Session session = jSch.getSession("root", ip, port);
-		session.setConfig("StrictHostKeyChecking", "no");
-		session.connect();
-		String command = "systemctl restart " + serviceName;
-		ChannelExec channel = (ChannelExec) session.openChannel("exec");
-		channel.setCommand(command);
-		channel.connect();
-
-		if (channel.getExitStatus() == 0) {
-			result = true;
-		} else {
-			result = false;
+			if (channel.getExitStatus() == 0) {
+				result = true;
+			} else {
+				result = false;
+			}
+		} catch (JSchException e) {
+			logger.error("Service restart error " + e.getMessage());
+		} finally {
+			if (channel != null) {
+				if (channel.isConnected())
+					channel.disconnect();
+				channel = null;
+			}
+			if (session != null) {
+				if (session.isConnected())
+					session.disconnect();
+				session = null;
+			}
+			jSch = null;
 		}
-
-		channel.disconnect();
-		session.disconnect();
 		return result;
 	}
 

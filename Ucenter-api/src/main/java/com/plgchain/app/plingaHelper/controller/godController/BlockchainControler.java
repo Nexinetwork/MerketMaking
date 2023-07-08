@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson2.JSON;
+import com.netflix.servo.util.Strings;
 import com.plgchain.app.plingaHelper.bean.BlockchainBean;
 import com.plgchain.app.plingaHelper.constant.AdminCommandType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
@@ -20,6 +21,8 @@ import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.exception.RestActionError;
+import com.plgchain.app.plingaHelper.service.CoinService;
+import com.plgchain.app.plingaHelper.service.CoingeckoCoinService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 
@@ -40,6 +43,9 @@ public class BlockchainControler extends BaseController implements Serializable 
 
 	@Inject
 	private KafkaTemplate<String, String> kafkaTemplate;
+
+	@Inject
+	private CoinService coinService;
 
 	@RequestMapping("/ping")
 	public MessageResult ping() {
@@ -78,6 +84,46 @@ public class BlockchainControler extends BaseController implements Serializable 
 			// TODO Auto-generated catch block
 			error(e.getMessage());
 			return error(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error(e.getMessage());
+		}
+	}
+
+	@PostMapping("/coin/setCoinAsMustCheckByCoingeckoId")
+	public MessageResult setCoinAsMustCheckByCoingeckoId(String coingeckoId) {
+		try {
+			if (Strings.isNullOrEmpty(coingeckoId))
+				error("Coin is empty");
+			if (!coinService.existsCoinByCoingeckoId(coingeckoId))
+				error("Invalid Coin");
+			var result = coinService.findByCoingeckoId(coingeckoId).get();
+			result.setMustCheck(true);
+			result = coinService.save(result);
+			CommandToRun ctr = new CommandToRun();
+			ctr.setAdminCommandType(AdminCommandType.UPDATECOINS);
+			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+			return success(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error(e.getMessage());
+		}
+	}
+
+	@PostMapping("/coin/setCoinAsMustNotCheckByCoingeckoId")
+	public MessageResult setCoinAsMustNotCheckByCoingeckoId(String coingeckoId) {
+		try {
+			if (Strings.isNullOrEmpty(coingeckoId))
+				error("Coin is empty");
+			if (!coinService.existsCoinByCoingeckoId(coingeckoId))
+				error("Invalid Coin");
+			var result = coinService.findByCoingeckoId(coingeckoId).get();
+			result.setMustCheck(false);
+			result = coinService.save(result);
+			CommandToRun ctr = new CommandToRun();
+			ctr.setAdminCommandType(AdminCommandType.UPDATECOINS);
+			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+			return success(result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return error(e.getMessage());
