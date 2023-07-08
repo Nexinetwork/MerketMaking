@@ -19,16 +19,18 @@ public class CoingeckoUtil implements Serializable {
 
         while (retryCount < maxRetries) {
             HttpResponse<String> response = null;
+            String encodedUrl = url.replace("[", "%5B").replace("]", "%5D");
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(encodedUrl))
+                    .build();
             try {
-            	String encodedUrl = url.replace("[", "%5B").replace("]", "%5D");
-
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(encodedUrl))
-                        .build();
 
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
                 if (!response.body().contains("exceeded the Rate Limit")) {
-                    return response.body();
+                	String result = response.body();
+                	request = null;
+                	response = null;
+                    return result;
                 }
             } catch (Exception e) {
                 if (e.getMessage().contains("Illegal character")) {
@@ -36,17 +38,11 @@ public class CoingeckoUtil implements Serializable {
                 }
                 logger.error("Coingecko error: " + e.getMessage());
             } finally {
-                if (response != null) {
-                    response.body();
-                }
+                    response = null;
+                    request = null;
             }
 
             retryCount++;
-
-			/*
-			 * try { Thread.sleep(5000); } catch (InterruptedException e) {
-			 * Thread.currentThread().interrupt(); }
-			 */
         }
 
         throw new Exception("Exceeded maximum retry count");
