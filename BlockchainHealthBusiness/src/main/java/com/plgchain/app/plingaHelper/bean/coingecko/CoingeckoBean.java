@@ -290,7 +290,7 @@ public class CoingeckoBean implements Serializable {
 					coin.setPriceInUsd(coingeckoCoin.getPriceInUsd());
 					coin = coinService.save(coin);
 					coingeckoCoin = coingeckoCoinService.save(coingeckoCoin);
-					logger.info(String.format("coingeckoCoin %s has been updated.", coingeckoCoin));
+					logger.info(String.format("coingeckoCoin %s has been updated.", coinId));
 					CoingeckoCoinHistory cgh = coingeckoCoinHistoryService.findById(coinId).orElseThrow();
 					cgh.addCoingeckoCoin(coingeckoCoin);
 					coingeckoCoinHistoryService.save(cgh);
@@ -311,7 +311,7 @@ public class CoingeckoBean implements Serializable {
 						coingeckoCoin.getName());
 				cgh.addCoingeckoCoin(coingeckoCoin);
 				coingeckoCoinHistoryService.save(cgh);
-				logger.info(String.format("coingeckoCoin %s has been added", coingeckoCoin));
+				logger.info(String.format("coingeckoCoin %s has been added", coinId));
 			}
 			return coingeckoCoin;
 		} catch (Exception e) {
