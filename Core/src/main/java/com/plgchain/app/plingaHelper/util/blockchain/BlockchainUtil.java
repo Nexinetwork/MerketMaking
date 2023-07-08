@@ -22,7 +22,7 @@ public class BlockchainUtil implements Serializable {
 
     public static BigInteger getLatestBlockNumber(HttpClient httpClient,String rpcUrl) {
     	HttpRequest request = null;
-    	HttpResponse<String> response = null
+    	HttpResponse<String> response = null;
         try {
             request = HttpRequest.newBuilder()
                     .uri(URI.create(rpcUrl))
