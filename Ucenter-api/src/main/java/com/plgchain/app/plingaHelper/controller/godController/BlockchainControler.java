@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,10 +18,8 @@ import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.controller.BaseController;
 import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
-import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.exception.RestActionError;
 import com.plgchain.app.plingaHelper.service.CoinService;
-import com.plgchain.app.plingaHelper.service.CoingeckoCoinService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 

@@ -11,12 +11,10 @@ import org.junit.jupiter.api.Test;
 
 import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.coingecko.type.AssetPlatform;
-import com.plgchain.app.plingaHelper.coingecko.util.CoingeckoUtil;
 import com.plgchain.app.plingaHelper.constant.BlockchainNodeType;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
 import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
-import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
 import com.plgchain.app.plingaHelper.type.request.ContractReq;
 import com.plgchain.app.plingaHelper.util.BlockscoutUtil;
@@ -87,7 +85,7 @@ public class BlockchainActionTest implements Serializable {
 
 	@Test
 	public void setDomainAsMustCheckTestCase() {
-		var conName = "ethereum";
+		var conName = "tether";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/coin/setCoinAsMustCheckByCoingeckoId")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
