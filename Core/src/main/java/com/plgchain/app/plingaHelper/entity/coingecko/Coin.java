@@ -14,6 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.plgchain.app.plingaHelper.entity.CoinPrice;
 
 import jakarta.persistence.Column;
@@ -63,10 +64,12 @@ public class Coin implements Serializable {
 
 	@OneToMany(mappedBy = "coin")
 	@JSONField(serialize = false)
+	@JsonIgnore
 	private List<SmartContract> contractList;
 
 	@OneToMany(mappedBy = "coin")
 	@JSONField(serialize = false)
+	@JsonIgnore
 	private List<CoinPrice> priceList;
 
 	@Column(name = "\"mustCheck\"",nullable = false)
