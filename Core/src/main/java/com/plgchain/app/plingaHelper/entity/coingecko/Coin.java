@@ -62,9 +62,11 @@ public class Coin implements Serializable {
 	private String coingeckoJson;
 
 	@OneToMany(mappedBy = "coin")
+	@JSONField(serialize = false)
 	private List<SmartContract> contractList;
 
 	@OneToMany(mappedBy = "coin")
+	@JSONField(serialize = false)
 	private List<CoinPrice> priceList;
 
 	@Column(name = "\"mustCheck\"",nullable = false)

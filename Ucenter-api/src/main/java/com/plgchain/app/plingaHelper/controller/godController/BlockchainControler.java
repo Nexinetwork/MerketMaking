@@ -111,7 +111,7 @@ public class BlockchainControler extends BaseController implements Serializable 
 	}
 
 	@PostMapping("/coin/setCoinAsMustNotCheckByCoingeckoId")
-	public MessageResult setCoinAsMustNotCheckByCoingeckoId(String coingeckoId) {
+	public MessageResult setCoinAsMustNotCheckByCoingeckoId(@RequestBody String coingeckoId) {
 		try {
 			if (Strings.isNullOrEmpty(coingeckoId))
 				error("Coin is empty");
