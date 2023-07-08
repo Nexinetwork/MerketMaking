@@ -9,12 +9,11 @@ import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.bean.coingecko.CoingeckoBean;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import jakarta.inject.Inject;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @Component
-public class FillEmptyCoingeckoCoinSchedule {
+public class UpdateMustCheckCoingeckoCoinSchedule {
 
-	private final static Logger logger = LoggerFactory.getLogger(FillEmptyCoingeckoCoinSchedule.class);
+	private final static Logger logger = LoggerFactory.getLogger(UpdateMustCheckCoingeckoCoinSchedule.class);
 
 	private final CoinService coinService;
 	private final CoingeckoBean coingeckoBean;
@@ -23,21 +22,21 @@ public class FillEmptyCoingeckoCoinSchedule {
 	private InitBean initBean;
 
 	@Inject
-	public FillEmptyCoingeckoCoinSchedule(CoinService coinService, CoingeckoBean coingeckoBean) {
+	public UpdateMustCheckCoingeckoCoinSchedule(CoinService coinService, CoingeckoBean coingeckoBean) {
 		this.coinService = coinService;
 		this.coingeckoBean = coingeckoBean;
 	}
 
-	@Scheduled(cron = "0 0 */1 * * *", zone = "GMT")
-	public void fillEmptyCoingeckoCoin() {
-		if (!initBean.doesActionRunning("fillEmptyCoingeckoCoin")) {
-			initBean.startActionRunning("fillEmptyCoingeckoCoin");
-			coinService.findByCoingeckoJsonIsNull(10).forEach(coin -> {
+	@Scheduled(cron = "0 */15 * * * *", zone = "GMT")
+	public void updateMustCheckCoingeckoCoinS() {
+		if (!initBean.doesActionRunning("updateMustCheckCoingeckoCoinS")) {
+			initBean.startActionRunning("updateMustCheckCoingeckoCoinS");
+			coinService.findByMustCheck(true).forEach(coin -> {
 				coingeckoBean.createOrUpdateCoingeckoCoin(coin.getCoingeckoId());
 			});
-			initBean.stopActionRunning("fillEmptyCoingeckoCoin");
+			initBean.stopActionRunning("updateMustCheckCoingeckoCoinS");
 		} else {
-			logger.info("fillEmptyCoingeckoCoin already running skip it.");
+			logger.info("updateMustCheckCoingeckoCoinS already running skip it.");
 		}
 	}
 

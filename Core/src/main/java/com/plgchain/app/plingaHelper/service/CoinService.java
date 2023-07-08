@@ -81,4 +81,8 @@ public class CoinService extends BaseService implements Serializable {
         return page.getContent();
     }
 
+    public List<Coin> findByMustCheck(boolean mustCheck) {
+    	return coinDao.findByMustCheck(mustCheck);
+    }
+
 }

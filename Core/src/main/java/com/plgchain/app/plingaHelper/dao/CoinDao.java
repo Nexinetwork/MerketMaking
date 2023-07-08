@@ -17,6 +17,7 @@ public interface CoinDao extends BaseLongDao<Coin> {
 	public boolean existsCoinByCoingeckoId(String coingeckoId);
 	public List<Coin> findByCoingeckoJsonIsNull();
     public Page<Coin> findByCoingeckoJsonIsNull(Pageable pageable);
+    public List<Coin> findByMustCheck(boolean mustCheck);
 
 
 }
