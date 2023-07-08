@@ -71,17 +71,28 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void createNodeTestCase() {
 		var node = BlockchainNodeDto.builder().blockchain("Nexilix-Pos-V1").enabled(true)
-				.serverIp("185.110.191.217").sshPort(22424).rpcUrl("http://185.110.191.217:28545").enabled(true)
-				.nodeType(BlockchainNodeType.BLOCKCHAINNODE).validator(true).serviceNeme("nexilixchain1.service").mustCheck(true)
+				.serverIp("185.173.129.244").sshPort(22424).rpcUrl("http://185.173.129.244:8545").enabled(true)
+				.nodeType(BlockchainNodeType.BLOCKCHAINNODE).validator(true).serviceNeme("plgchain1.service").mustCheck(true)
 				.build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewNode")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(node)).asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	@Test
+	public void setDomainAsMustCheckTestCase() {
+		var conName = "tether";
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.244:7001/api/v1/godaction/coin/setCoinAsMustCheckByCoingeckoId")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(conName).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
