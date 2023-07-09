@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.concurrent.ExecutionException;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jsoup.Jsoup;
 import org.web3j.abi.FunctionEncoder;
@@ -89,6 +91,7 @@ public class EVMUtil implements Serializable {
 		return Convert.fromWei(val.toString(), Convert.Unit.ETHER);
 	}
 
+
 	public static BigDecimal convertWeiToEther(BigDecimal val) {
 		return Convert.fromWei(val.toString(), Convert.Unit.ETHER);
 	}
@@ -166,6 +169,46 @@ public class EVMUtil implements Serializable {
 			e1.printStackTrace();
 		}
 		return null;
+	}
+
+	public static BigInteger getTransactionCount(String rpcUrl, String address) {
+		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+		EthGetTransactionCount result = new EthGetTransactionCount();
+		try {
+			result = web3j.ethGetTransactionCount(address, DefaultBlockParameter.valueOf("latest")).sendAsync().get();
+			return result.getTransactionCount();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static boolean mostIncreaseNonce(EthSendTransaction etht) {
+		if (!etht.hasError()) {
+			return true;
+		} else {
+			if (etht.getError().getMessage().equals("nonce too low"))
+				return true;
+			else if (etht.getError().getMessage().equals("replacement transaction underpriced"))
+				return true;
+
+		}
+		return false;
+	}
+
+	public static boolean haveSufficientFund(EthSendTransaction etht) {
+		if (!etht.hasError()) {
+			return true;
+		} else {
+			if (etht.getError().getMessage().contains("insufficient funds"))
+				return false;
+
+		}
+		return true;
 	}
 
 	public static int hexToDecimal(String hex) {
