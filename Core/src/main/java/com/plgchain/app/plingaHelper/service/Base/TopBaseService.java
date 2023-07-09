@@ -61,16 +61,18 @@ public class TopBaseService<E, D extends BaseLongDao> {
     }
 
     /**
-    * @param createAbility Create ability
-    * @return
-    */
+     * @param createAbility 创建能力
+     * @return
+     */
     public E save(CreateAbility<E> createAbility) {
         return (E) dao.save(createAbility.transformation());
     }
 
+    //更新能力
+
     /**
-     * @param updateAbility Update ability
-     * @param e             Object to be updated
+     * @param updateAbility 更新能力
+     * @param e             更新的对象
      * @return
      */
     public E update(UpdateAbility<E> updateAbility, E e) {
@@ -78,31 +80,31 @@ public class TopBaseService<E, D extends BaseLongDao> {
     }
 
     /**
-    * @param predicate Filter predicate
-    * @param pageModel Pagination object
-    * @return
-    */
+     * @param predicate 筛选条件
+     * @param pageModel 分页对象
+     * @return
+     */
     @Transactional(readOnly = true)
     public Page<E> findAll(Predicate predicate, PageModel pageModel) {
         return dao.findAll(predicate, pageModel.getPageable());
     }
 
     /**
-    * @param screenAbility Filter ability
-    * @param pageModel Pagination object
-    * @return
-    */
+     * @param screenAbility 筛选能力
+     * @param pageModel     分页对象
+     * @return
+     */
     @Transactional(readOnly = true)
     public Page<E> findAllScreen(ScreenAbility screenAbility, PageModel pageModel) {
         return dao.findAll(screenAbility.getPredicate(), pageModel.getPageable());
     }
 
     /**
-    * Pagination and sorting query using Querydsl
-    *
-    * @param pagination
-    * @return
-    */
+     * 分页排序查询 querydsl
+     *
+     * @param pagenation
+     * @return
+     */
     public Pagenation<E> pageQuery(Pagenation pagenation, Predicate predicate) {
         Sort sort = Sort.by(pagenation.getPageParam().getDirection());
         Pageable pageable = PageRequest.of(pagenation.getPageParam().getPageNo() - 1, pagenation.getPageParam().getPageSize(), sort);
@@ -111,13 +113,13 @@ public class TopBaseService<E, D extends BaseLongDao> {
     }
 
     /**
-    * Native SQL multiple table join pagination query, mapping to Map or Class
-    * @param countSql
-    * @param sql
-    * @param pageModel
-    * @param result The mapped object (Map or Class)
-    * @return
-    */
+     * 原生sql 多表关联分页查询 映射Map 或者 Class
+     * @param countSql
+     * @param sql
+     * @param pageModel
+     * @param result  映射的对象 （Map 或者 Class）
+     * @return
+     */
     public Page createNativePageQuery(StringBuilder countSql , StringBuilder sql , PageModel pageModel,ResultTransformer result){
         Query query1 = entityManager.createNativeQuery(countSql.toString());
         long count =((BigInteger) query1.getSingleResult()).longValue() ;

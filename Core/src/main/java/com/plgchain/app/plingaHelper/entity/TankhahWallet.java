@@ -12,10 +12,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.plgchain.app.plingaHelper.constant.TankhahWalletType;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -55,6 +58,10 @@ public class TankhahWallet implements Serializable {
     )
 	@Column(name = "\"privateKey\"", columnDefinition = "bytea")
 	private String privateKey;
+
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name = "\"TankhahWalletType\"")
+	private TankhahWalletType tankhahWalletType;
 
 	@Column(name = "\"publicKey\"")
 	private String publicKey;

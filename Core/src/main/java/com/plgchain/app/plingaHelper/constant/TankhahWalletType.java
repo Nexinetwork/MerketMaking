@@ -16,8 +16,8 @@ import lombok.Setter;
  */
 @AllArgsConstructor
 @Getter
-public enum WalletType implements BaseEnum {
-	TRANSFER("Transfer"), SWAP("Swap");
+public enum TankhahWalletType implements BaseEnum {
+	TRANSFER("Transfer"), SWAP("Swap"), LIQUIDITY("Liquidity"), PRICEIMPACT("Price Impace");
 
 	@Setter
     private String perName;

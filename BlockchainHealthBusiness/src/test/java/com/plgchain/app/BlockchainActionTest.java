@@ -85,7 +85,7 @@ public class BlockchainActionTest implements Serializable {
 
 	//@Test
 	public void setDomainAsMustCheckTestCase() {
-		var conName = "tether";
+		var conName = "ripple";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/coin/setCoinAsMustCheckByCoingeckoId")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -96,7 +96,7 @@ public class BlockchainActionTest implements Serializable {
 
 	@Test
 	public void setDomainAsMustNotCheckTestCase() {
-		var conName = "binance-peg-xrp";
+		var conName = "binance-bitcoin";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/coin/setCoinAsMustNotCheckByCoingeckoId")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
