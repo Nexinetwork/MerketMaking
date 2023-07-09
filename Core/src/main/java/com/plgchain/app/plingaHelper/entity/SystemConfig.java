@@ -22,7 +22,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.lang.reflect.Field;
-import org.springframework.util.Assert;
 import lombok.ToString;
 
 import java.time.LocalDate;
@@ -47,7 +46,7 @@ public class SystemConfig implements Serializable {
 	private static final long serialVersionUID = -8159188002006715329L;
 
 	@Id
-	@SequenceGenerator(name = "TBLSYSTEMCONFIG_CONFIGID_GENERATOR", sequenceName = "\"seqSystemConfig\"", schema = "\"schConfig\"", allocationSize = 1)
+	@SequenceGenerator(name = "TBLSYSTEMCONFIG_CONFIGID_GENERATOR", sequenceName = "\"seqTankhahWalletTankhahWalletId\"", schema = "\"schConfig\"", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TBLSYSTEMCONFIG_CONFIGID_GENERATOR")
 	@Column(name = "\"configId\"")
 	private long configId;

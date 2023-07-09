@@ -6,12 +6,14 @@ package com.plgchain.app.plingaHelper.entity.coingecko;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
+import com.plgchain.app.plingaHelper.entity.TankhahWallet;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,6 +22,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -35,7 +38,7 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = {"tankhahWalletList"})
 @Data
 @Table(name = "\"tblSmartContract\"", schema = "\"schCoingecko\"")
 public class SmartContract implements Serializable {
@@ -55,6 +58,9 @@ public class SmartContract implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "\"coinId\"")
 	private Coin coin;
+
+	@OneToMany(mappedBy = "contract")
+	private List<TankhahWallet> tankhahWalletList;
 
 	@Column(name = "\"contractsAddress\"",nullable = false)
 	private String contractsAddress;
