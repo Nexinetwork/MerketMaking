@@ -31,7 +31,7 @@ public class UpdateMustCheckCoingeckoCoinSchedule {
 	public void updateMustCheckCoingeckoCoinS() {
 		if (!initBean.doesActionRunning("updateMustCheckCoingeckoCoinS")) {
 			initBean.startActionRunning("updateMustCheckCoingeckoCoinS");
-			coinService.findByMustCheck(true).forEach(coin -> {
+			coinService.findByMustCheck(true).stream().forEach(coin -> {
 				coingeckoBean.createOrUpdateCoingeckoCoin(coin.getCoingeckoId());
 			});
 			initBean.stopActionRunning("updateMustCheckCoingeckoCoinS");
