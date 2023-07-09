@@ -12,6 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
+import com.plgchain.app.plingaHelper.entity.MarketMakingWallet;
 import com.plgchain.app.plingaHelper.entity.TankhahWallet;
 
 import jakarta.persistence.Column;
@@ -60,6 +61,9 @@ public class SmartContract implements Serializable {
 
 	@OneToMany(mappedBy = "contract")
 	private List<TankhahWallet> tankhahWalletList;
+
+	@OneToMany(mappedBy = "contract")
+	private List<MarketMakingWallet> mmWalletList;
 
 	@Column(name = "\"contractsAddress\"",nullable = false)
 	private String contractsAddress;
