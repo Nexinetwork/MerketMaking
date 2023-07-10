@@ -96,7 +96,7 @@ public class BlockchainActionTest implements Serializable {
 
 	@Test
 	public void setDomainAsMustNotCheckTestCase() {
-		var conName = "binance-bitcoin";
+		var conName = "binance-peg-cardano";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/coin/setCoinAsMustNotCheckByCoingeckoId")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())

@@ -32,7 +32,7 @@ public class FillEmptyCoingeckoCoinSchedule {
 	public void fillEmptyCoingeckoCoin() {
 		if (!initBean.doesActionRunning("fillEmptyCoingeckoCoin")) {
 			initBean.startActionRunning("fillEmptyCoingeckoCoin");
-			coinService.findByCoingeckoJsonIsNull(10).forEach(coin -> {
+			coinService.findByCoingeckoJsonIsNullAndCoingeckoIdIsNotNull(10).forEach(coin -> {
 				coingeckoBean.createOrUpdateCoingeckoCoin(coin.getCoingeckoId());
 			});
 			initBean.stopActionRunning("fillEmptyCoingeckoCoin");

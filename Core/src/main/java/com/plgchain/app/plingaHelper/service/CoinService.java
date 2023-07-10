@@ -85,4 +85,11 @@ public class CoinService extends BaseService implements Serializable {
     	return coinDao.findByMustCheck(mustCheck);
     }
 
+    public List<Coin> findByCoingeckoJsonIsNullAndCoingeckoIdIsNotNull(int count) {
+    	Pageable pageable = PageRequest.of(0, count);
+        Page<Coin> page = coinDao.findByCoingeckoJsonIsNullAndCoingeckoIdIsNotNull(pageable);
+        return page.getContent();
+
+    }
+
 }
