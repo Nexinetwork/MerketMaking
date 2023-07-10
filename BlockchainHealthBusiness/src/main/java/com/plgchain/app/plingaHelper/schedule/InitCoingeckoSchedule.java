@@ -17,6 +17,7 @@ public class InitCoingeckoSchedule implements Serializable {
 
 	private static final long serialVersionUID = 7504602259969637312L;
 
+	@SuppressWarnings("unused")
 	private final static Logger logger = LoggerFactory.getLogger(InitCoingeckoSchedule.class);
 
 	@Autowired

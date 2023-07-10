@@ -9,7 +9,6 @@ import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.bean.coingecko.CoingeckoBean;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import jakarta.inject.Inject;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 
 @Component
 public class FillEmptyCoingeckoCoinSchedule {

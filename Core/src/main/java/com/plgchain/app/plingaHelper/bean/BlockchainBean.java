@@ -29,6 +29,7 @@ import com.plgchain.app.plingaHelper.service.BlockchainService;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
+import com.plgchain.app.plingaHelper.type.request.CoinReq;
 import com.plgchain.app.plingaHelper.type.request.ContractReq;
 
 /**
@@ -201,6 +202,21 @@ public class BlockchainBean implements Serializable {
 				.build();
 		sm = smartContractService.save(sm);
 		return sm;
+	}
+
+	@LogMethod
+	@UpdateBlockchainData
+	public Coin createNewCoin(CoinReq coin) throws RestActionError {
+		if (coin == null)
+			throw new RestActionError("Coin Object is Null");
+		if (Strings.isNullOrEmpty(coin.getSymbol()))
+			throw new RestActionError("Symbol is blank");
+		if (Strings.isNullOrEmpty(coin.getName()))
+			throw new RestActionError("Coin name is blank");
+		var coinRes = Coin.builder().coingeckoId(coin.getCoingeckoId()).mustCheck(coin.isMustCheck()).symbol(coin.getSymbol())
+				.priceInUsd(coin.getPriceInUsd()).listed(coin.isListed()).name(coin.getName()).build();
+		coinRes = coinService.save(coinRes);
+		return coinRes;
 	}
 
 }

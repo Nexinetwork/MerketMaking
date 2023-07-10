@@ -6,7 +6,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import net.javacrumbs.shedlock.spring.annotation.EnableSchedulerLock;
 
 @EnableScheduling
 @SpringBootApplication
