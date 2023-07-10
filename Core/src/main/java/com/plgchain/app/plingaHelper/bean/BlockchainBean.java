@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -23,15 +22,20 @@ import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
+import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
 import com.plgchain.app.plingaHelper.exception.RestActionError;
 import com.plgchain.app.plingaHelper.service.BlockchainNodeService;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
 import com.plgchain.app.plingaHelper.service.CoinService;
+import com.plgchain.app.plingaHelper.service.MarketMakingService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.type.request.CoinReq;
 import com.plgchain.app.plingaHelper.type.request.ContractReq;
+import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
+
+import jakarta.inject.Inject;
 
 /**
  *
@@ -41,20 +45,23 @@ public class BlockchainBean implements Serializable {
 
 	private static final long serialVersionUID = -2749816508506842832L;
 
-	@Autowired
+	@Inject
 	private BlockchainService blockchainService;
 
-	@Autowired
+	@Inject
 	private CoinService coinService;
 
-	@Autowired
+	@Inject
 	private SmartContractService smartContractService;
 
-	@Autowired
+	@Inject
 	private BlockchainNodeService blockchainNodeService;
 
-	@Autowired
+	@Inject
 	private KafkaTemplate<String, String> kafkaTemplate;
+
+	@Inject
+	private MarketMakingService marketMakingService;
 
 	@LogMethod
 	public Blockchain createBlockchain(Blockchain blockchain) throws RestActionError {
@@ -236,7 +243,7 @@ public class BlockchainBean implements Serializable {
 			if (!smartContractService.existById(sc.getContractId()))
 				throw new RestActionError("Invalid Smart Contract");
 			else
-				smartContract = smartContractService.findById(sc.getContractId());
+				smartContract = smartContractService.findById(sc.getContractId()).get();
 		}
 		if (Strings.isNullOrEmpty(sc.getContractsAddress()))
 			if (Strings.isNullOrEmpty(smartContract.getContractsAddress()))
@@ -282,6 +289,31 @@ public class BlockchainBean implements Serializable {
 		smartContract.setMustCheck(sc.isMustCheck());
 		smartContract = smartContractService.save(smartContract);
 		return smartContract;
+	}
+
+	public MarketMaking createOrUpdate(MarketMakingReq mmReq) throws RestActionError {
+		if (mmReq == null)
+			throw new RestActionError("Marketmaking is null");
+		if (mmReq.getSmartContractId() <= 0)
+			throw new RestActionError("Smartcontract is null");
+		if (!smartContractService.existById(mmReq.getSmartContractId()))
+			throw new RestActionError("Invalid smartcontract");
+		var mm = new MarketMaking();
+		var sm = smartContractService.findById(mmReq.getSmartContractId()).get();
+		if (sm.getMarketMakingObject() != null)
+			mm = sm.getMarketMakingObject();
+		else {
+			mm.setSmartContract(sm);
+			mm.setCurrentTransferWalletCount(0);
+		}
+		mm.setDailyAddWallet(mmReq.getDailyAddWallet());
+		mm.setInitialDecimal(mmReq.getInitialDecimal());
+		mm.setInitialWallet(mmReq.getInitialWallet());
+		mm.setMaxInitial(mmReq.getMaxInitial());
+		mm.setMinInitial(mmReq.getMinInitial());
+		mm = marketMakingService.save(mm);
+		return mm;
+
 	}
 
 }

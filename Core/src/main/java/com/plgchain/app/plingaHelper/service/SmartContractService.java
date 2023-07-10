@@ -30,8 +30,8 @@ public class SmartContractService extends BaseService<SmartContract> implements 
 	@Autowired
 	private SmartContractDao smartContractDao;
 
-	public SmartContract findById(Long id) {
-		return smartContractDao.findById(id).get();
+	public Optional<SmartContract> findById(Long id) {
+		return smartContractDao.findById(id);
 	}
 
 	public boolean existById(Long id) {

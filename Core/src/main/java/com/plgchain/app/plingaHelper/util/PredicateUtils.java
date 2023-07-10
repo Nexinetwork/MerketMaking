@@ -3,7 +3,6 @@ package com.plgchain.app.plingaHelper.util;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PredicateUtils {

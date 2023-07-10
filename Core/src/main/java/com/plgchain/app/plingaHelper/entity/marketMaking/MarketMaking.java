@@ -34,7 +34,7 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = {"smartContract"})
 @Data
 @Table(name = "\"tblMarketMaking\"", schema = "\"schCoingecko\"")
 public class MarketMaking implements Serializable {

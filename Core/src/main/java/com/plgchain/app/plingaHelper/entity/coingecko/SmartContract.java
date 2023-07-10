@@ -18,6 +18,7 @@ import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -61,7 +62,7 @@ public class SmartContract implements Serializable {
 	@JoinColumn(name = "\"coinId\"")
 	private Coin coin;
 
-	@OneToOne(mappedBy = "smartContract")
+	@OneToOne(mappedBy = "smartContract",fetch = FetchType.EAGER)
 	private MarketMaking marketMakingObject;
 
 	@OneToMany(mappedBy = "contract")
