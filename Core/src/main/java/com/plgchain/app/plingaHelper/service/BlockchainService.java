@@ -18,9 +18,8 @@ import com.plgchain.app.plingaHelper.service.Base.BaseService;
 /**
  *
  */
-@SuppressWarnings("rawtypes")
 @Service
-public class BlockchainService extends BaseService implements Serializable {
+public class BlockchainService extends BaseService<Blockchain> implements Serializable {
 
 	private static final long serialVersionUID = -8641271050704411082L;
 
@@ -85,6 +84,22 @@ public class BlockchainService extends BaseService implements Serializable {
 
 	public boolean existsBlockchainByCoingeckoId(String coingeckoId) {
 		return blockchainDao.existsBlockchainByCoingeckoId(coingeckoId);
+	}
+
+	public boolean anyExist() {
+		return blockchainDao.anyExist();
+	}
+
+	public void delete(Blockchain object) {
+		blockchainDao.delete(object);
+	}
+
+	public void deleteAll() {
+		blockchainDao.deleteAll();
+	}
+
+	public List<Blockchain> saveAll(List<Blockchain> oList) {
+		return blockchainDao.saveAll(oList);
 	}
 
 }

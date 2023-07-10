@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.MarketMakingWallet;
 import com.plgchain.app.plingaHelper.entity.TankhahWallet;
+import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +24,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -58,6 +60,9 @@ public class SmartContract implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "\"coinId\"")
 	private Coin coin;
+
+	@OneToOne(mappedBy = "smartContract")
+	private MarketMaking marketMakingObject;
 
 	@OneToMany(mappedBy = "contract")
 	private List<TankhahWallet> tankhahWalletList;

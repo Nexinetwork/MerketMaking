@@ -4,12 +4,14 @@
 package com.plgchain.app.plingaHelper.service;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.dao.SystemConfigDao;
 import com.plgchain.app.plingaHelper.entity.SystemConfig;
+import com.plgchain.app.plingaHelper.entity.TankhahWallet;
 import com.plgchain.app.plingaHelper.service.Base.BaseService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +20,10 @@ import lombok.extern.slf4j.Slf4j;
  * @author eae966
  *
  */
-@SuppressWarnings({"rawtypes","unused"})
+@SuppressWarnings({"unused"})
 @Slf4j
 @Service
-public class SystemConfigService extends BaseService implements Serializable {
+public class SystemConfigService extends BaseService<SystemConfig> implements Serializable {
 
 	/**
 	 *
@@ -45,6 +47,22 @@ public class SystemConfigService extends BaseService implements Serializable {
 
 	public SystemConfig saveAndFlush(SystemConfig sc) {
 		return systemConfigDao.saveAndFlush(sc);
+	}
+
+	public boolean anyExist() {
+		return systemConfigDao.anyExist();
+	}
+
+	public void delete(SystemConfig object) {
+		systemConfigDao.delete(object);
+	}
+
+	public void deleteAll() {
+		systemConfigDao.deleteAll();
+	}
+
+	public List<SystemConfig> saveAll(List<SystemConfig> oList) {
+		return systemConfigDao.saveAll(oList);
 	}
 
 }

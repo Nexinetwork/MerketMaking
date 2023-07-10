@@ -43,4 +43,20 @@ public class CoingeckoCoinHistoryService extends BaseService<CoingeckoCoinHistor
 		return coingeckoCoinHistoryDao.save(cc);
 	}
 
+	public boolean anyExist() {
+		return coingeckoCoinHistoryDao.anyExist();
+	}
+
+	public void delete(CoingeckoCoinHistory object) {
+		coingeckoCoinHistoryDao.delete(object);
+	}
+
+	public void deleteAll() {
+		coingeckoCoinHistoryDao.deleteAll();
+	}
+
+	public List<CoingeckoCoinHistory> saveAll(List<CoingeckoCoinHistory> oList) {
+		return coingeckoCoinHistoryDao.saveAll(oList);
+	}
+
 }

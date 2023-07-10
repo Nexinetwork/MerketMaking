@@ -16,9 +16,8 @@ import com.plgchain.app.plingaHelper.service.Base.BaseService;
 /**
  *
  */
-@SuppressWarnings("rawtypes")
 @Service
-public class BlockchainNodeService extends BaseService implements Serializable {
+public class BlockchainNodeService extends BaseService<BlockchainNode> implements Serializable {
 
 	private static final long serialVersionUID = -8641271050704411082L;
 
@@ -52,6 +51,22 @@ public class BlockchainNodeService extends BaseService implements Serializable {
 
 	public long countByBlockchain(Blockchain blockchain) {
 		return blockchainNodeDao.countByBlockchain(blockchain);
+	}
+
+	public boolean anyExist() {
+		return blockchainNodeDao.anyExist();
+	}
+
+	public void delete(BlockchainNode object) {
+		blockchainNodeDao.delete(object);
+	}
+
+	public void deleteAll() {
+		blockchainNodeDao.deleteAll();
+	}
+
+	public List<BlockchainNode> saveAll(List<BlockchainNode> oList) {
+		return blockchainNodeDao.saveAll(oList);
 	}
 
 }

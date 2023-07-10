@@ -21,9 +21,8 @@ import com.plgchain.app.plingaHelper.service.Base.BaseService;
 /**
  *
  */
-@SuppressWarnings("rawtypes")
 @Service
-public class CoinService extends BaseService implements Serializable {
+public class CoinService extends BaseService<Coin> implements Serializable {
 
 	private static final long serialVersionUID = -8641271050704411082L;
 
@@ -93,7 +92,22 @@ public class CoinService extends BaseService implements Serializable {
     	Pageable pageable = PageRequest.of(0, count);
         Page<Coin> page = coinDao.findByCoingeckoJsonIsNullAndCoingeckoIdIsNotNull(pageable);
         return page.getContent();
-
     }
+
+    public boolean anyExist() {
+		return coinDao.anyExist();
+	}
+
+    public void delete(Coin object) {
+    	coinDao.delete(object);
+	}
+
+	public void deleteAll() {
+		coinDao.deleteAll();
+	}
+
+	public List<Coin> saveAll(List<Coin> oList) {
+		return coinDao.saveAll(oList);
+	}
 
 }

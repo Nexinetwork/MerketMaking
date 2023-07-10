@@ -15,9 +15,8 @@ import com.plgchain.app.plingaHelper.service.Base.BaseService;
 /**
  *
  */
-@SuppressWarnings("rawtypes")
 @Service
-public class LogService extends BaseService implements Serializable {
+public class LogService extends BaseService<Log> implements Serializable {
 
 	private static final long serialVersionUID = -8641271050704411082L;
 
@@ -39,6 +38,22 @@ public class LogService extends BaseService implements Serializable {
 
 	public List<Log> findAll() {
 		return logDao.findAll();
+	}
+
+	public boolean anyExist() {
+		return logDao.anyExist();
+	}
+
+	public void delete(Log object) {
+		logDao.delete(object);
+	}
+
+	public void deleteAll() {
+		logDao.deleteAll();
+	}
+
+	public List<Log> saveAll(List<Log> oList) {
+		return logDao.saveAll(oList);
 	}
 
 }

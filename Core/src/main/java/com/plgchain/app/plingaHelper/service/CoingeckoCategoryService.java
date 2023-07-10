@@ -16,9 +16,8 @@ import com.plgchain.app.plingaHelper.service.Base.BaseService;
 /**
  *
  */
-@SuppressWarnings("rawtypes")
 @Service
-public class CoingeckoCategoryService extends BaseService implements Serializable {
+public class CoingeckoCategoryService extends BaseService<CoingeckoCategory> implements Serializable {
 
 	private static final long serialVersionUID = -8641271050704411082L;
 
@@ -44,6 +43,22 @@ public class CoingeckoCategoryService extends BaseService implements Serializabl
 
 	public List<CoingeckoCategory> findAll() {
 		return coingeckoCategoryDao.findAll();
+	}
+
+	public boolean anyExist() {
+		return coingeckoCategoryDao.anyExist();
+	}
+
+	public void delete(CoingeckoCategory object) {
+		coingeckoCategoryDao.delete(object);
+	}
+
+	public void deleteAll() {
+		coingeckoCategoryDao.deleteAll();
+	}
+
+	public List<CoingeckoCategory> saveAll(List<CoingeckoCategory> oList) {
+		return coingeckoCategoryDao.saveAll(oList);
 	}
 
 }

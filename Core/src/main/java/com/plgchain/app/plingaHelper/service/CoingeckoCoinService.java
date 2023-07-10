@@ -43,4 +43,20 @@ public class CoingeckoCoinService extends BaseService<CoingeckoCoin> implements 
 		return coingeckoCoinDao.save(cc);
 	}
 
+	public boolean anyExist() {
+		return coingeckoCoinDao.anyExist();
+	}
+
+	public void delete(CoingeckoCoin object) {
+		coingeckoCoinDao.delete(object);
+	}
+
+	public void deleteAll() {
+		coingeckoCoinDao.deleteAll();
+	}
+
+	public List<CoingeckoCoin> saveAll(List<CoingeckoCoin> oList) {
+		return coingeckoCoinDao.saveAll(oList);
+	}
+
 }

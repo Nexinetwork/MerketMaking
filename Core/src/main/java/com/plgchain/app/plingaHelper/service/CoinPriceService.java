@@ -19,9 +19,8 @@ import com.plgchain.app.plingaHelper.service.Base.BaseService;
 /**
  *
  */
-@SuppressWarnings("rawtypes")
 @Service
-public class CoinPriceService extends BaseService implements Serializable {
+public class CoinPriceService extends BaseService<CoinPrice> implements Serializable {
 
 	private static final long serialVersionUID = -8641271050704411082L;
 
@@ -59,6 +58,22 @@ public class CoinPriceService extends BaseService implements Serializable {
 
 	public boolean existsCoinPriceByCoinAndCurrency(Coin coin,Currency currency) {
 		return coinPriceDao.existsCoinPriceByCoinAndCurrency(coin,currency);
+	}
+
+	public boolean anyExist() {
+		return coinPriceDao.anyExist();
+	}
+
+	public void delete(CoinPrice object) {
+		coinPriceDao.delete(object);
+	}
+
+	public void deleteAll() {
+		coinPriceDao.deleteAll();
+	}
+
+	public List<CoinPrice> saveAll(List<CoinPrice> oList) {
+		return coinPriceDao.saveAll(oList);
 	}
 
 }

@@ -11,9 +11,8 @@ import com.plgchain.app.plingaHelper.dao.UserDao;
 import com.plgchain.app.plingaHelper.entity.User;
 import com.plgchain.app.plingaHelper.service.Base.BaseService;
 
-@SuppressWarnings("rawtypes")
 @Service
-public class UserService extends BaseService implements Serializable {
+public class UserService extends BaseService<User> implements Serializable {
 
 	private static final long serialVersionUID = -820540009110569732L;
 
@@ -46,6 +45,22 @@ public class UserService extends BaseService implements Serializable {
 
 	public boolean existsUserByEmailAddress(String emailAddress) {
 		return userDao.existsUserByEmailAddress(emailAddress);
+	}
+
+	public boolean anyExist() {
+		return userDao.anyExist();
+	}
+
+	public void delete(User object) {
+		userDao.delete(object);
+	}
+
+	public void deleteAll() {
+		userDao.deleteAll();
+	}
+
+	public List<User> saveAll(List<User> oList) {
+		return userDao.saveAll(oList);
 	}
 
 }

@@ -4,6 +4,7 @@
 package com.plgchain.app.plingaHelper.service;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,22 @@ public class CoinListHistoryService extends BaseService<CoinListHistory> impleme
 		clh.getCoinListList().add(coinListDto);
 		return coinListHistoryDao.save(clh);
 
+	}
+
+	public boolean anyExist() {
+		return coinListHistoryDao.anyExist();
+	}
+
+	public void delete(CoinListHistory object) {
+		coinListHistoryDao.delete(object);
+	}
+
+	public void deleteAll() {
+		coinListHistoryDao.deleteAll();
+	}
+
+	public List<CoinListHistory> saveAll(List<CoinListHistory> oList) {
+		return coinListHistoryDao.saveAll(oList);
 	}
 
 }

@@ -22,9 +22,8 @@ import com.plgchain.app.plingaHelper.service.Base.BaseService;
 /**
  *
  */
-@SuppressWarnings("rawtypes")
 @Service
-public class SmartContractService extends BaseService implements Serializable {
+public class SmartContractService extends BaseService<SmartContract> implements Serializable {
 
 	private static final long serialVersionUID = -8641271050704411082L;
 
@@ -108,6 +107,22 @@ public class SmartContractService extends BaseService implements Serializable {
 			lst.add(mac);
 		});
 		return lst;
+	}
+
+	public boolean anyExist() {
+		return smartContractDao.anyExist();
+	}
+
+	public void delete(SmartContract object) {
+		smartContractDao.delete(object);
+	}
+
+	public void deleteAll() {
+		smartContractDao.deleteAll();
+	}
+
+	public List<SmartContract> saveAll(List<SmartContract> oList) {
+		return smartContractDao.saveAll(oList);
 	}
 
 }

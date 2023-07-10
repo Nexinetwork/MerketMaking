@@ -19,9 +19,8 @@ import jakarta.inject.Inject;
 /**
  *
  */
-@SuppressWarnings("rawtypes")
 @Service
-public class TankhahWalletService extends BaseService implements Serializable {
+public class TankhahWalletService extends BaseService<TankhahWallet> implements Serializable {
 
 	private static final long serialVersionUID = -889011709682489433L;
 
@@ -50,6 +49,22 @@ public class TankhahWalletService extends BaseService implements Serializable {
 
 	public List<TankhahWallet> findAll() {
 		return tankhahWalletDao.findAll();
+	}
+
+	public boolean anyExist() {
+		return tankhahWalletDao.anyExist();
+	}
+
+	public void delete(TankhahWallet object) {
+		tankhahWalletDao.delete(object);
+	}
+
+	public void deleteAll() {
+		tankhahWalletDao.deleteAll();
+	}
+
+	public List<TankhahWallet> saveAll(List<TankhahWallet> oList) {
+		return tankhahWalletDao.saveAll(oList);
 	}
 
 }

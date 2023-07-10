@@ -16,9 +16,8 @@ import com.plgchain.app.plingaHelper.service.Base.BaseService;
 /**
  *
  */
-@SuppressWarnings("rawtypes")
 @Service
-public class CurrencyService extends BaseService implements Serializable {
+public class CurrencyService extends BaseService<Currency> implements Serializable {
 
 	private static final long serialVersionUID = -8641271050704411082L;
 
@@ -44,6 +43,22 @@ public class CurrencyService extends BaseService implements Serializable {
 
 	public List<Currency> findAll() {
 		return currencyDao.findAll();
+	}
+
+	public boolean anyExist() {
+		return currencyDao.anyExist();
+	}
+
+	public void delete(Currency object) {
+		currencyDao.delete(object);
+	}
+
+	public void deleteAll() {
+		currencyDao.deleteAll();
+	}
+
+	public List<Currency> saveAll(List<Currency> oList) {
+		return currencyDao.saveAll(oList);
 	}
 
 }

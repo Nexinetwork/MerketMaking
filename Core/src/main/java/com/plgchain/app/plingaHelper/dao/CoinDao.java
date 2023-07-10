@@ -7,6 +7,7 @@ import com.plgchain.app.plingaHelper.dao.base.BaseLongDao;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 
 public interface CoinDao extends BaseLongDao<Coin> {
 	public Optional<Coin> findByName(String name);
@@ -19,6 +20,9 @@ public interface CoinDao extends BaseLongDao<Coin> {
     public Page<Coin> findByCoingeckoJsonIsNull(Pageable pageable);
     public Page<Coin> findByCoingeckoJsonIsNullAndCoingeckoIdIsNotNull(Pageable pageable);
     public List<Coin> findByMustCheck(boolean mustCheck);
+
+    @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Coin e")
+    public boolean anyExist();
 
 
 }

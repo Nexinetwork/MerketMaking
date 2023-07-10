@@ -1,6 +1,7 @@
 package com.plgchain.app.plingaHelper.service;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,22 @@ public class CoinListService extends BaseService<CoinList> implements Serializab
 		if (cl.getId() <= 0)
 			cl.setId(sequenceGeneratorService.generateSequence(CoinList.SEQUENCE_NAME));
 		return coinListDao.save(cl);
+	}
+
+	public boolean anyExist() {
+		return coinListDao.anyExist();
+	}
+
+	public void delete(CoinList object) {
+		coinListDao.delete(object);
+	}
+
+	public void deleteAll() {
+		coinListDao.deleteAll();
+	}
+
+	public List<CoinList> saveAll(List<CoinList> oList) {
+		return coinListDao.saveAll(oList);
 	}
 
 
