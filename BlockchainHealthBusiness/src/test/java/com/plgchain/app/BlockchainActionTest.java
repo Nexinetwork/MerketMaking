@@ -19,6 +19,7 @@ import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
 import com.plgchain.app.plingaHelper.type.request.CoinReq;
 import com.plgchain.app.plingaHelper.type.request.ContractReq;
+import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
 import com.plgchain.app.plingaHelper.util.BlockscoutUtil;
 import com.plgchain.app.plingaHelper.util.SecurityUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.BlockchainUtil;
@@ -49,7 +50,7 @@ public class BlockchainActionTest implements Serializable {
 		return jToken;
 	}
 
-	//@Test
+	// @Test
 	public void createBlockchaintestCase() {
 		Blockchain blockchain = new Blockchain();
 		blockchain.setName("Nexilix-Pos-V1");
@@ -71,12 +72,12 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void createNodeTestCase() {
-		var node = BlockchainNodeDto.builder().blockchain("Nexilix-Pos-V1").enabled(true)
-				.serverIp("185.173.129.244").sshPort(22424).rpcUrl("http://185.173.129.244:8545").enabled(true)
-				.nodeType(BlockchainNodeType.BLOCKCHAINNODE).validator(true).serviceNeme("plgchain1.service").mustCheck(true)
-				.build();
+		var node = BlockchainNodeDto.builder().blockchain("Nexilix-Pos-V1").enabled(true).serverIp("185.173.129.244")
+				.sshPort(22424).rpcUrl("http://185.173.129.244:8545").enabled(true)
+				.nodeType(BlockchainNodeType.BLOCKCHAINNODE).validator(true).serviceNeme("plgchain1.service")
+				.mustCheck(true).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewNode")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -85,7 +86,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void setDomainAsMustCheckTestCase() {
 		var conName = "ripple";
 		HttpResponse<String> response = Unirest
@@ -96,7 +97,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void setDomainAsMustNotCheckTestCase() {
 		var conName = "binance-peg-cardano";
 		HttpResponse<String> response = Unirest
@@ -107,12 +108,12 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	// @Test
 	public void createBiewCoinTestCase() {
-		//var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new BigDecimal("1")).listed(true).build();
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
 		var req = CoinReq.builder().name("PowerPay").symbol("POWER").listed(true).build();
-		HttpResponse<String> response = Unirest
-				.post("http://185.173.129.244:7001/api/v1/godaction/coin/createNewCoin")
+		HttpResponse<String> response = Unirest.post("http://185.173.129.244:7001/api/v1/godaction/coin/createNewCoin")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(req)).asString();
@@ -124,19 +125,18 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + BlockscoutUtil.getLatestBlock("https://www.plgscan.com"));
 	}
 
-	//@Test
+	// @Test
 	public void LastBlockTest() {
-		HttpClient httpClient = HttpClient.newBuilder()
-	            .connectTimeout(Duration.ofSeconds(10))
-	            .build();
-		System.out.println(BlockchainUtil.getLatestBlockNumber(httpClient,"http://185.173.129.80:8545"));
+		HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+		System.out.println(BlockchainUtil.getLatestBlockNumber(httpClient, "http://185.173.129.80:8545"));
 	}
 
 	// @Test
 	public void getCoingeckoNetworks() {
 		String res = "";
 		try {
-			//res = CoingeckoUtil.runGetCommand("https://api.coingecko.com/api/v3/asset_platforms");
+			// res =
+			// CoingeckoUtil.runGetCommand("https://api.coingecko.com/api/v3/asset_platforms");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -145,7 +145,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println(lst);
 	}
 
-	//@Test
+	// @Test
 	public void generateSmartContract() {
 		var contract = ContractReq.builder().blockchainCoingeckoId("nexi").coinCoingeckoId("tether")
 				.contract("0xA60e7e82560165a150F05e75F59bb8499D76AE12").decimal(18).mustAdd(true).mustCheck(true)
@@ -155,6 +155,21 @@ public class BlockchainActionTest implements Serializable {
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(contract)).asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	@Test
+	public void createNewSmartContract() {
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
+		var req = SmartContractReq.builder().blockchain("Plinga-DPOS").coinId(10139)
+				.contractsAddress("0xDC9E64123b6a801B48e68f69C5594B22C5544862").decimal(18).isMain(true)
+				.marketMaking(true).mustAdd(true).mustCheck(true).build();
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.244:7001/api/v1/godaction/contract/createNewSmartContract")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(JSON.toJSONString(req)).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
