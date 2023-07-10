@@ -74,6 +74,9 @@ public class SmartContract implements Serializable {
 	@Column(name = "\"mustCheck\"",nullable = false)
 	private boolean mustCheck;
 
+	@Column(name = "\"marketMaking\"",nullable = false)
+	private boolean marketMaking;
+
 	@Column(name = "\"mustAdd\"",nullable = false)
 	private boolean mustAdd;
 

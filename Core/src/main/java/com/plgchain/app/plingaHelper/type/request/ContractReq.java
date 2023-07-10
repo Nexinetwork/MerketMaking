@@ -37,5 +37,7 @@ public class ContractReq implements Serializable {
 
 	private String coinCoingeckoId;
 
+	private boolean marketMaking;
+
 
 }

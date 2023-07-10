@@ -16,6 +16,7 @@ import com.plgchain.app.plingaHelper.exception.RestActionError;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.type.request.CoinReq;
+import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 
 import jakarta.inject.Inject;
@@ -47,6 +48,21 @@ public class CoinControler extends BaseController implements Serializable {
 		try {
 			var coin = blockchainBean.createNewCoin(coinReq);
 			return success(String.format("Coin %s has been created.", coin));
+		} catch (RestActionError e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
+			return error(e.getMessage());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return error(e.getMessage());
+		}
+	}
+
+	@PostMapping("/contract/createNewSmartContract")
+	public MessageResult createNewSmartContract(@RequestBody SmartContractReq scReq) {
+		try {
+			var contract = blockchainBean.createOrUpdateSmartContract(scReq);
+			return success(String.format("Contract %s has been created.", contract));
 		} catch (RestActionError e) {
 			// TODO Auto-generated catch block
 			logger.error(e.getMessage());

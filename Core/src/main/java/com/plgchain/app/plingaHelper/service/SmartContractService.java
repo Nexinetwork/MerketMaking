@@ -35,6 +35,10 @@ public class SmartContractService extends BaseService implements Serializable {
 		return smartContractDao.findById(id).get();
 	}
 
+	public boolean existById(Long id) {
+		return smartContractDao.existsById(id);
+	}
+
 	public SmartContract save(SmartContract smartContract) {
 		return smartContractDao.save(smartContract);
 	}

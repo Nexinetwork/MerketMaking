@@ -30,8 +30,12 @@ public class CoinService extends BaseService implements Serializable {
 	@Autowired
 	private CoinDao coinDao;
 
-	public Coin findById(Long id) {
-		return coinDao.findById(id).get();
+	public Optional<Coin> findById(Long id) {
+		return coinDao.findById(id);
+	}
+
+	public boolean existById (Long id) {
+		return coinDao.existsById(id);
 	}
 
 	@LogMethod

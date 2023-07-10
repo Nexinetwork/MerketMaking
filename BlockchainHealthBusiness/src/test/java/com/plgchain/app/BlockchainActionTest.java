@@ -109,12 +109,13 @@ public class BlockchainActionTest implements Serializable {
 
 	@Test
 	public void createBiewCoinTestCase() {
-		var req = CoinReq.builder().name("Plinga").symbol("PLINGA").priceInUsd(new BigDecimal("1.54")).listed(true).build();
+		//var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new BigDecimal("1")).listed(true).build();
+		var req = CoinReq.builder().name("PowerPay").symbol("POWER").listed(true).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/coin/createNewCoin")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body(req).asString();
+				.body(JSON.toJSONString(req)).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 

@@ -31,6 +31,7 @@ import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.type.request.CoinReq;
 import com.plgchain.app.plingaHelper.type.request.ContractReq;
+import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
 
 /**
  *
@@ -156,7 +157,8 @@ public class BlockchainBean implements Serializable {
 				.nodeType(blockchainNode.getNodeType()).rpcUrl(blockchainNode.getRpcUrl())
 				.serverIp(blockchainNode.getServerIp()).serviceNeme(blockchainNode.getServiceNeme())
 				.sshPort(blockchainNode.getSshPort()).validator(blockchainNode.isValidator())
-				.enabled(blockchainNode.isEnabled()).mustCheck(blockchainNode.isMustCheck()).lastBlock(BigInteger.ZERO).build();
+				.enabled(blockchainNode.isEnabled()).mustCheck(blockchainNode.isMustCheck()).lastBlock(BigInteger.ZERO)
+				.build();
 		node = blockchainNodeService.save(node);
 		return node;
 	}
@@ -213,10 +215,73 @@ public class BlockchainBean implements Serializable {
 			throw new RestActionError("Symbol is blank");
 		if (Strings.isNullOrEmpty(coin.getName()))
 			throw new RestActionError("Coin name is blank");
-		var coinRes = Coin.builder().coingeckoId(coin.getCoingeckoId()).mustCheck(coin.isMustCheck()).symbol(coin.getSymbol())
-				.priceInUsd(coin.getPriceInUsd()).listed(coin.isListed()).name(coin.getName()).build();
+		var coinRes = Coin.builder().coingeckoId(coin.getCoingeckoId()).mustCheck(coin.isMustCheck())
+				.symbol(coin.getSymbol()).priceInUsd(coin.getPriceInUsd()).listed(coin.isListed()).name(coin.getName())
+				.build();
 		coinRes = coinService.save(coinRes);
 		return coinRes;
+	}
+
+	@LogMethod
+	@UpdateBlockchainData
+	public SmartContract createOrUpdateSmartContract(SmartContractReq sc) throws RestActionError {
+		var smartContract = new SmartContract();
+		if (sc == null)
+			throw new RestActionError("Smartcontract is null");
+		if (sc.getContractId() <= 0 && Strings.isNullOrEmpty(sc.getBlockchain()) && sc.getBlockchainId() <= 0)
+			throw new RestActionError("Blockchain is null");
+		if (sc.getContractId() <= 0 && Strings.isNullOrEmpty(sc.getCoin()) && sc.getCoinId() <= 0)
+			throw new RestActionError("Coin is null");
+		if (sc.getContractId() > 0) {
+			if (!smartContractService.existById(sc.getContractId()))
+				throw new RestActionError("Invalid Smart Contract");
+			else
+				smartContract = smartContractService.findById(sc.getContractId());
+		}
+		if (Strings.isNullOrEmpty(sc.getContractsAddress()))
+			if (Strings.isNullOrEmpty(smartContract.getContractsAddress()))
+				throw new RestActionError("Contract Address is blank");
+		if (!Strings.isNullOrEmpty(sc.getContractsAddress()))
+			smartContract.setContractsAddress(sc.getContractsAddress());
+		if (smartContract.getBlockchain() == null) {
+			if (sc.getBlockchainId() > 0) {
+				if (!blockchainService.existById(sc.getBlockchainId()))
+					throw new RestActionError("Invalid blockchain");
+				Blockchain blockchain = blockchainService.findById(sc.getBlockchainId()).get();
+				smartContract.setBlockchain(blockchain);
+			} else {
+				if (!blockchainService.existsBlockchainByName(sc.getBlockchain()))
+					throw new RestActionError("Invalid blockchain");
+				Blockchain blockchain = blockchainService.findByName(sc.getBlockchain()).get();
+				smartContract.setBlockchain(blockchain);
+			}
+		}
+		if (smartContract.getCoin() == null) {
+			if (sc.getCoinId() > 0) {
+				if (!coinService.existById(sc.getCoinId()))
+					throw new RestActionError("Invalid Coin");
+				Coin coin = coinService.findById(sc.getCoinId()).get();
+				smartContract.setCoin(coin);
+			} else {
+				if (!coinService.existsCoinByCoingeckoId(sc.getCoin()))
+					throw new RestActionError("Invalid Coin");
+				Coin coin = coinService.findByCoingeckoId(sc.getCoin()).get();
+				smartContract.setCoin(coin);
+			}
+		}
+		if (sc.getDecimal() <= 0) {
+			if (smartContract.getDecimal() <= 0) {
+				smartContract.setDecimal(18);
+			}
+		} else {
+			smartContract.setDecimal(sc.getDecimal());
+		}
+		smartContract.setMain(sc.isMain());
+		smartContract.setMarketMaking(sc.isMarketMaking());
+		smartContract.setMustAdd(sc.isMustAdd());
+		smartContract.setMustCheck(sc.isMustCheck());
+		smartContract = smartContractService.save(smartContract);
+		return smartContract;
 	}
 
 }
