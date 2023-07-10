@@ -1,6 +1,7 @@
 package com.plgchain.app;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.http.HttpClient;
 import java.time.Duration;
@@ -16,6 +17,7 @@ import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
 import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
+import com.plgchain.app.plingaHelper.type.request.CoinReq;
 import com.plgchain.app.plingaHelper.type.request.ContractReq;
 import com.plgchain.app.plingaHelper.util.BlockscoutUtil;
 import com.plgchain.app.plingaHelper.util.SecurityUtil;
@@ -94,7 +96,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void setDomainAsMustNotCheckTestCase() {
 		var conName = "binance-peg-cardano";
 		HttpResponse<String> response = Unirest
@@ -102,6 +104,17 @@ public class BlockchainActionTest implements Serializable {
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(conName).asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	@Test
+	public void createBiewCoinTestCase() {
+		var req = CoinReq.builder().name("Plinga").symbol("PLINGA").priceInUsd(new BigDecimal("1.54")).listed(true).build();
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.244:7001/api/v1/godaction/coin/createNewCoin")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(req).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
