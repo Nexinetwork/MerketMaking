@@ -295,65 +295,64 @@ public class BlockchainBean implements Serializable {
 	@LogMethod
 	@UpdateBlockchainData
 	public MarketMaking createOrUpdate(MarketMakingReq mmReq) throws RestActionError {
-		if (mmReq == null)
+		if (mmReq == null) {
 			throw new RestActionError("Marketmaking is null");
-		if (mmReq.getSmartContractId() <= 0)
+		}
+
+		long smartContractId = mmReq.getSmartContractId();
+		if (smartContractId <= 0) {
 			throw new RestActionError("Smartcontract is null");
-		if (!smartContractService.existById(mmReq.getSmartContractId()))
-			throw new RestActionError("Invalid smartcontract");
-		var mm = new MarketMaking();
-		var sm = smartContractService.findById(mmReq.getSmartContractId()).get();
-		if (sm.getMarketMakingObject() != null)
-			mm = sm.getMarketMakingObject();
-		else {
-			mm.setSmartContract(sm);
+		}
+
+		SmartContract smartContract = smartContractService.findById(smartContractId)
+				.orElseThrow(() -> new RestActionError("Invalid smartcontract"));
+
+		MarketMaking mm = smartContract.getMarketMakingObject();
+		if (mm == null) {
+			mm = new MarketMaking();
+			mm.setSmartContract(smartContract);
 			mm.setCurrentTransferWalletCount(0);
 		}
+
 		mm.setDailyAddWallet(mmReq.getDailyAddWallet());
 		mm.setInitialDecimal(mmReq.getInitialDecimal());
 		mm.setInitialWallet(mmReq.getInitialWallet());
 		mm.setMaxInitial(mmReq.getMaxInitial());
 		mm.setMinInitial(mmReq.getMinInitial());
+
 		mm = marketMakingService.save(mm);
 		return mm;
-
 	}
 
 	@LogMethod
 	@UpdateBlockchainData
 	@Transactional
 	public SmartContract getSmartContract(SmartContractReq smReq) throws RestActionError {
-		if (smReq == null)
+		if (smReq == null) {
 			throw new RestActionError("SmartContract Object is null");
+		}
+
 		if (smReq.getContractId() > 0) {
-			if (!smartContractService.existById(smReq.getContractId()))
-				throw new RestActionError("Invalid SmartContract");
-			else
-				return smartContractService.findById(smReq.getContractId()).get();
+			return smartContractService.findById(smReq.getContractId())
+					.orElseThrow(() -> new RestActionError("Invalid SmartContract"));
 		}
-		if (Strings.isNullOrEmpty(smReq.getContractsAddress()))
+
+		if (Strings.isNullOrEmpty(smReq.getContractsAddress())) {
 			throw new RestActionError("Contract address is null");
-		if (smReq.getBlockchainId() > 0) {
-			Optional<Blockchain> blockchain = blockchainService.findById(smReq.getBlockchainId());
-			if (!blockchain.isPresent())
-				throw new RestActionError("Invalid Blockchain");
-			Optional<SmartContract> sm = smartContractService.findByBlockchainAndContractsAddress(blockchain.get(),
-					smReq.getContractsAddress());
-			if (sm.isPresent())
-				return sm.get();
-			else
-				throw new RestActionError("Invalid Contract address in blockchain");
 		}
+
+		if (smReq.getBlockchainId() > 0) {
+			return blockchainService.findById(smReq.getBlockchainId())
+					.flatMap(blockchain -> smartContractService.findByBlockchainAndContractsAddress(blockchain,
+							smReq.getContractsAddress()))
+					.orElseThrow(() -> new RestActionError("Invalid Contract address in blockchain"));
+		}
+
 		if (!Strings.isNullOrEmpty(smReq.getBlockchain())) {
-			Optional<Blockchain> blockchain = blockchainService.findByName(smReq.getBlockchain());
-			if (!blockchain.isPresent())
-				throw new RestActionError("Invalid Blockchain");
-			Optional<SmartContract> sm = smartContractService.findByBlockchainAndContractsAddress(blockchain.get(),
-					smReq.getContractsAddress());
-			if (sm.isPresent())
-				return sm.get();
-			else
-				throw new RestActionError("Invalid Contract address in blockchain");
+			return blockchainService.findByName(smReq.getBlockchain())
+					.flatMap(blockchain -> smartContractService.findByBlockchainAndContractsAddress(blockchain,
+							smReq.getContractsAddress()))
+					.orElseThrow(() -> new RestActionError("Invalid Contract address in blockchain"));
 		}
 
 		throw new RestActionError("SmartContract Not found");
