@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import com.alibaba.fastjson2.JSON;
+import com.google.common.base.Strings;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.service.BlockchainNodeService;
@@ -119,7 +120,7 @@ public class InitBean implements Serializable {
 						logger.info(String.format("There is not any node for blockchain %s", blockchain.getName()));
 					}
 				});
-		smartContractService.findByMustAdd(true).stream().filter(smartContract -> smartContract != null).forEach(smartContract -> {
+		smartContractService.findByMustAdd(true).stream().filter(smartContract -> smartContract != null && !Strings.isNullOrEmpty(smartContract.getCoin().getCoingeckoId())).forEach(smartContract -> {
 			if (blockchainDataString.hasKey(SysConstant.REDIS_CONTRACTS_MUSTADD_DATA,
 					smartContract.getCoin().getCoingeckoId()))
 				blockchainDataString.delete(SysConstant.REDIS_CONTRACTS_MUSTADD_DATA,
