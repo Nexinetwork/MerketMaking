@@ -61,7 +61,7 @@ public class TankhahWallet implements Serializable {
 	private String privateKey;
 
 	@Enumerated(EnumType.ORDINAL)
-	@Column(name = "\"TankhahWalletType\"")
+	@Column(name = "\"tankhahWalletType\"")
 	private TankhahWalletType tankhahWalletType;
 
 	@Column(name = "\"publicKey\"")

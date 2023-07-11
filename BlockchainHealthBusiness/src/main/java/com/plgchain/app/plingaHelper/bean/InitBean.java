@@ -117,7 +117,7 @@ public class InitBean implements Serializable {
 						logger.info(String.format("There is not any node for blockchain %s", blockchain.getName()));
 					}
 				});
-		smartContractService.findByMustAdd(true).stream().forEach(smartContract -> {
+		smartContractService.findByMustAdd(true).stream().filter(smartContract -> smartContract != null).forEach(smartContract -> {
 			if (blockchainDataString.hasKey(SysConstant.REDIS_CONTRACTS_MUSTADD_DATA,
 					smartContract.getCoin().getCoingeckoId()))
 				blockchainDataString.delete(SysConstant.REDIS_CONTRACTS_MUSTADD_DATA,
