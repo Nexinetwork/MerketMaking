@@ -8,7 +8,6 @@ import java.net.http.HttpClient;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,7 @@ import com.plgchain.app.plingaHelper.service.SystemConfigService;
 import com.plgchain.app.plingaHelper.type.response.ContractMustAddResponse;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -42,20 +42,20 @@ public class InitBean implements Serializable {
 
 	private final static Logger logger = LoggerFactory.getLogger(InitBean.class);
 
-	@Autowired
+	@Inject
 	private BlockchainService blockchainService;
 
-	@Autowired
+	@Inject
 	private SystemConfigService systemConfigService;
 
-	@Autowired
+	@Inject
 	private BlockchainNodeService blockchainNodeService;
 
 	@SuppressWarnings("rawtypes")
-	@Autowired
+	@Inject
 	private RedisTemplate redisTemplate;
 
-	@Autowired
+	@Inject
 	private SmartContractService smartContractService;
 
 	private String privateKey;

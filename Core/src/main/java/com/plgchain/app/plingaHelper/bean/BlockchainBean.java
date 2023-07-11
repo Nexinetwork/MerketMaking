@@ -36,6 +36,7 @@ import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
 
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 /**
  *
@@ -291,6 +292,8 @@ public class BlockchainBean implements Serializable {
 		return smartContract;
 	}
 
+	@LogMethod
+	@UpdateBlockchainData
 	public MarketMaking createOrUpdate(MarketMakingReq mmReq) throws RestActionError {
 		if (mmReq == null)
 			throw new RestActionError("Marketmaking is null");
@@ -314,6 +317,46 @@ public class BlockchainBean implements Serializable {
 		mm = marketMakingService.save(mm);
 		return mm;
 
+	}
+
+	@LogMethod
+	@UpdateBlockchainData
+	@Transactional
+	public SmartContract getSmartContract(SmartContractReq smReq) throws RestActionError {
+		if (smReq == null)
+			throw new RestActionError("SmartContract Object is null");
+		if (smReq.getContractId() > 0) {
+			if (!smartContractService.existById(smReq.getContractId()))
+				throw new RestActionError("Invalid SmartContract");
+			else
+				return smartContractService.findById(smReq.getContractId()).get();
+		}
+		if (Strings.isNullOrEmpty(smReq.getContractsAddress()))
+			throw new RestActionError("Contract address is null");
+		if (smReq.getBlockchainId() > 0) {
+			Optional<Blockchain> blockchain = blockchainService.findById(smReq.getBlockchainId());
+			if (!blockchain.isPresent())
+				throw new RestActionError("Invalid Blockchain");
+			Optional<SmartContract> sm = smartContractService.findByBlockchainAndContractsAddress(blockchain.get(),
+					smReq.getContractsAddress());
+			if (sm.isPresent())
+				return sm.get();
+			else
+				throw new RestActionError("Invalid Contract address in blockchain");
+		}
+		if (!Strings.isNullOrEmpty(smReq.getBlockchain())) {
+			Optional<Blockchain> blockchain = blockchainService.findByName(smReq.getBlockchain());
+			if (!blockchain.isPresent())
+				throw new RestActionError("Invalid Blockchain");
+			Optional<SmartContract> sm = smartContractService.findByBlockchainAndContractsAddress(blockchain.get(),
+					smReq.getContractsAddress());
+			if (sm.isPresent())
+				return sm.get();
+			else
+				throw new RestActionError("Invalid Contract address in blockchain");
+		}
+
+		throw new RestActionError("SmartContract Not found");
 	}
 
 }
