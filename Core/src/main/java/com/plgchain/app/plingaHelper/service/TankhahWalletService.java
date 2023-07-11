@@ -67,4 +67,9 @@ public class TankhahWalletService extends BaseService<TankhahWallet> implements 
 		return tankhahWalletDao.saveAll(oList);
 	}
 
+	public List<SmartContract> findAllSmartContractsNotHaveTankhahWallet() {
+		return tankhahWalletDao.findAllSmartContractsNotHaveTankhahWallet();
+	}
+
+
 }

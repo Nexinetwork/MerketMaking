@@ -6,6 +6,7 @@ package com.plgchain.app.plingaHelper.entity.coingecko;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -101,6 +102,19 @@ public class SmartContract implements Serializable {
 	private LocalDateTime lastUpdateDate;
 
 	private Integer decimal;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof SmartContract))
+			return false;
+		SmartContract other = (SmartContract) obj;
+		return (Objects.equals(blockchain, other.blockchain)
+				&& Objects.equals(contractsAddress, other.contractsAddress)) || contractId == other.contractId;
+	}
+
+
 
 
 

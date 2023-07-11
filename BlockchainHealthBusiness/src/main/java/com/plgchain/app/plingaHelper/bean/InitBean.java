@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
-
+import org.springframework.stereotype.Component;
 import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
@@ -32,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  */
-@Service
+@Component
 @Data
 @ToString
 @NoArgsConstructor

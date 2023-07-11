@@ -6,6 +6,7 @@ package com.plgchain.app.plingaHelper.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.CreationTimestamp;
@@ -81,5 +82,16 @@ public class TankhahWallet implements Serializable {
 	@Column(name = "\"lastModifiedDate\"")
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	private LocalDateTime lastModifiedDate;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof TankhahWallet))
+			return false;
+		TankhahWallet other = (TankhahWallet) obj;
+		return (Objects.equals(contract, other.contract) && Objects.equals(privateKey, other.privateKey)
+				 && tankhahWalletType == other.tankhahWalletType) || tankhahWalletId == other.tankhahWalletId;
+	}
 
 }
