@@ -73,4 +73,14 @@ public class CoinControler extends BaseController implements Serializable {
 		}
 	}
 
+	@RequestMapping("/contract/getTankhahWalletListAsResult")
+	public MessageResult getTankhahWalletListAsResult() {
+		try {
+			return success(blockchainBean.getTankhahWalletListAsResult());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return error(e.getMessage());
+		}
+	}
+
 }

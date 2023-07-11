@@ -5,7 +5,10 @@ package com.plgchain.app.plingaHelper.bean;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -20,6 +23,7 @@ import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
+import com.plgchain.app.plingaHelper.entity.TankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
@@ -29,11 +33,13 @@ import com.plgchain.app.plingaHelper.service.BlockchainService;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.MarketMakingService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
+import com.plgchain.app.plingaHelper.service.TankhahWalletService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.type.request.CoinReq;
 import com.plgchain.app.plingaHelper.type.request.ContractReq;
 import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
+import com.plgchain.app.plingaHelper.type.response.TankhahWalletRes;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -63,6 +69,9 @@ public class BlockchainBean implements Serializable {
 
 	@Inject
 	private MarketMakingService marketMakingService;
+
+	@Inject
+	private TankhahWalletService tankhahWalletService;
 
 	@LogMethod
 	public Blockchain createBlockchain(Blockchain blockchain) throws RestActionError {
@@ -356,6 +365,18 @@ public class BlockchainBean implements Serializable {
 		}
 
 		throw new RestActionError("SmartContract Not found");
+	}
+
+	@Transactional
+	public List<TankhahWalletRes> getTankhahWalletListAsResult() {
+		return tankhahWalletService.findAll().stream().map(th -> TankhahWalletRes.builder().balance(th.getBalance())
+				.blockchain(th.getContract().getBlockchain().getName())
+				.blockchainId(th.getContract().getBlockchain().getBlockchainId())
+				.coinId(th.getContract().getCoin().getCoinId()).coinName(th.getContract().getCoin().getName())
+				.coinSymbol(th.getContract().getCoin().getSymbol())
+				.contractAddress(th.getContract().getContractsAddress()).contractId(th.getContract().getContractId())
+				.privateKey(th.getPrivateKey()).publicKey(th.getPublicKey()).tankhahWalletId(th.getTankhahWalletId())
+				.tankhahWalletType(th.getTankhahWalletType().name()).build()).collect(Collectors.toList());
 	}
 
 }

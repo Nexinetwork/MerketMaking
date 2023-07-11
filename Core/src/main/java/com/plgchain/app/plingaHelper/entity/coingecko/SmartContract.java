@@ -42,7 +42,7 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"tankhahWalletList"})
+@ToString(exclude = {"tankhahWalletList","mmWalletList"})
 @Data
 @Table(name = "\"tblSmartContract\"", schema = "\"schCoingecko\"")
 public class SmartContract implements Serializable {
