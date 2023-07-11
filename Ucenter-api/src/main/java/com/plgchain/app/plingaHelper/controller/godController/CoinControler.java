@@ -84,7 +84,7 @@ public class CoinControler extends BaseController implements Serializable {
 		}
 	}
 
-	@PostMapping("/contract/createOrUpdateMarketMaking")
+	@PostMapping("/marketMaking/createOrUpdateMarketMaking")
 	public MessageResult createOrUpdateMarketMaking(@RequestBody MarketMakingReq mmReq) {
 		try {
 			var mm = blockchainBean.createOrUpdateMarketMaking(mmReq);

@@ -38,8 +38,10 @@ public class MarketMakingReq implements Serializable {
 
 	private int dailyAddWallet;
 
-	private boolean currentTransferWalletCount;
+	private long currentTransferWalletCount;
 
 	private boolean initialWalletCreationDone;
+
+	private boolean initialWalletFundingDone;
 
 }
