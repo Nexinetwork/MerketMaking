@@ -12,9 +12,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
-import com.plgchain.app.plingaHelper.entity.MarketMakingWallet;
 import com.plgchain.app.plingaHelper.entity.TankhahWallet;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
+import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

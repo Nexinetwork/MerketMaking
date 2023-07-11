@@ -7,45 +7,31 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.lang3.RandomStringUtils;
-import org.jsoup.Jsoup;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Bool;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.contracts.eip20.generated.ERC20;
-import org.web3j.crypto.Bip32ECKeyPair;
-import org.web3j.crypto.Bip44WalletUtils;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.Keys;
-import org.web3j.crypto.MnemonicUtils;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
-import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.RemoteCall;
-import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.core.methods.response.EthEstimateGas;
 import org.web3j.protocol.core.methods.response.EthGasPrice;
-import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
-import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.Transfer;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Convert.Unit;
+
+import com.alibaba.fastjson2.JSON;
+
 import org.web3j.utils.Numeric;
 
 /**
@@ -220,6 +206,40 @@ public class EVMUtil implements Serializable {
 	    }
 	    return decimal;
 	}
+
+	public static BigInteger getEstimateGas(HttpClient httpClient,String rpcUrl) {
+    	HttpRequest request = null;
+    	HttpResponse<String> response = null;
+        try {
+            request = HttpRequest.newBuilder()
+                    .uri(URI.create(rpcUrl))
+                    .POST(HttpRequest.BodyPublishers.ofString("{\"jsonrpc\":\"2.0\",\"method\":\"eth_estimateGas\",\"params\":[],\"id\":1}"))
+                    .header("Content-Type", "application/json")
+                    .build();
+
+            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                String responseBody = response.body();
+                String blockNumberHex = JSON.parseObject(responseBody).getString("result");
+
+                // Parse the JSON response and extract the block number
+                // Assuming the response is in the format {"result":"0x123..."}
+                request = null;
+            	response = null;
+                return new BigInteger(String.valueOf(EVMUtil.hexToDecimal(blockNumberHex)));
+            } else {
+                System.err.println("Error: " + response.statusCode() + " " + response.body());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+        	request = null;
+        	response = null;
+		}
+
+        return null;
+    }
 
 
 }

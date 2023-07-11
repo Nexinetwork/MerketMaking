@@ -69,6 +69,12 @@ public class MarketMaking implements Serializable {
 	@Column(name = "\"currentTransferWalletCount\"",nullable = false)
 	private long currentTransferWalletCount;
 
+	@Column(name = "\"initialWalletCreationDone\"",nullable = false)
+	private boolean initialWalletCreationDone;
+
+	@Column(name = "\"initialWalletFundingDone\"",nullable = false)
+	private boolean initialWalletFundingDone;
+
 	@CreationTimestamp
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	@Column(name = "\"creationDate\"", nullable = false)

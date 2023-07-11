@@ -15,8 +15,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.alibaba.fastjson2.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
-import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

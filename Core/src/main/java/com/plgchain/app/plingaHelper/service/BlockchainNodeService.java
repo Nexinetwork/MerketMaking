@@ -5,6 +5,8 @@ package com.plgchain.app.plingaHelper.service;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +26,8 @@ public class BlockchainNodeService extends BaseService<BlockchainNode> implement
 	@Autowired
 	private BlockchainNodeDao blockchainNodeDao;
 
-	public BlockchainNode findById(Long id) {
-		return blockchainNodeDao.findById(id).get();
+	public Optional<BlockchainNode> findById(Long id) {
+		return blockchainNodeDao.findById(id);
 	}
 
 	public List<BlockchainNode> findByBlockchain(Blockchain blockchain) {
