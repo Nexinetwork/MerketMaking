@@ -67,16 +67,16 @@ public class MarketMakingService extends BaseService<MarketMaking> implements Se
 		return marketMakingDao.findBySmartContract(smartContract);
 	}
 
-	public boolean existBySmartContract(SmartContract smartContract) {
-		return marketMakingDao.existBySmartContract(smartContract);
+	public boolean existsBySmartContract(SmartContract smartContract) {
+		return marketMakingDao.existsBySmartContract(smartContract);
 	}
 
 	public List<MarketMaking> findByInitialWalletCreationDone(boolean initialWalletCreationDone) {
 		return marketMakingDao.findByInitialWalletCreationDone(initialWalletCreationDone);
 	}
 
-	public boolean existByInitialWalletCreationDone(boolean initialWalletCreationDone) {
-		return marketMakingDao.existByInitialWalletCreationDone(initialWalletCreationDone);
+	public boolean existsByInitialWalletCreationDone(boolean initialWalletCreationDone) {
+		return marketMakingDao.existsByInitialWalletCreationDone(initialWalletCreationDone);
 	}
 
 	public long countByInitialWalletCreationDone(boolean initialWalletCreationDone) {
@@ -87,8 +87,8 @@ public class MarketMakingService extends BaseService<MarketMaking> implements Se
 		return marketMakingDao.findByInitialWalletFundingDone(initialWalletFundingDone);
 	}
 
-	public boolean existByInitialWalletFundingDone(boolean initialWalletFundingDone) {
-		return marketMakingDao.existByInitialWalletFundingDone(initialWalletFundingDone);
+	public boolean existsByInitialWalletFundingDone(boolean initialWalletFundingDone) {
+		return marketMakingDao.existsByInitialWalletFundingDone(initialWalletFundingDone);
 	}
 
 	public long countByInitialWalletFundingDone(boolean initialWalletFundingDone) {

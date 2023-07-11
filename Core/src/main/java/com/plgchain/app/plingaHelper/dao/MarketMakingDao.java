@@ -15,14 +15,14 @@ public interface MarketMakingDao extends BaseLongDao<MarketMaking> {
     public boolean anyExist();
 
 	public Optional<MarketMaking> findBySmartContract(SmartContract smartContract);
-	public boolean existBySmartContract(SmartContract smartContract);
+	public boolean existsBySmartContract(SmartContract smartContract);
 
 	public List<MarketMaking> findByInitialWalletCreationDone(boolean initialWalletCreationDone);
-	public boolean existByInitialWalletCreationDone(boolean initialWalletCreationDone);
+	public boolean existsByInitialWalletCreationDone(boolean initialWalletCreationDone);
 	public long countByInitialWalletCreationDone(boolean initialWalletCreationDone);
 
 	public List<MarketMaking> findByInitialWalletFundingDone(boolean initialWalletFundingDone);
-	public boolean existByInitialWalletFundingDone(boolean initialWalletFundingDone);
+	public boolean existsByInitialWalletFundingDone(boolean initialWalletFundingDone);
 	public long countByInitialWalletFundingDone(boolean initialWalletFundingDone);
 
 }

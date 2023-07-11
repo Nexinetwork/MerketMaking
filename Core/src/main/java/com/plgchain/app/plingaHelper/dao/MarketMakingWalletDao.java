@@ -14,8 +14,8 @@ public interface MarketMakingWalletDao extends BaseLongDao<MarketMakingWallet> {
 	public boolean anyExist();
 	public List<MarketMakingWallet> findByContract(SmartContract contract);
 	public long countByContract(SmartContract contract);
-	public boolean existByContract(SmartContract contract);
+	public boolean existsByContract(SmartContract contract);
 	public List<MarketMakingWallet> findByContractAndWalletType(SmartContract contract, WalletType walletType);
 	public long countByContractAndWalletType(SmartContract contract, WalletType walletType);
-	public boolean existByContractAndWalletType(SmartContract contract, WalletType walletType);
+	public boolean existsByContractAndWalletType(SmartContract contract, WalletType walletType);
 }

@@ -80,8 +80,8 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 		return marketMakingWalletDao.countByContract(contract);
 	}
 
-	public boolean existByContract(SmartContract contract) {
-		return marketMakingWalletDao.existByContract(contract);
+	public boolean existsByContract(SmartContract contract) {
+		return marketMakingWalletDao.existsByContract(contract);
 	}
 
 	public List<MarketMakingWallet> findByContractAndWalletType(SmartContract contract, WalletType walletType) {
@@ -92,8 +92,8 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 		return marketMakingWalletDao.countByContractAndWalletType(contract, walletType);
 	}
 
-	public boolean existByContractAndWalletType(SmartContract contract, WalletType walletType) {
-		return marketMakingWalletDao.existByContractAndWalletType(contract, walletType);
+	public boolean existsByContractAndWalletType(SmartContract contract, WalletType walletType) {
+		return marketMakingWalletDao.existsByContractAndWalletType(contract, walletType);
 	}
 
 }
