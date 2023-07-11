@@ -22,6 +22,7 @@ import com.plgchain.app.plingaHelper.type.response.ContractMustAddResponse;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -94,6 +95,7 @@ public class InitBean implements Serializable {
 		lockedMethod.remove(action);
 	}
 
+	@Transactional
 	@SuppressWarnings("unchecked")
 	public void writeBlockchainToRedis() {
 		// Predicate<Blockchain> mustCheck = blockchain -> blockchain.isEnabled() &&
