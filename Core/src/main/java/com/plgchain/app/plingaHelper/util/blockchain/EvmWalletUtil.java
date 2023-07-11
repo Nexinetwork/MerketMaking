@@ -1,6 +1,12 @@
 package com.plgchain.app.plingaHelper.util.blockchain;
 
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
+
+import com.plgchain.app.plingaHelper.dto.EvmWalletDto;
+
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.List;
@@ -73,5 +79,27 @@ public class EvmWalletUtil implements Serializable {
 
     public static BigInteger average(BigInteger bigInt1, BigInteger bigInt2) {
         return bigInt1.add(bigInt2).divide(BigInteger.TWO);
+    }
+
+    public static String correctLengthOfPrivateKey(String privateKey) {
+        return String.format("%0" + (PRIVATE_KEY_LENGTH - privateKey.length()) + "d%s", 0, privateKey);
+    }
+
+    public static EvmWalletDto generateWallet(BigInteger bigInt) {
+        String privateKey = correctLengthOfPrivateKey(bigInt);
+        String publicKey = Credentials.create(ECKeyPair.create(bigInt)).getAddress().trim();
+        String hexKey = getHexOfBigInteger(bigInt);
+        return EvmWalletDto.builder().bigInt(bigInt).publicKey(publicKey).privateKey(privateKey).hexKey(hexKey).balance(BigDecimal.ZERO).build();
+    }
+
+    public static EvmWalletDto generateRandomWallet() {
+        return generateWallet(getRandomPrivateKeyBigInt());
+    }
+
+    public static List<EvmWalletDto> generateRandomWallet(int count) {
+        List<BigInteger> randomPrivateKeyList = getRandomPrivateKeyBigIntList(count);
+        return randomPrivateKeyList.stream()
+                .map(EvmWalletUtil::generateWallet)
+                .collect(Collectors.toList());
     }
 }
