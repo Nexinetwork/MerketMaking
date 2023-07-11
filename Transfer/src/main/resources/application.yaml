@@ -11,6 +11,12 @@ server:
 spring:
     application:
         name: Transfer
+    async:
+        thread:
+            pool:
+                maxSize: 30
+                coreSize: 30
+                queueCapacity: 50
     security:
        token:
           signing:
@@ -33,10 +39,20 @@ spring:
         restart:
             enabled: true
     jpa:
-        show-sql: true
+        hibernate:
+            ddl-auto: update
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        show-sql: false
         properties:
             hibernate:
                 physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+                jdbc:
+                    batch_size: 20000
+                order_inserts: true
+                order_updates: true
+                batch_versioned_data: true
+                order_by:
+                    default_null_ordering: first
     kafka:
         bootstrap-servers: 127.0.0.1:9092
         consumer:

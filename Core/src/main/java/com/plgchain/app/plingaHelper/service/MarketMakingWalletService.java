@@ -6,6 +6,8 @@ package com.plgchain.app.plingaHelper.service;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.dao.MarketMakingWalletDao;
@@ -56,6 +58,19 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 	public List<MarketMakingWallet> saveAll(List<MarketMakingWallet> oList) {
 		return marketMakingWalletDao.saveAll(oList);
 	}
+
+	public List<MarketMakingWallet> batchSaveAll(List<MarketMakingWallet> oList, int count) {
+        return IntStream.range(0, oList.size())
+                .boxed()
+                .collect(Collectors.groupingBy(index -> index / count))
+                .values()
+                .stream()
+                .map(batchIndexes -> batchIndexes.stream()
+                        .map(oList::get)
+                        .collect(Collectors.toList()))
+                .flatMap(batchList -> saveAll(batchList).stream())
+                .collect(Collectors.toList());
+    }
 
 	public List<MarketMakingWallet> findByContract(SmartContract contract) {
 		return marketMakingWalletDao.findByContract(contract);

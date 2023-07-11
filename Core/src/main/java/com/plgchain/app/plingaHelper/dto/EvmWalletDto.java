@@ -6,11 +6,6 @@ package com.plgchain.app.plingaHelper.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.plgchain.app.plingaHelper.constant.BlockchainNodeType;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
