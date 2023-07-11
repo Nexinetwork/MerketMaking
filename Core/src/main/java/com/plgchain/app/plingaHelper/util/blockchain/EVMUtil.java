@@ -45,6 +45,8 @@ public class EVMUtil implements Serializable {
 
 	public static BigInteger DefaultGasLimit = new BigInteger("12500000");
 
+	public static final String mainToken = "0x0000000000000000000000000000000000001010";
+
 	public static BigInteger getWei(BigDecimal value) {
 		return Convert.toWei(value.toString(), Unit.ETHER).toBigInteger();
 	}

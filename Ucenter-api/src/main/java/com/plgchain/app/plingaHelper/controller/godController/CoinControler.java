@@ -16,6 +16,7 @@ import com.plgchain.app.plingaHelper.exception.RestActionError;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.type.request.CoinReq;
+import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 
@@ -77,6 +78,21 @@ public class CoinControler extends BaseController implements Serializable {
 	public MessageResult getTankhahWalletListAsResult() {
 		try {
 			return success(blockchainBean.getTankhahWalletListAsResult());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return error(e.getMessage());
+		}
+	}
+
+	@PostMapping("/contract/createOrUpdateMarketMaking")
+	public MessageResult createOrUpdateMarketMaking(@RequestBody MarketMakingReq mmReq) {
+		try {
+			var mm = blockchainBean.createOrUpdateMarketMaking(mmReq);
+			return success(String.format("Contract %s has been created.", mm));
+		} catch (RestActionError e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
+			return error(e.getMessage());
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			return error(e.getMessage());

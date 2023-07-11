@@ -108,11 +108,11 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	// @Test
-	public void createBiewCoinTestCase() {
+	//@Test
+	public void createNewCoinTestCase() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = CoinReq.builder().name("PowerPay").symbol("POWER").listed(true).build();
+		var req = CoinReq.builder().name("ZEROX").symbol("ZEROX").listed(true).build();
 		HttpResponse<String> response = Unirest.post("http://185.173.129.244:7001/api/v1/godaction/coin/createNewCoin")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
@@ -162,14 +162,26 @@ public class BlockchainActionTest implements Serializable {
 	public void createNewSmartContract() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = SmartContractReq.builder().blockchain("Plinga-DPOS").coinId(10139)
-				.contractsAddress("0xDC9E64123b6a801B48e68f69C5594B22C5544862").decimal(18).isMain(true)
+		var req = SmartContractReq.builder().blockchain("Nexilix-Pos-V1").coinId(10137)
+				.contractsAddress("0x30199Be78D0A2A885b3E03f7D5B08DE2ad251648").decimal(18).isMain(true)
 				.marketMaking(true).mustAdd(true).mustCheck(true).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/contract/createNewSmartContract")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(req)).asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	@Test
+	public void getTankhahWallets() {
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
+		HttpResponse<String> response = Unirest
+				.get("http://185.173.129.244:7001/api/v1/godaction/contract/getTankhahWalletListAsResult")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 

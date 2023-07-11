@@ -303,7 +303,7 @@ public class BlockchainBean implements Serializable {
 
 	@LogMethod
 	@UpdateBlockchainData
-	public MarketMaking createOrUpdate(MarketMakingReq mmReq) throws RestActionError {
+	public MarketMaking createOrUpdateMarketMaking(MarketMakingReq mmReq) throws RestActionError {
 		if (mmReq == null) {
 			throw new RestActionError("Marketmaking is null");
 		}
@@ -321,6 +321,8 @@ public class BlockchainBean implements Serializable {
 			mm = new MarketMaking();
 			mm.setSmartContract(smartContract);
 			mm.setCurrentTransferWalletCount(0);
+			mm.setInitialWalletCreationDone(false);
+			mm.setInitialWalletFundingDone(false);
 		}
 
 		mm.setDailyAddWallet(mmReq.getDailyAddWallet());
