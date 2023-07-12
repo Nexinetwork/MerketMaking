@@ -95,4 +95,16 @@ public class MarketMakingService extends BaseService<MarketMaking> implements Se
 		return marketMakingDao.countByInitialWalletFundingDone(initialWalletFundingDone);
 	}
 
+	public List<MarketMaking> findByInitialWalletCreationDoneAndInitialWalletFundingDone(
+			boolean initialWalletCreationDone, boolean initialWalletFundingDone) {
+		return marketMakingDao.findByInitialWalletCreationDoneAndInitialWalletFundingDone(initialWalletCreationDone,
+				initialWalletFundingDone);
+	}
+
+	public List<MarketMaking> findByInitialWalletCreationDoneOrInitialWalletFundingDone(
+			boolean initialWalletCreationDone, boolean initialWalletFundingDone) {
+		return marketMakingDao.findByInitialWalletCreationDoneOrInitialWalletFundingDone(initialWalletCreationDone,
+				initialWalletFundingDone);
+	}
+
 }

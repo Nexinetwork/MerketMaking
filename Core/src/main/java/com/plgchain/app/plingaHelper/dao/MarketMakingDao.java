@@ -25,4 +25,7 @@ public interface MarketMakingDao extends BaseLongDao<MarketMaking> {
 	public boolean existsByInitialWalletFundingDone(boolean initialWalletFundingDone);
 	public long countByInitialWalletFundingDone(boolean initialWalletFundingDone);
 
+	public List<MarketMaking> findByInitialWalletCreationDoneAndInitialWalletFundingDone(boolean initialWalletCreationDone,boolean initialWalletFundingDone);
+	public List<MarketMaking> findByInitialWalletCreationDoneOrInitialWalletFundingDone(boolean initialWalletCreationDone,boolean initialWalletFundingDone);
+
 }
