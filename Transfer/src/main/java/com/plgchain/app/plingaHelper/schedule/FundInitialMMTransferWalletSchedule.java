@@ -63,7 +63,7 @@ public class FundInitialMMTransferWalletSchedule implements Serializable {
 	                        var coin = sm.getCoin();
 	                        logger.info("Try to fund for coin {}", coin.getSymbol());
 	                        var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
-	                        var gasPrice = new BigInteger("1250");
+	                        var gasPrice = new BigInteger("1100000000");
 	                        final BigInteger[] tankhahNonce = { BigInteger.ZERO };
 	                        try {
 	                            tankhahNonce[0] = EVMUtil.getNonce(blockchain.getRpcUrl(), tankhahWallet.getPrivateKey());
