@@ -90,6 +90,7 @@ public class TransferBean implements Serializable {
 	                    .ifPresent(r -> {
 	                        logger.info(String.format("Transfered %s Maincoin from %s to %s and txHash is %s with nonce %s with gasPrice %s and gaslimit %s",
 	                                amount, from, to, r.getTransactionHash(), finalNonce[0].toString(), finalGasPrice[0].toString(),finalGasLimit[0].toString()));
+	                        return;
 	                    });
 
 	            if (result != null && EVMUtil.mostIncreaseNonce(result)) {
