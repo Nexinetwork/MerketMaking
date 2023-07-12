@@ -69,10 +69,11 @@ public class TransferBean implements Serializable {
 	 */
 
 	@Async
-	public void transferBetweenToAccount(String rpcUrl, String privateKey, String from, String to, BigDecimal amount, BigInteger gasPrice, BigInteger nonce) {
+	public void transferBetweenToAccount(String rpcUrl, String privateKey, String from, String to, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce) {
 	    EthSendTransaction result = null;
 	    BigInteger[] finalNonce = {nonce};
 	    BigInteger[] finalGasPrice = {gasPrice};
+	    BigInteger[] finalGasLimit = {gasLimit};
 		/*
 		 * logger.info(String.
 		 * format("ُTry to transfer %s Maincoin from %s/%s to %s and with nonce %s with gasPrice %s with rpcurl %s"
@@ -81,14 +82,14 @@ public class TransferBean implements Serializable {
 		 */
 	    while (true) {
 	        try {
-	            result = EVMUtil.createRawTransactionSync(rpcUrl, privateKey, to, amount, finalNonce[0], finalGasPrice[0]);
+	            result = EVMUtil.createRawTransactionSync(rpcUrl, privateKey, to, amount, finalNonce[0], finalGasPrice[0],finalGasLimit[0]);
 
 	            Optional.ofNullable(result)
 	                    .filter(r -> !r.hasError())
 	                    .filter(r -> r.getTransactionHash() != null && !r.getTransactionHash().isBlank())
 	                    .ifPresent(r -> {
-	                        logger.info(String.format("Transfered %s Maincoin from %s to %s and txHash is %s with nonce %s with gasPrice %s",
-	                                amount, from, to, r.getTransactionHash(), finalNonce[0].toString(), finalGasPrice[0].toString()));
+	                        logger.info(String.format("Transfered %s Maincoin from %s to %s and txHash is %s with nonce %s with gasPrice %s and gaslimit %s",
+	                                amount, from, to, r.getTransactionHash(), finalNonce[0].toString(), finalGasPrice[0].toString(),finalGasLimit[0].toString()));
 	                    });
 
 	            if (result != null && EVMUtil.mostIncreaseNonce(result)) {

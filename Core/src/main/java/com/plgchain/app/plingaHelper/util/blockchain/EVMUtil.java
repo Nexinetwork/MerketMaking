@@ -259,11 +259,11 @@ public class EVMUtil implements Serializable {
 	}
 
 	public static EthSendTransaction createRawTransactionSync(String rpcUrl, String privateKeyHex,
-	        String recipientAddress, BigDecimal amount, BigInteger nonce, BigInteger gasPrice) throws IOException {
+	        String recipientAddress, BigDecimal amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit) throws IOException {
 	    Web3j web3j = Web3j.build(new HttpService(rpcUrl));
 	    Credentials credentials = Credentials.create(privateKeyHex);
-	    RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, requestCurrentGasPrice(rpcUrl),
-	            gasPrice, recipientAddress, getWei(amount));
+	    RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice,
+	    		gasLimit, recipientAddress, getWei(amount));
 
 	    byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
 	    String hexValue = Numeric.toHexString(signedMessage);

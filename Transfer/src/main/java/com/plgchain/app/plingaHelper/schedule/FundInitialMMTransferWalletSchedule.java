@@ -64,6 +64,7 @@ public class FundInitialMMTransferWalletSchedule implements Serializable {
 	                        logger.info("Try to fund for coin {}", coin.getSymbol());
 	                        var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
 	                        var gasPrice = new BigInteger("1100000000");
+	                        var gasLimit = EVMUtil.getGasLimit(blockchain.getRpcUrl());
 	                        final BigInteger[] tankhahNonce = { BigInteger.ZERO };
 	                        try {
 	                            tankhahNonce[0] = EVMUtil.getNonce(blockchain.getRpcUrl(), tankhahWallet.getPrivateKey());
@@ -78,9 +79,11 @@ public class FundInitialMMTransferWalletSchedule implements Serializable {
 	                                .forEach(wallet -> {
 	                                    var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
 	                                            mm.getMaxInitial(), mm.getInitialDecimal());
-	                                    transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
-	                                            tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-	                                            wallet.getPublicKey(), amount, gasPrice, tankhahNonce[0]);
+
+										  transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+										  tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+										  wallet.getPublicKey(), amount, gasPrice,gasLimit, tankhahNonce[0]);
+
 	                                    tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 	                                });
 

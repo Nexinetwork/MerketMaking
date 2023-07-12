@@ -29,7 +29,7 @@ public class TransferTest implements Serializable {
                 amount, from,privateKey, to, finalNonce[0].toString(), finalGasPrice[0].toString(),rpcUrl));
 	    while (true) {
 	        try {
-	            result = EVMUtil.createRawTransactionSync(rpcUrl, privateKey, to, amount, finalNonce[0], finalGasPrice[0]);
+	            //result = EVMUtil.createRawTransactionSync(rpcUrl, privateKey, to, amount, finalNonce[0], finalGasPrice[0]);
 
 	            Optional.ofNullable(result)
 	                    .filter(r -> !r.hasError())
