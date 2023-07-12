@@ -73,7 +73,8 @@ public class TransferBean implements Serializable {
 	    EthSendTransaction result = null;
 	    BigInteger[] finalNonce = {nonce};
 	    BigInteger[] finalGasPrice = {gasPrice};
-
+	    logger.info(String.format("ُTry to transfer %s Maincoin from %s to %s and with nonce %s with gasPrice %s with rpcurl %s",
+                amount, from, to, finalNonce[0].toString(), finalGasPrice[0].toString(),rpcUrl));
 	    while (true) {
 	        try {
 	            result = EVMUtil.createRawTransactionSync(rpcUrl, privateKey, to, amount, finalNonce[0], finalGasPrice[0]);
