@@ -79,7 +79,7 @@ public class FundInitialMMTransferWalletSchedule implements Serializable {
 	                                    var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
 	                                            mm.getMaxInitial(), mm.getInitialDecimal());
 	                                    transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
-	                                            tankhahWallet.getPrivateKey(), tankhahWallet.getPublicKey(),
+	                                            tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
 	                                            wallet.getPublicKey(), amount, gasPrice, tankhahNonce[0]);
 	                                    tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 	                                });
