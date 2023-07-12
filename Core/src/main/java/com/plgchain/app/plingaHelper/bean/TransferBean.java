@@ -73,7 +73,7 @@ public class TransferBean implements Serializable {
 	    EthSendTransaction result = null;
 	    BigInteger[] finalNonce = {nonce};
 	    BigInteger[] finalGasPrice = {gasPrice};
-	    logger.info(String.format("ُTry to transfer %s Maincoin from %s to %s and with nonce %s with gasPrice %s with rpcurl %s",
+	    logger.info(String.format("ُTry to transfer %s Maincoin from %s/%s to %s and with nonce %s with gasPrice %s with rpcurl %s",
                 amount, from, to, finalNonce[0].toString(), finalGasPrice[0].toString(),rpcUrl));
 	    while (true) {
 	        try {
@@ -84,7 +84,7 @@ public class TransferBean implements Serializable {
 	                    .filter(r -> r.getTransactionHash() != null && !r.getTransactionHash().isBlank())
 	                    .ifPresent(r -> {
 	                        logger.info(String.format("Transfered %s Maincoin from %s to %s and txHash is %s with nonce %s with gasPrice %s",
-	                                amount, from, to, r.getTransactionHash(), finalNonce[0].toString(), finalGasPrice[0].toString()));
+	                                amount, from,privateKey, to, r.getTransactionHash(), finalNonce[0].toString(), finalGasPrice[0].toString()));
 	                    });
 
 	            if (result != null && EVMUtil.mostIncreaseNonce(result)) {
