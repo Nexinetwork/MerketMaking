@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.springframework.stereotype.Service;
+
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.dao.MarketMakingWalletDao;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
@@ -20,6 +22,7 @@ import jakarta.inject.Inject;
 /**
  *
  */
+@Service
 public class MarketMakingWalletService extends BaseService<MarketMakingWallet> implements Serializable {
 
 	private static final long serialVersionUID = -1912998788562981610L;
