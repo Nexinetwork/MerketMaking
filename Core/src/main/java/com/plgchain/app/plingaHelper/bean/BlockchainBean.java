@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,7 @@ import com.plgchain.app.plingaHelper.annotation.UpdateBlockchainData;
 import com.plgchain.app.plingaHelper.constant.AdminCommandType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
+import com.plgchain.app.plingaHelper.dto.EvmWalletDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
@@ -30,6 +33,7 @@ import com.plgchain.app.plingaHelper.service.BlockchainNodeService;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.MarketMakingService;
+import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.service.TankhahWalletService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
@@ -38,6 +42,7 @@ import com.plgchain.app.plingaHelper.type.request.ContractReq;
 import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
 import com.plgchain.app.plingaHelper.type.response.TankhahWalletRes;
+import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -49,6 +54,8 @@ import jakarta.transaction.Transactional;
 public class BlockchainBean implements Serializable {
 
 	private static final long serialVersionUID = -2749816508506842832L;
+
+	private static final Logger logger = LoggerFactory.getLogger(BlockchainBean.class);
 
 	@Inject
 	private BlockchainService blockchainService;
@@ -70,6 +77,9 @@ public class BlockchainBean implements Serializable {
 
 	@Inject
 	private TankhahWalletService tankhahWalletService;
+
+	@Inject
+	private MarketMakingWalletService marketMakingWalletService;
 
 	@LogMethod
 	public Blockchain createBlockchain(Blockchain blockchain) throws RestActionError {
@@ -378,5 +388,39 @@ public class BlockchainBean implements Serializable {
 				.privateKey(th.getPrivateKey()).publicKey(th.getPublicKey()).tankhahWalletId(th.getTankhahWalletId())
 				.tankhahWalletType(th.getTankhahWalletType().name()).build()).collect(Collectors.toList());
 	}
+
+	public void fixWalletPrivatekeys() {
+	    var tankhahWallets = tankhahWalletService.findAll();
+	    var marketMakingWallets = marketMakingWalletService.findAll();
+
+	    var tankhahWalletsToUpdate = tankhahWallets.stream()
+	            .filter(wallet -> Strings.isNullOrEmpty(wallet.getPrivateKeyHex()))
+	            .peek(wallet -> {
+	                EvmWalletDto wDto = EvmWalletUtil.generateWallet(new BigInteger(wallet.getPrivateKey()));
+	                wallet.setPrivateKeyHex(wDto.getHexKey());
+	                logger.info(String.format("Private key of tankhahwallet %s has been set to %s.",
+	                        wallet.getPublicKey(), wallet.getPrivateKeyHex()));
+	            })
+	            .collect(Collectors.toList());
+
+	    var marketMakingWalletsToUpdate = marketMakingWallets.stream()
+	            .filter(wallet -> Strings.isNullOrEmpty(wallet.getPrivateKeyHex()))
+	            .peek(wallet -> {
+	                EvmWalletDto wDto = EvmWalletUtil.generateWallet(new BigInteger(wallet.getPrivateKey()));
+	                wallet.setPrivateKeyHex(wDto.getHexKey());
+	                logger.info(String.format("Private key of tankhahwallet %s has been set to %s.",
+	                        wallet.getPublicKey(), wallet.getPrivateKeyHex()));
+	            })
+	            .collect(Collectors.toList());
+
+	    if (!tankhahWalletsToUpdate.isEmpty()) {
+	        tankhahWalletService.saveAll(tankhahWalletsToUpdate);
+	    }
+
+	    if (!marketMakingWalletsToUpdate.isEmpty()) {
+	        marketMakingWalletService.saveAll(marketMakingWalletsToUpdate);
+	    }
+	}
+
 
 }

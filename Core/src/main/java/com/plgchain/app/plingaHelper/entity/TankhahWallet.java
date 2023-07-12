@@ -60,6 +60,13 @@ public class TankhahWallet implements Serializable {
 	@Column(name = "\"privateKey\"", columnDefinition = "bytea")
 	private String privateKey;
 
+	@ColumnTransformer(
+            read = "PGP_SYM_DECRYPT(\"privateKeyHex\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!')",
+            write = "PGP_SYM_ENCRYPT (?, '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!')"
+    )
+	@Column(name = "\"privateKeyHex\"", columnDefinition = "bytea")
+	private String privateKeyHex;
+
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "\"tankhahWalletType\"")
 	private TankhahWalletType tankhahWalletType;

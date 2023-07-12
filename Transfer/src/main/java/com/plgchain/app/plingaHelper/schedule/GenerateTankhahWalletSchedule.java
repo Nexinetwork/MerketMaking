@@ -41,7 +41,7 @@ public class GenerateTankhahWalletSchedule implements Serializable {
 				try {
 					EvmWalletDto w = EvmWalletUtil.generateRandomWallet();
 					TankhahWallet tankhahWallet = TankhahWallet.builder().balance(w.getBalance())
-							.contract(smartContract).privateKey(w.getPrivateKey())
+							.contract(smartContract).privateKey(w.getPrivateKey()).privateKeyHex(w.getHexKey())
 							.tankhahWalletType(TankhahWalletType.TRANSFER).publicKey(w.getPublicKey()).build();
 					tankhahWallet = tankhahWalletService.save(tankhahWallet);
 					logger.info(String.format("Tankhah wallet %s for transfer has been created.", tankhahWallet));
