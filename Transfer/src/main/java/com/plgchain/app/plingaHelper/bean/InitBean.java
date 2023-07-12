@@ -42,6 +42,8 @@ public class InitBean implements Serializable {
 
 	private HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
 
+	private int jpaBatchCount = 2000;
+
 	@PostConstruct
 	public void init() {
 
