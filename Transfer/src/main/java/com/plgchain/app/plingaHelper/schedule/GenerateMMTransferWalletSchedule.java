@@ -44,7 +44,7 @@ public class GenerateMMTransferWalletSchedule implements Serializable {
 							WalletType.TRANSFER);
 					mm.setInitialWalletCreationDone(true);
 					marketMakingService.save(mm);
-					logger.info(String.format("wallets for marketmaking $s has been created", mm));
+					logger.info(String.format("wallets for marketmaking %s has been created", mm));
 				});
 			} catch (Exception e) {
 				logger.error(e.getMessage());

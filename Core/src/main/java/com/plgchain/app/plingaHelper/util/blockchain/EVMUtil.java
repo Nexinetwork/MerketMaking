@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.web3j.contracts.eip20.generated.ERC20;
@@ -242,6 +243,36 @@ public class EVMUtil implements Serializable {
 
         return null;
     }
+
+	public static CompletableFuture<EthSendTransaction> createRawTransactionAsync(String rpcUrl, String privateKeyHex,
+	        String recipientAddress, BigDecimal amount, BigInteger nonce, BigInteger gasPrice) throws IOException {
+	    Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+	    Credentials credentials = Credentials.create(privateKeyHex);
+	    RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, requestCurrentGasPrice(rpcUrl),
+	            gasPrice, recipientAddress, getWei(amount));
+
+	    byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+	    String hexValue = Numeric.toHexString(signedMessage);
+
+	    CompletableFuture<EthSendTransaction> ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync();
+	    return ethSendTransaction;
+	}
+
+	public static EthSendTransaction createRawTransactionSync(String rpcUrl, String privateKeyHex,
+	        String recipientAddress, BigDecimal amount, BigInteger nonce, BigInteger gasPrice) throws IOException {
+	    Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+	    Credentials credentials = Credentials.create(privateKeyHex);
+	    RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, requestCurrentGasPrice(rpcUrl),
+	            gasPrice, recipientAddress, getWei(amount));
+
+	    byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+	    String hexValue = Numeric.toHexString(signedMessage);
+
+	    EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send();
+	    return ethSendTransaction;
+	}
+
+
 
 
 }

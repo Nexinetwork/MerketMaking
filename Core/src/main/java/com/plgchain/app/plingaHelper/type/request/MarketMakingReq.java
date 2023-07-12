@@ -6,6 +6,8 @@ package com.plgchain.app.plingaHelper.type.request;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import com.plgchain.app.plingaHelper.constant.TransactionParallelType;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -43,5 +45,7 @@ public class MarketMakingReq implements Serializable {
 	private boolean initialWalletCreationDone;
 
 	private boolean initialWalletFundingDone;
+
+	private TransactionParallelType transactionParallelType;
 
 }

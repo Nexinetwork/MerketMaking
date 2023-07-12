@@ -107,4 +107,9 @@ public class MarketMakingService extends BaseService<MarketMaking> implements Se
 				initialWalletFundingDone);
 	}
 
+	public Optional<MarketMaking> findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId(boolean initialWalletCreationDone,boolean initialWalletFundingDone){
+		return marketMakingDao.findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId(initialWalletCreationDone,
+				initialWalletFundingDone);
+	}
+
 }

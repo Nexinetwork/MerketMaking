@@ -10,10 +10,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.plgchain.app.plingaHelper.constant.TransactionParallelType;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -68,6 +71,10 @@ public class MarketMaking implements Serializable {
 
 	@Column(name = "\"currentTransferWalletCount\"",nullable = false)
 	private long currentTransferWalletCount;
+
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name = "\"transactionParallelType\"")
+	private TransactionParallelType transactionParallelType;
 
 	@Column(name = "\"initialWalletCreationDone\"",nullable = false)
 	private boolean initialWalletCreationDone;
