@@ -408,7 +408,7 @@ public class BlockchainBean implements Serializable {
 	            .peek(wallet -> {
 	                EvmWalletDto wDto = EvmWalletUtil.generateWallet(new BigInteger(wallet.getPrivateKey()));
 	                wallet.setPrivateKeyHex(wDto.getHexKey());
-	                logger.info(String.format("Private key of tankhahwallet %s has been set to %s.",
+	                logger.info(String.format("Private key of Transfer Wallet %s has been set to %s.",
 	                        wallet.getPublicKey(), wallet.getPrivateKeyHex()));
 	            })
 	            .collect(Collectors.toList());
@@ -420,6 +420,8 @@ public class BlockchainBean implements Serializable {
 	    if (!marketMakingWalletsToUpdate.isEmpty()) {
 	        marketMakingWalletService.saveAll(marketMakingWalletsToUpdate);
 	    }
+
+	    logger.info("Fixing wallet has been done");
 	}
 
 
