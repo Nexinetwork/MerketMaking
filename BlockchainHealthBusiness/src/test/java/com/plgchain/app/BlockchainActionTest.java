@@ -14,6 +14,7 @@ import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.coingecko.type.AssetPlatform;
 import com.plgchain.app.plingaHelper.constant.BlockchainNodeType;
 import com.plgchain.app.plingaHelper.constant.BlockchainTechType;
+import com.plgchain.app.plingaHelper.constant.TransactionParallelType;
 import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
@@ -186,12 +187,12 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	@Test
 	public void createMarketMaking() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = MarketMakingReq.builder().currentTransferWalletCount(0).dailyAddWallet(1000).initialDecimal(2).initialWallet(70000).initialWalletCreationDone(false)
-				.initialWalletFundingDone(false).minInitial(new BigDecimal(100)).maxInitial(new BigDecimal(1000)).smartContractId(12127).build();
+		var req = MarketMakingReq.builder().currentTransferWalletCount(0).dailyAddWallet(1000).initialDecimal(2).initialWallet(172320).initialWalletCreationDone(false)
+				.initialWalletFundingDone(false).minInitial(new BigDecimal(180)).maxInitial(new BigDecimal(2500)).smartContractId(12124).transactionParallelType(TransactionParallelType.ASYNC).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/marketMaking/createOrUpdateMarketMaking")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
