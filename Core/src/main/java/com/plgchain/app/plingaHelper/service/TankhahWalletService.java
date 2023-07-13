@@ -47,6 +47,10 @@ public class TankhahWalletService extends BaseService<TankhahWallet> implements 
 		return tankhahWalletDao.saveAndFlush(tw);
 	}
 
+	public List<TankhahWallet> findByPublicKey(String publicKey) {
+		return tankhahWalletDao.findByPublicKey(publicKey);
+	}
+
 	public List<TankhahWallet> findAll() {
 		return tankhahWalletDao.findAll();
 	}

@@ -79,6 +79,10 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 		return marketMakingWalletDao.findByContract(contract);
 	}
 
+	public List<MarketMakingWallet> findByPublicKey(String publicKey) {
+		return marketMakingWalletDao.findByPublicKey(publicKey);
+	}
+
 	public long countByContract(SmartContract contract) {
 		return marketMakingWalletDao.countByContract(contract);
 	}

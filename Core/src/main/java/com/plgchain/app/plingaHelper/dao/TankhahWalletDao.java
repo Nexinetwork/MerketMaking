@@ -12,6 +12,8 @@ public interface TankhahWalletDao extends BaseLongDao<TankhahWallet> {
 	public boolean existsTankhahWalletByContract(SmartContract contract);
 	public List<TankhahWallet> findByContract(SmartContract contract);
 
+	public List<TankhahWallet> findByPublicKey(String publicKey);
+
 	@Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM TankhahWallet e")
     public boolean anyExist();
 
