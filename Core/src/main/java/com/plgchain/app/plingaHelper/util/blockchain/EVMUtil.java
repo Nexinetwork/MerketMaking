@@ -24,6 +24,7 @@ import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.EthGasPrice;
+import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -310,6 +311,15 @@ public class EVMUtil implements Serializable {
 
 	    EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send();
 	    return ethSendTransaction;
+	}
+
+	public static BigDecimal getAccountBalance(String rpcUrl, String walletAddress) throws IOException {
+		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+		EthGetBalance ethGetBalance = web3j.ethGetBalance(walletAddress, DefaultBlockParameterName.LATEST)
+				.send();
+		BigInteger wei = ethGetBalance.getBalance();
+		BigDecimal tokenValue = Convert.fromWei(String.valueOf(wei), Convert.Unit.ETHER);
+		return tokenValue;
 	}
 
 
