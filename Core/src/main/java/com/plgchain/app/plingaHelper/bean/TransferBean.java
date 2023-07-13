@@ -93,6 +93,9 @@ public class TransferBean implements Serializable {
 				if (result != null) {
 					if (EVMUtil.mostIncreaseNonce(result))
 						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
+					else {
+						logger.error(String.format("message is %s and Error is %s but try again.",result.getResult(), result.getError().getMessage()))
+					}
 				}
 			} catch (Exception e) {
 				logger.error("Error is : " + e.getMessage());
