@@ -339,6 +339,7 @@ public class BlockchainBean implements Serializable {
 		mm.setInitialWallet(mmReq.getInitialWallet());
 		mm.setMaxInitial(mmReq.getMaxInitial());
 		mm.setMinInitial(mmReq.getMinInitial());
+		mm.setTransactionParallelType(mmReq.getTransactionParallelType());
 
 		mm = marketMakingService.save(mm);
 		return mm;
