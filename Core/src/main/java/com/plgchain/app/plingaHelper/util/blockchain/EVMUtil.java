@@ -43,9 +43,9 @@ public class EVMUtil implements Serializable {
 
 	private static final long serialVersionUID = -4942141276353870379L;
 
-	public static BigInteger DefaultGasPrice = new BigInteger("1100000000");
+	public static BigInteger DefaultGasPrice = new BigInteger("12500000");
 
-	public static BigInteger DefaultGasLimit = new BigInteger("12500000");
+	public static BigInteger DefaultGasLimit = new BigInteger("21000");
 
 	public static final String mainToken = "0x0000000000000000000000000000000000001010";
 

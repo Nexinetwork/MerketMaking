@@ -82,7 +82,7 @@ public class FundInitialMMTransferWalletSchedule implements Serializable {
 
 										  transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
 										  tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-										  wallet.getPublicKey(), amount, gasPrice,gasLimit, tankhahNonce[0]);
+										  wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,EVMUtil.DefaultGasLimit, tankhahNonce[0]);
 
 	                                    tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 	                                });

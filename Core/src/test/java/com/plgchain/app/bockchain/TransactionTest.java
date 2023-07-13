@@ -23,11 +23,16 @@ public class TransactionTest implements Serializable {
 	@Test
 	public void doSingleTransaction() {
 		System.out.println("GasPrice : " + EVMUtil.DefaultGasPrice);
-		String privateKey = "bec8b2b1cefafeec549f16f744f61dd70aed2eca27e5ab69b2fb1848ff4737fd";
+		String privateKey = "d77b53b57eb48f4e01fe9bb607716da5b3cf566b1347c29fa105deff3cace01d";
 		String address = "0xE2675D7a31859027A56A421eadf5D77C2cF5BB36";
 		try {
-			System.out.println(EVMUtil.createRawTransaction("https://rpcurl.mainnet.plgchain.com", privateKey, address,
-					new BigDecimal("1000")).getTransactionHash());
+			/*
+			 * System.out.println(EVMUtil.createRawTransaction(
+			 * "https://rpcurl.mainnet.plgchain.com", privateKey, address, new
+			 * BigDecimal("1")).getTransactionHash());
+			 */
+			System.out.println(EVMUtil.createRawTransaction("http://185.128.137.240:8546", privateKey, address,
+					new BigDecimal("1")).getTransactionHash());
 			int a = 1;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
