@@ -91,7 +91,7 @@ public class TransferTest implements Serializable {
 			transferBetweenToAccount("http://185.128.137.240:8546",
 					"d77b53b57eb48f4e01fe9bb607716da5b3cf566b1347c29fa105deff3cace01d",
 					"e6934f80c7390f3952e0f03bf43583cf9d57d4a1", "0x65B84D90CaF1Eb50888504F7Eb19B5a77BE9890f",
-					new BigDecimal("0.0001"), new BigInteger("12500000"), new BigInteger("21000"), tankhahNonce[0]);
+					new BigDecimal("0.0001"), EVMUtil.DefaultGasPrice ,EVMUtil.DefaultGasLimit, tankhahNonce[0]);
 			tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 		}
 
