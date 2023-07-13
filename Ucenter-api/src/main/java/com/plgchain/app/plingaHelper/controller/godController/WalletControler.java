@@ -43,6 +43,7 @@ public class WalletControler extends BaseController implements Serializable {
 
 	@RequestMapping("/wallet/fixWalletPrivatekeys")
 	public MessageResult fixWalletPrivatekeys() {
+		logger.info("fixWalletPrivatekeys fired.");
 		try {
 			blockchainBean.fixWalletPrivatekeys();
 			return success("All wallets has been fixed.");
@@ -54,6 +55,7 @@ public class WalletControler extends BaseController implements Serializable {
 
 	@RequestMapping("/wallet/getTankhahWalletByPublicKey")
 	public MessageResult getTankhahWalletByPublicKey(@RequestBody String publicKey) {
+		logger.info("getTankhahWalletByPublicKey fired.");
 		try {
 			var result = tankhahWalletService.findByPublicKey(publicKey);
 			return success(result);
@@ -65,6 +67,7 @@ public class WalletControler extends BaseController implements Serializable {
 
 	@RequestMapping("/wallet/getMarketMakingWalletByPublicKey")
 	public MessageResult getMarketMakingWalletByPublicKey(@RequestBody String publicKey) {
+		logger.info("getMarketMakingWalletByPublicKey fired.");
 		try {
 			var result = marketMakingWalletService.findByPublicKey(publicKey);
 			return success(result);

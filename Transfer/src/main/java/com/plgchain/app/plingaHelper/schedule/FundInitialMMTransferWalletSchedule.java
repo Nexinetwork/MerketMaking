@@ -71,7 +71,7 @@ public class FundInitialMMTransferWalletSchedule implements Serializable {
 	                        } catch (IOException e) {
 	                            logger.error(e.getMessage());
 	                        }
-	                        logger.info("Current none of tankhah wallet is : " + tankhahNonce[0].toString());
+	                        logger.info("Current nonce of tankhah wallet is : " + tankhahNonce[0].toString());
 	                        mmWalletService.findByContract(sm)
 	                                .stream()
 	                                .filter(wallet -> mm.getTransactionParallelType().equals(TransactionParallelType.SYNC))

@@ -20,7 +20,7 @@ public class TransactionTest implements Serializable {
 
 	private static final long serialVersionUID = -110399061749216116L;
 
-	@Test
+	//@Test
 	public void doSingleTransaction() {
 		System.out.println("GasPrice : " + EVMUtil.DefaultGasPrice);
 		String privateKey = "d77b53b57eb48f4e01fe9bb607716da5b3cf566b1347c29fa105deff3cace01d";
@@ -40,10 +40,10 @@ public class TransactionTest implements Serializable {
 		}
 	}
 
-	//@Test
+	@Test
 	public void getNonceTestCase() {
 		try {
-			System.out.println(EVMUtil.getNonce("http://http://185.173.129.243:18545", "bec8b2b1cefafeec549f16f744f61dd70aed2eca27e5ab69b2fb1848ff4737fd"));
+			System.out.println(EVMUtil.getNonce("http://185.173.129.243:18545", "bec8b2b1cefafeec549f16f744f61dd70aed2eca27e5ab69b2fb1848ff4737fd"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
