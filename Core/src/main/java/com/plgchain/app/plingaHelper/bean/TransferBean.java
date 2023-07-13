@@ -95,6 +95,9 @@ public class TransferBean implements Serializable {
 						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
 					else {
 						logger.error(String.format("message is %s and Error is %s but try again.",result.getResult(), result.getError().getMessage()));
+						if (result.getError().getMessage().contains("insufficient funds for gas")) {
+							shouldBreak[0] = true;
+						}
 					}
 				}
 			} catch (Exception e) {
