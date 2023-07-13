@@ -95,7 +95,7 @@ public class TransferBean implements Serializable {
 						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("Error is : " + e.getMessage());
 				shouldBreak[0] = true;
 			}
 		}
