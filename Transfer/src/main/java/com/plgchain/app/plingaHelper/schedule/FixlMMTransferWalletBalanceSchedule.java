@@ -96,12 +96,12 @@ public class FixlMMTransferWalletBalanceSchedule implements Serializable {
 											try {
 												nonce = EVMUtil.getNonce(blockchain.getRpcUrl(),
 														wallet.getPrivateKeyHex());
-												transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
-														wallet.getPrivateKeyHex(), wallet.getPublicKey(),
-														  tankhahWallet.getPublicKey(), mustReturn, EVMUtil.DefaultGasPrice,EVMUtil.DefaultGasLimit, nonce);
 											} catch (IOException e) {
 												logger.error(e.getMessage());
 											}
+											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+													wallet.getPrivateKeyHex(), wallet.getPublicKey(),
+													  tankhahWallet.getPublicKey(), mustReturn, EVMUtil.DefaultGasPrice,EVMUtil.DefaultGasLimit, nonce);
 										} else if (balance.equals(BigDecimal.ZERO)) {
 											var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
 		                                            mm.getMaxInitial(), mm.getInitialDecimal());
