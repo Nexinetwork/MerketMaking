@@ -326,15 +326,15 @@ public class BlockchainBean implements Serializable {
 
 		MarketMaking mm = smartContract.getMarketMakingObject();
 		if (mm == null) {
-			mm = new MarketMaking();
-			mm.setSmartContract(smartContract);
-			mm.setCurrentTransferWalletCount(0);
-			mm.setInitialWalletCreationDone(false);
-			mm.setInitialWalletFundingDone(false);
+		    mm = MarketMaking.builder()
+		        .smartContract(smartContract)
+		        .currentTransferWalletCount(0)
+		        .initialWalletCreationDone(false)
+		        .initialWalletFundingDone(false)
+		        .build();
 		}
 
 		mm.setDailyAddWallet(mmReq.getDailyAddWallet());
-		mm.setTransactionParallelType(mmReq.getTransactionParallelType());
 		mm.setInitialDecimal(mmReq.getInitialDecimal());
 		mm.setInitialWallet(mmReq.getInitialWallet());
 		mm.setMaxInitial(mmReq.getMaxInitial());
