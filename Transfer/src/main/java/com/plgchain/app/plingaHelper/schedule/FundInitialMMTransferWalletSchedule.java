@@ -67,7 +67,7 @@ public class FundInitialMMTransferWalletSchedule implements Serializable {
 	                        var gasLimit = EVMUtil.getGasLimit(blockchain.getRpcUrl()).divide(new BigInteger("10000"));
 	                        final BigInteger[] tankhahNonce = { BigInteger.ZERO };
 	                        try {
-	                            tankhahNonce[0] = EVMUtil.getNonce(blockchain.getRpcUrl(), tankhahWallet.getPrivateKey());
+	                            tankhahNonce[0] = EVMUtil.getNonce(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex());
 	                        } catch (IOException e) {
 	                            logger.error(e.getMessage());
 	                        }

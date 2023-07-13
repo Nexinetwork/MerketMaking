@@ -3,6 +3,7 @@
  */
 package com.plgchain.app.plingaHelper;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -13,6 +14,7 @@ import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
 import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.util.SecurityUtil;
+import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
@@ -43,7 +45,7 @@ public class WalletUtilTest implements Serializable {
 		return jToken;
 	}
 
-	@Test
+	//@Test
 	public void getTankhahWalletTestCase() {
 			// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 			// BigDecimal("1")).listed(true).build();
@@ -53,6 +55,19 @@ public class WalletUtilTest implements Serializable {
 					// .header("x-api-key", "REPLACE_KEY_VALUE")
 					.body("0xe6934f80c7390f3952e0f03bf43583cf9d57d4a1").asString();
 			System.out.println("Result is : " + response.getBody());
+	}
+
+	@Test
+	public void getNonce() {
+		String rpcUrl = "http://185.173.129.243:18545";
+		String privateKey = "665a41f51a3b705c8b6cdc85e2b9cbb7baa636c806b9746a99e99966b304baf2";
+		try {
+			System.out.println(EVMUtil.getNonce(rpcUrl,
+					privateKey));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
