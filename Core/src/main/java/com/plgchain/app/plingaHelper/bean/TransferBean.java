@@ -94,7 +94,7 @@ public class TransferBean implements Serializable {
 					if (EVMUtil.mostIncreaseNonce(result))
 						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
 					else {
-						logger.error(String.format("message is %s and Error is %s but try again.",result.getResult(), result.getError().getMessage()))
+						logger.error(String.format("message is %s and Error is %s but try again.",result.getResult(), result.getError().getMessage()));
 					}
 				}
 			} catch (Exception e) {
