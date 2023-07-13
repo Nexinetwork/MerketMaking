@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -184,6 +185,8 @@ public class EVMUtil implements Serializable {
 				return true;
 			else if (etht.getError().getMessage().equals("replacement transaction underpriced"))
 				return true;
+			else if (etht.getError().getMessage().equals("already known"))
+				return true;
 
 		}
 		return false;
@@ -211,6 +214,43 @@ public class EVMUtil implements Serializable {
 	}
 
 	public static BigInteger getEstimateGas(HttpClient httpClient,String rpcUrl) {
+    	HttpRequest request = null;
+    	HttpResponse<String> response = null;
+        try {
+            request = HttpRequest.newBuilder()
+                    .uri(URI.create(rpcUrl))
+                    .POST(HttpRequest.BodyPublishers.ofString("{\"jsonrpc\":\"2.0\",\"method\":\"eth_estimateGas\",\"params\":[],\"id\":1}"))
+                    .header("Content-Type", "application/json")
+                    .build();
+
+            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                String responseBody = response.body();
+                String blockNumberHex = JSON.parseObject(responseBody).getString("result");
+
+                // Parse the JSON response and extract the block number
+                // Assuming the response is in the format {"result":"0x123..."}
+                request = null;
+            	response = null;
+                return new BigInteger(String.valueOf(EVMUtil.hexToDecimal(blockNumberHex)));
+            } else {
+                System.err.println("Error: " + response.statusCode() + " " + response.body());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+        	request = null;
+        	response = null;
+		}
+
+        return null;
+    }
+
+	public static BigInteger getEstimateGas(String rpcUrl) {
+		HttpClient httpClient = HttpClient.newBuilder()
+	            .connectTimeout(Duration.ofSeconds(10))
+	            .build();
     	HttpRequest request = null;
     	HttpResponse<String> response = null;
         try {

@@ -64,14 +64,14 @@ public class FundInitialMMTransferWalletSchedule implements Serializable {
 	                        logger.info("Try to fund for coin {}", coin.getSymbol());
 	                        var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
 	                        var gasPrice = new BigInteger("1100000000");
-	                        var gasLimit = EVMUtil.getGasLimit(blockchain.getRpcUrl());
+	                        var gasLimit = EVMUtil.getGasLimit(blockchain.getRpcUrl()).divide(new BigInteger("10000"));
 	                        final BigInteger[] tankhahNonce = { BigInteger.ZERO };
 	                        try {
 	                            tankhahNonce[0] = EVMUtil.getNonce(blockchain.getRpcUrl(), tankhahWallet.getPrivateKey());
 	                        } catch (IOException e) {
 	                            logger.error(e.getMessage());
 	                        }
-
+	                        logger.info("Current none of tankhah wallet is : " + tankhahNonce[0].toString());
 	                        mmWalletService.findByContract(sm)
 	                                .stream()
 	                                .filter(wallet -> mm.getTransactionParallelType().equals(TransactionParallelType.SYNC))

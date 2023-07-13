@@ -69,40 +69,38 @@ public class TransferBean implements Serializable {
 	 */
 
 	@Async
-	public void transferBetweenToAccount(String rpcUrl, String privateKey, String from, String to, BigDecimal amount, BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce) {
-	    EthSendTransaction result = null;
-	    BigInteger[] finalNonce = {nonce};
-	    BigInteger[] finalGasPrice = {gasPrice};
-	    BigInteger[] finalGasLimit = {gasLimit};
-		/*
-		 * logger.info(String.
-		 * format("ُTry to transfer %s Maincoin from %s/%s to %s and with nonce %s with gasPrice %s with rpcurl %s"
-		 * , amount, from,privateKey, to, finalNonce[0].toString(),
-		 * finalGasPrice[0].toString(),rpcUrl));
-		 */
-	    while (true) {
-	        try {
-	            result = EVMUtil.createRawTransactionSync(rpcUrl, privateKey, to, amount, finalNonce[0], finalGasPrice[0],finalGasLimit[0]);
+	public void transferBetweenToAccount(String rpcUrl, String privateKey, String from, String to, BigDecimal amount,
+			BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce) {
+		EthSendTransaction result = null;
+		BigInteger[] finalNonce = { nonce };
+		BigInteger[] finalGasPrice = { gasPrice };
+		BigInteger[] finalGasLimit = { gasLimit };
+		boolean [] shouldBreak = {false};
+		while (!shouldBreak[0]) {
+			try {
+				result = EVMUtil.createRawTransactionSync(rpcUrl, privateKey, to, amount, finalNonce[0],
+						finalGasPrice[0], finalGasLimit[0]);
 
-	            Optional.ofNullable(result)
-	                    .filter(r -> !r.hasError())
-	                    .filter(r -> r.getTransactionHash() != null && !r.getTransactionHash().isBlank())
-	                    .ifPresent(r -> {
-	                        logger.info(String.format("Transfered %s Maincoin from %s to %s and txHash is %s with nonce %s with gasPrice %s and gaslimit %s",
-	                                amount, from, to, r.getTransactionHash(), finalNonce[0].toString(), finalGasPrice[0].toString(),finalGasLimit[0].toString()));
-	                        return;
-	                    });
+				Optional.ofNullable(result).filter(r -> !r.hasError())
+						.filter(r -> r.getTransactionHash() != null && !r.getTransactionHash().isBlank())
+						.ifPresent(r -> {
+							System.out.println(String.format(
+									"Transfered %s Maincoin from %s to %s and txHash is %s with nonce %s with gasPrice %s and gaslimit %s",
+									amount, from, to, r.getTransactionHash(), finalNonce[0].toString(),
+									finalGasPrice[0].toString(), finalGasLimit[0].toString()));
+							shouldBreak[0] = true;
+						});
 
-	            if (result != null && EVMUtil.mostIncreaseNonce(result)) {
-	                finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
-	            } else {
-	                break;
-	            }
-	        } catch (Exception e) {
-	            logger.error(e.getMessage());
-	            break;
-	        }
-	    }
+				if (result != null && EVMUtil.mostIncreaseNonce(result)) {
+					finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
+				} else {
+					shouldBreak[0] = true;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				shouldBreak[0] = true;
+			}
+		}
 	}
 
 
