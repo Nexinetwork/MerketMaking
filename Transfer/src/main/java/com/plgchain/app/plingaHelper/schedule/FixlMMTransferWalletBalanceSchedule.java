@@ -51,6 +51,7 @@ public class FixlMMTransferWalletBalanceSchedule implements Serializable {
 	public void fixlMMTransferWalletBalance() {
 		if (!initBean.doesActionRunning("fixlMMTransferWalletBalance")) {
 			initBean.startActionRunning("fixlMMTransferWalletBalance");
+			logger.info("fixlMMTransferWalletBalance started.");
 			try {
 				marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDone(true, true)
 						.parallelStream().forEach(mm -> {
@@ -98,14 +99,13 @@ public class FixlMMTransferWalletBalanceSchedule implements Serializable {
 
 										}
 									});
-
-							mm.setInitialWalletFundingDone(true);
 							marketMakingService.save(mm);
 						});
 			} catch (Exception e) {
 				logger.error(e.getMessage());
 			}
 			initBean.stopActionRunning("fixlMMTransferWalletBalance");
+			logger.info("fixlMMTransferWalletBalance finished..");
 		} else {
 			logger.warn("Schedule method fixlMMTransferWalletBalance already running, skipping it.");
 		}
