@@ -85,7 +85,7 @@ public class FundInitialMMTransferWalletSchedule {
 											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
 													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
 													wallet.getPublicKey(), sm.getContractsAddress(), tokenAmount,
-													EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
 											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 										}
 									});
