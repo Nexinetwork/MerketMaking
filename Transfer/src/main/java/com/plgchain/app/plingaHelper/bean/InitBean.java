@@ -4,6 +4,7 @@
 package com.plgchain.app.plingaHelper.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.net.http.HttpClient;
 import java.time.Duration;
 import java.util.HashSet;
@@ -37,9 +38,15 @@ public class InitBean implements Serializable {
 
 	private int jpaBatchCount = 2000;
 
-	private int fixTransferWalletBalancePerRound = 1000;
+	private int fixTransferWalletBalancePerRound = 200;
 
 	private int transferPerRound = 1000;
+
+	private BigDecimal minMaincoinInContractWallet = new BigDecimal(2);
+
+	private BigDecimal maxMaincoinInContractWallet = new BigDecimal(10);
+
+	private int decimalMaincoinInContractWallet = 2;
 
 	@PostConstruct
 	public void init() {
