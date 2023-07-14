@@ -49,15 +49,19 @@ public class FixlMMTransferWalletBalanceSchedule implements Serializable {
 		this.mmWalletService = mmWalletService;
 	}
 
-	@Scheduled(cron = "0 0 */4 * * *", zone = "GMT")
+	@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
 	@Transactional
 	public void fixlMMTransferWalletBalance() {
 		if (!initBean.doesActionRunning("fixlMMTransferWalletBalance")) {
 			initBean.startActionRunning("fixlMMTransferWalletBalance");
 			try {
 				marketMakingService
-						.findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId(true, true)
-						.ifPresent(mm -> {
+				.findByInitialWalletCreationDoneAndInitialWalletFundingDone(true, true).parallelStream().forEach(mm -> {
+							/*
+							 * marketMakingService
+							 * .findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId
+							 * (true, true) .ifPresent(mm -> {
+							 */
 							SmartContract sm = mm.getSmartContract();
 							var blockchain = sm.getBlockchain();
 							var coin = sm.getCoin();
