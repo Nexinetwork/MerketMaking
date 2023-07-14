@@ -201,6 +201,8 @@ public class EVMUtil implements Serializable {
 				return true;
 			else if (etht.getError().getMessage().equals("replacement transaction underpriced"))
 				return true;
+			else if (etht.getError().getMessage().equals("transaction underpriced"))
+				return true;
 			else if (etht.getError().getMessage().equals("already known"))
 				return true;
 
