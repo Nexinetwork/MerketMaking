@@ -406,6 +406,21 @@ public class EVMUtil implements Serializable {
 		}
 	}
 
+	public static BigInteger getTokenBalanceAsWei(String rpcUrl, String privateKey, String contractAddress) {
+		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+		Credentials credentials = Credentials.create(privateKey);
+		ERC20 javaToken = ERC20.load(contractAddress, web3j, credentials, new DefaultGasProvider());
+		while (true) {
+			try {
+				RemoteCall<BigInteger> balanceWei = javaToken.balanceOf(credentials.getAddress());
+				return balanceWei.send();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
 
 
 
