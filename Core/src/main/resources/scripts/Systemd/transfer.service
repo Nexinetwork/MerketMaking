@@ -6,7 +6,7 @@ After=cloud.service redis.service kafka.service postgresql.service mongod.servic
 [Service]
 #WorkingDirectory=/opt/prod
 Environment="JAVA_HOME=/home/jdk-17.0.7"
-ExecStart=/home/jdk-17.0.7/bin/java -jar -Xms512m -Xmx512m -Xmn200m -Xss256k -XX:+UseParallelGC /root/PlingaHelperApp/Transfer-0.0.1.jar
+ExecStart=/home/jdk-17.0.7/bin/java -jar -Xms1g -Xmx1g -Xmn400m -Xss512k -XX:+ExplicitGCInvokesConcurrent  /root/PlingaHelperApp/Transfer-0.0.1.jar
 #User=jvmapps
 Type=simple
 Restart=on-failure

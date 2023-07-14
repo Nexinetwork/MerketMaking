@@ -49,7 +49,7 @@ public class FixlMMTransferWalletBalanceSchedule implements Serializable {
 		this.mmWalletService = mmWalletService;
 	}
 
-	@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
+	@Scheduled(cron = "0 0 */4 * * *", zone = "GMT")
 	@Transactional
 	public void fixlMMTransferWalletBalance() {
 		if (!initBean.doesActionRunning("fixlMMTransferWalletBalance")) {
