@@ -45,7 +45,7 @@ public class WalletUtilTest implements Serializable {
 		return jToken;
 	}
 
-	//@Test
+	@Test
 	public void getTankhahWalletTestCase() {
 			// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 			// BigDecimal("1")).listed(true).build();
@@ -53,11 +53,11 @@ public class WalletUtilTest implements Serializable {
 					.post("http://185.173.129.244:7001/api/v1/godaction/wallet/getTankhahWalletByPublicKey")
 					.header("content-type", "application/json").header("Authorization", getAuthToken())
 					// .header("x-api-key", "REPLACE_KEY_VALUE")
-					.body("0xe6934f80c7390f3952e0f03bf43583cf9d57d4a1").asString();
+					.body("0x02fe5ef54ad985369b3578ee2841035e6649880d").asString();
 			System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void getNonce() {
 		String rpcUrl = "http://185.173.129.243:18545";
 		String privateKey = "665a41f51a3b705c8b6cdc85e2b9cbb7baa636c806b9746a99e99966b304baf2";

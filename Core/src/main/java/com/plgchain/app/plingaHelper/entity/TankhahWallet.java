@@ -94,7 +94,7 @@ public class TankhahWallet implements Serializable {
 	public MarketMakingWalletRes getAsMarketMakingWalletRes() {
 		return MarketMakingWalletRes.builder().balance(balance).blockchain(contract.getBlockchain().getName()).blockchainId(contract.getBlockchain().getBlockchainId())
 				.coin(contract.getCoin().getName()).coinId(contract.getCoin().getCoinId()).symbol(contract.getCoin().getSymbol()).contractId(contract.getContractId())
-				.smartContract(contract.getContractsAddress()).build();
+				.smartContract(contract.getContractsAddress()).publicKey(publicKey).privateKey(privateKey).privateKeyHex(privateKeyHex).build();
 	}
 
 	@Override
