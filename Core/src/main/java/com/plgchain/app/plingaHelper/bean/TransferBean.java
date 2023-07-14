@@ -124,8 +124,8 @@ public class TransferBean implements Serializable {
 						.filter(r -> r.getTransactionHash() != null && !r.getTransactionHash().isBlank())
 						.ifPresent(r -> {
 							logger.info(String.format(
-									"Transfered %s Maincoin from %s to %s and txHash is %s with nonce %s with gasPrice %s and gaslimit %s",
-									amount, from, to, r.getTransactionHash(), finalNonce[0].toString(),
+									"Transfered %s token %s from %s to %s and txHash is %s with nonce %s with gasPrice %s and gaslimit %s",
+									amount, contract,from, to, r.getTransactionHash(), finalNonce[0].toString(),
 									finalGasPrice[0].toString(), finalGasLimit[0].toString()));
 							shouldBreak[0] = true;
 						});

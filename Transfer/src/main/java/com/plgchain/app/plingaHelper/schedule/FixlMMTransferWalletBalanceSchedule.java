@@ -132,14 +132,14 @@ public class FixlMMTransferWalletBalanceSchedule {
 											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
 													wallet.getPrivateKeyHex(), wallet.getPublicKey(),
 													tankhahWallet.getPublicKey(), sm.getContractsAddress(), mustReturn,
-													EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, nonce);
+													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
 										} else if (balance.equals(BigDecimal.ZERO)) {
 											var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
 													mm.getMaxInitial(), mm.getInitialDecimal());
 											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
 													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
 													wallet.getPublicKey(), sm.getContractsAddress(), amount,
-													EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
 											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 										}
 									});
