@@ -60,6 +60,44 @@ public class TransferTest implements Serializable {
 		}
 	}
 
+	public void transferBetweenToAccount(String rpcUrl, String privateKey, String from, String to,String contract, BigDecimal amount,
+			BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce) {
+		EthSendTransaction result = null;
+		BigInteger[] finalNonce = { nonce };
+		BigInteger[] finalGasPrice = { gasPrice };
+		BigInteger[] finalGasLimit = { gasLimit };
+		boolean [] shouldBreak = {false};
+		while (!shouldBreak[0]) {
+			try {
+				result = EVMUtil.sendSmartContractTransactionSync(rpcUrl, privateKey, contract,to, amount, finalNonce[0],
+						finalGasPrice[0], finalGasLimit[0]);
+
+				Optional.ofNullable(result).filter(r -> !r.hasError())
+						.filter(r -> r.getTransactionHash() != null && !r.getTransactionHash().isBlank())
+						.ifPresent(r -> {
+							System.out.println(String.format(
+									"Transfered %s token %s from %s to %s and txHash is %s with nonce %s with gasPrice %s and gaslimit %s",
+									amount, contract,from, to, r.getTransactionHash(), finalNonce[0].toString(),
+									finalGasPrice[0].toString(), finalGasLimit[0].toString()));
+							shouldBreak[0] = true;
+						});
+				if (result != null) {
+					if (EVMUtil.mostIncreaseNonce(result))
+						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
+					else {
+						System.out.println(String.format("message is %s and Error is %s but try again.",result.getResult(), result.getError().getMessage()));
+						if (result.getError().getMessage().contains("insufficient funds for gas")) {
+							shouldBreak[0] = true;
+						}
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				shouldBreak[0] = true;
+			}
+		}
+	}
+
 	@Test
 	public void transferTestCase() {
 		System.out.println("GAS_LIMIT : " + DefaultGasProvider.GAS_LIMIT.toString());
@@ -78,13 +116,13 @@ public class TransferTest implements Serializable {
 			e.printStackTrace();
 		}
 		System.out.println("Estimate gas price : " + EVMUtil.getEstimateGas("http://185.173.129.244:8545"));
-		for (int i = 0; i < 10000; i++) {
+		//for (int i = 0; i < 10000; i++) {
 			transferBetweenToAccount("http://185.128.137.240:8546",
 					"d77b53b57eb48f4e01fe9bb607716da5b3cf566b1347c29fa105deff3cace01d",
-					"e6934f80c7390f3952e0f03bf43583cf9d57d4a1", "0x65B84D90CaF1Eb50888504F7Eb19B5a77BE9890f",
-					new BigDecimal("0.0001"), EVMUtil.DefaultGasPrice ,EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+					"e6934f80c7390f3952e0f03bf43583cf9d57d4a1", "0x65B84D90CaF1Eb50888504F7Eb19B5a77BE9890f","0xE61D3f41E12f7De653C68777A791A883f151f103",
+					new BigDecimal("0.0001"), EVMUtil.DefaultGasPrice ,EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
 			tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
-		}
+		//}
 
 		// System.out.println(EvmWalletUtil.generateWallet(new
 		// BigInteger("46295382012785272375870482308001729876667835349322542732133821350485638298354")));
