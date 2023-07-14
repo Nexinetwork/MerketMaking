@@ -16,6 +16,7 @@ import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
+import com.plgchain.app.plingaHelper.type.response.MarketMakingWalletRes;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -101,5 +102,11 @@ public class MarketMakingWallet implements Serializable {
 	@Column(name = "\"lastModifiedDate\"")
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	private LocalDateTime lastModifiedDate;
+
+	public MarketMakingWalletRes getAsMarketMakingWalletRes() {
+		return MarketMakingWalletRes.builder().balance(balance).blockchain(blockchain.getName()).blockchainId(blockchain.getBlockchainId())
+				.coin(coin.getName()).coinId(coin.getCoinId()).symbol(coin.getSymbol()).contractId(contract.getContractId())
+				.smartContract(contract.getContractsAddress()).walletType(walletType).build();
+	}
 
 }

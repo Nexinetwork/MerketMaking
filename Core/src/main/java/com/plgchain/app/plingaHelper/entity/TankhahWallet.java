@@ -15,6 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.constant.TankhahWalletType;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
+import com.plgchain.app.plingaHelper.type.response.MarketMakingWalletRes;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -89,6 +90,12 @@ public class TankhahWallet implements Serializable {
 	@Column(name = "\"lastModifiedDate\"")
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	private LocalDateTime lastModifiedDate;
+
+	public MarketMakingWalletRes getAsMarketMakingWalletRes() {
+		return MarketMakingWalletRes.builder().balance(balance).blockchain(contract.getBlockchain().getName()).blockchainId(contract.getBlockchain().getBlockchainId())
+				.coin(contract.getCoin().getName()).coinId(contract.getCoin().getCoinId()).symbol(contract.getCoin().getSymbol()).contractId(contract.getContractId())
+				.smartContract(contract.getContractsAddress()).build();
+	}
 
 	@Override
 	public boolean equals(Object obj) {
