@@ -34,15 +34,7 @@ public class WalletBean implements Serializable {
 			var blockchain = wallet.getBlockchain();
 			BigDecimal balance = BigDecimal.ZERO;
 			boolean mostRetry = true;
-			while (mostRetry) {
-				try {
-					balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
-					mostRetry = false;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-
-				}
-			}
+			balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
 		});
 	}
 

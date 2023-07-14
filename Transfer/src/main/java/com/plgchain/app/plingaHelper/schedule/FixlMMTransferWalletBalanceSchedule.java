@@ -52,8 +52,8 @@ public class FixlMMTransferWalletBalanceSchedule implements Serializable {
 		if (!initBean.doesActionRunning("fixlMMTransferWalletBalance")) {
 			initBean.startActionRunning("fixlMMTransferWalletBalance");
 			try {
-				marketMakingService
-				.findByInitialWalletCreationDoneAndInitialWalletFundingDone(true, true).parallelStream().forEach(mm -> {
+				marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDone(true, true)
+						.parallelStream().forEach(mm -> {
 							/*
 							 * marketMakingService
 							 * .findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId
@@ -67,50 +67,34 @@ public class FixlMMTransferWalletBalanceSchedule implements Serializable {
 							var gasPrice = new BigInteger("1100000000");
 							var gasLimit = EVMUtil.getGasLimit(blockchain.getRpcUrl()).divide(new BigInteger("10000"));
 							final BigInteger[] tankhahNonce = { BigInteger.ZERO };
-							try {
-								tankhahNonce[0] = EVMUtil.getNonce(blockchain.getRpcUrl(),
-										tankhahWallet.getPrivateKeyHex());
-							} catch (IOException e) {
-								logger.error(e.getMessage());
-							}
+							tankhahNonce[0] = EVMUtil.getNonce(blockchain.getRpcUrl(),
+									tankhahWallet.getPrivateKeyHex());
 							logger.info("Current nonce of tankhah wallet is : " + tankhahNonce[0].toString());
-							mmWalletService.findByContract(sm).stream().filter(
+							mmWalletService.findByContractOrderByMmWalletIdDesc(sm).stream().filter(
 									wallet -> mm.getTransactionParallelType().equals(TransactionParallelType.SYNC))
 									.filter(wallet -> sm.getContractsAddress().equals(EVMUtil.mainToken))
 									.forEach(wallet -> {
-										boolean mostRetry = true;
-										BigDecimal balance = BigDecimal.ZERO;
-										while (mostRetry) {
-											try {
-												balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
-												mostRetry = false;
-											} catch (IOException e) {
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											}
-										}
+										BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
+												wallet.getPublicKey());
 										if (balance.compareTo(mm.getMaxInitial()) > 0) {
 											var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
-		                                            mm.getMaxInitial(), mm.getInitialDecimal());
+													mm.getMaxInitial(), mm.getInitialDecimal());
 											var mustReturn = balance.subtract(amount);
-											BigInteger nonce = BigInteger.ZERO;
-											try {
-												nonce = EVMUtil.getNonce(blockchain.getRpcUrl(),
-														wallet.getPrivateKeyHex());
-											} catch (IOException e) {
-												logger.error(e.getMessage());
-											}
+											BigInteger nonce = EVMUtil.getNonce(blockchain.getRpcUrl(),
+													wallet.getPrivateKeyHex());
 											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
 													wallet.getPrivateKeyHex(), wallet.getPublicKey(),
-													  tankhahWallet.getPublicKey(), mustReturn, EVMUtil.DefaultGasPrice,EVMUtil.DefaultGasLimit, nonce);
+													tankhahWallet.getPublicKey(), mustReturn, EVMUtil.DefaultGasPrice,
+													EVMUtil.DefaultGasLimit, nonce);
 										} else if (balance.equals(BigDecimal.ZERO)) {
 											var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
-		                                            mm.getMaxInitial(), mm.getInitialDecimal());
-											 transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
-													  tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-													  wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+													mm.getMaxInitial(), mm.getInitialDecimal());
+											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+													wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
+													EVMUtil.DefaultGasLimit, tankhahNonce[0]);
 
-				                                    //tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+											// tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 
 										}
 									});

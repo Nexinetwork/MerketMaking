@@ -61,13 +61,8 @@ public class WalletUtilTest implements Serializable {
 	public void getNonce() {
 		String rpcUrl = "http://185.173.129.243:18545";
 		String privateKey = "665a41f51a3b705c8b6cdc85e2b9cbb7baa636c806b9746a99e99966b304baf2";
-		try {
-			System.out.println(EVMUtil.getNonce(rpcUrl,
-					privateKey));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		System.out.println(EVMUtil.getNonce(rpcUrl,
+				privateKey));
 	}
 
 }

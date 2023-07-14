@@ -62,6 +62,10 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 		return marketMakingWalletDao.saveAll(oList);
 	}
 
+	public List<MarketMakingWallet> findByContractOrderByMmWalletIdDesc(SmartContract contract) {
+		return marketMakingWalletDao.findByContractOrderByMmWalletIdDesc(contract);
+	}
+
 	public List<MarketMakingWallet> batchSaveAll(List<MarketMakingWallet> oList, int count) {
         return IntStream.range(0, oList.size())
                 .boxed()

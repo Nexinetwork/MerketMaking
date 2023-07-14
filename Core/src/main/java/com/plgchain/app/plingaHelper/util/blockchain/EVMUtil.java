@@ -92,7 +92,6 @@ public class EVMUtil implements Serializable {
 		return Convert.fromWei(val.toString(), Convert.Unit.ETHER);
 	}
 
-
 	public static BigDecimal convertWeiToEther(BigDecimal val) {
 		return Convert.fromWei(val.toString(), Convert.Unit.ETHER);
 	}
@@ -101,31 +100,37 @@ public class EVMUtil implements Serializable {
 		return TransactionEncoder.signMessage(rawTransaction, credentials);
 	}
 
-	public static BigInteger getNonce(String rpcUrl, String privateKeyHex) throws IOException {
+	public static BigInteger getNonce(String rpcUrl, String privateKeyHex) {
 		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
 		Credentials credentials = Credentials.create(privateKeyHex);
-		EthGetTransactionCount ethGetTransactionCount = web3j
-				.ethGetTransactionCount(credentials.getAddress(), DefaultBlockParameterName.LATEST).send();
-		return ethGetTransactionCount.getTransactionCount();
+		EthGetTransactionCount ethGetTransactionCount;
+		while (true) {
+			try {
+				ethGetTransactionCount = web3j
+						.ethGetTransactionCount(credentials.getAddress(), DefaultBlockParameterName.LATEST).send();
+				return ethGetTransactionCount.getTransactionCount();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static BigInteger getGasLimit(String rpcUrl) {
-        Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
 
-        try {
-            EthBlock.Block latestBlock = web3j.ethGetBlockByNumber(
-                    DefaultBlockParameterName.LATEST, false)
-                    .send()
-                    .getBlock();
-            if (latestBlock != null) {
-                return latestBlock.getGasLimit();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		try {
+			EthBlock.Block latestBlock = web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send()
+					.getBlock();
+			if (latestBlock != null) {
+				return latestBlock.getGasLimit();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-        return BigInteger.ZERO;
-    }
+		return BigInteger.ZERO;
+	}
 
 	public static BigInteger requestCurrentGasPrice(String rpcUrl) throws IOException {
 		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
@@ -133,8 +138,8 @@ public class EVMUtil implements Serializable {
 		return ethGasPrice.getGasPrice();
 	}
 
-	public static EthSendTransaction createRawTransaction(String rpcUrl, String privateKeyHex,
-			String recipientAddress, BigDecimal amount) throws IOException {
+	public static EthSendTransaction createRawTransaction(String rpcUrl, String privateKeyHex, String recipientAddress,
+			BigDecimal amount) throws IOException {
 		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
 		Credentials credentials = Credentials.create(privateKeyHex);
 		/*
@@ -143,8 +148,8 @@ public class EVMUtil implements Serializable {
 		 * DefaultBlockParameterName.LATEST).send();
 		 */
 		// BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-		RawTransaction rawTransaction = RawTransaction.createEtherTransaction(getNonce(rpcUrl, privateKeyHex), DefaultGasPrice,
-				getGasLimit(rpcUrl), recipientAddress, getWei(amount));
+		RawTransaction rawTransaction = RawTransaction.createEtherTransaction(getNonce(rpcUrl, privateKeyHex),
+				DefaultGasPrice, getGasLimit(rpcUrl), recipientAddress, getWei(amount));
 
 		// Sign the transaction
 		byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
@@ -215,143 +220,147 @@ public class EVMUtil implements Serializable {
 	}
 
 	public static int hexToDecimal(String hex) {
-	    int decimal;
-	    if (hex.startsWith("0x")) {
-	        decimal = Integer.parseInt(hex.substring(2), 16);
-	    } else {
-	        decimal = Integer.parseInt(hex, 16);
-	    }
-	    return decimal;
+		int decimal;
+		if (hex.startsWith("0x")) {
+			decimal = Integer.parseInt(hex.substring(2), 16);
+		} else {
+			decimal = Integer.parseInt(hex, 16);
+		}
+		return decimal;
 	}
 
-	public static BigInteger getEstimateGas(HttpClient httpClient,String rpcUrl) {
-    	HttpRequest request = null;
-    	HttpResponse<String> response = null;
-        try {
-            request = HttpRequest.newBuilder()
-                    .uri(URI.create(rpcUrl))
-                    .POST(HttpRequest.BodyPublishers.ofString("{\"jsonrpc\":\"2.0\",\"method\":\"eth_estimateGas\",\"params\":[],\"id\":1}"))
-                    .header("Content-Type", "application/json")
-                    .build();
+	public static BigInteger getEstimateGas(HttpClient httpClient, String rpcUrl) {
+		HttpRequest request = null;
+		HttpResponse<String> response = null;
+		try {
+			request = HttpRequest.newBuilder().uri(URI.create(rpcUrl))
+					.POST(HttpRequest.BodyPublishers
+							.ofString("{\"jsonrpc\":\"2.0\",\"method\":\"eth_estimateGas\",\"params\":[],\"id\":1}"))
+					.header("Content-Type", "application/json").build();
 
-            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+			response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 200) {
-                String responseBody = response.body();
-                String blockNumberHex = JSON.parseObject(responseBody).getString("result");
+			if (response.statusCode() == 200) {
+				String responseBody = response.body();
+				String blockNumberHex = JSON.parseObject(responseBody).getString("result");
 
-                // Parse the JSON response and extract the block number
-                // Assuming the response is in the format {"result":"0x123..."}
-                request = null;
-            	response = null;
-                return new BigInteger(String.valueOf(EVMUtil.hexToDecimal(blockNumberHex)));
-            } else {
-                System.err.println("Error: " + response.statusCode() + " " + response.body());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-        	request = null;
-        	response = null;
+				// Parse the JSON response and extract the block number
+				// Assuming the response is in the format {"result":"0x123..."}
+				request = null;
+				response = null;
+				return new BigInteger(String.valueOf(EVMUtil.hexToDecimal(blockNumberHex)));
+			} else {
+				System.err.println("Error: " + response.statusCode() + " " + response.body());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			request = null;
+			response = null;
 		}
 
-        return null;
-    }
+		return null;
+	}
 
 	public static BigInteger getEstimateGas(String rpcUrl) {
-		HttpClient httpClient = HttpClient.newBuilder()
-	            .connectTimeout(Duration.ofSeconds(10))
-	            .build();
-    	HttpRequest request = null;
-    	HttpResponse<String> response = null;
-        try {
-            request = HttpRequest.newBuilder()
-                    .uri(URI.create(rpcUrl))
-                    .POST(HttpRequest.BodyPublishers.ofString("{\"jsonrpc\":\"2.0\",\"method\":\"eth_estimateGas\",\"params\":[],\"id\":1}"))
-                    .header("Content-Type", "application/json")
-                    .build();
+		HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+		HttpRequest request = null;
+		HttpResponse<String> response = null;
+		try {
+			request = HttpRequest.newBuilder().uri(URI.create(rpcUrl))
+					.POST(HttpRequest.BodyPublishers
+							.ofString("{\"jsonrpc\":\"2.0\",\"method\":\"eth_estimateGas\",\"params\":[],\"id\":1}"))
+					.header("Content-Type", "application/json").build();
 
-            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+			response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() == 200) {
-                String responseBody = response.body();
-                String blockNumberHex = JSON.parseObject(responseBody).getString("result");
+			if (response.statusCode() == 200) {
+				String responseBody = response.body();
+				String blockNumberHex = JSON.parseObject(responseBody).getString("result");
 
-                // Parse the JSON response and extract the block number
-                // Assuming the response is in the format {"result":"0x123..."}
-                request = null;
-            	response = null;
-                return new BigInteger(String.valueOf(EVMUtil.hexToDecimal(blockNumberHex)));
-            } else {
-                System.err.println("Error: " + response.statusCode() + " " + response.body());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-        	request = null;
-        	response = null;
+				// Parse the JSON response and extract the block number
+				// Assuming the response is in the format {"result":"0x123..."}
+				request = null;
+				response = null;
+				return new BigInteger(String.valueOf(EVMUtil.hexToDecimal(blockNumberHex)));
+			} else {
+				System.err.println("Error: " + response.statusCode() + " " + response.body());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			request = null;
+			response = null;
 		}
 
-        return null;
-    }
+		return null;
+	}
 
 	public static CompletableFuture<EthSendTransaction> createRawTransactionAsync(String rpcUrl, String privateKeyHex,
-	        String recipientAddress, BigDecimal amount, BigInteger nonce, BigInteger gasPrice) throws IOException {
-	    Web3j web3j = Web3j.build(new HttpService(rpcUrl));
-	    Credentials credentials = Credentials.create(privateKeyHex);
-	    RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, requestCurrentGasPrice(rpcUrl),
-	            gasPrice, recipientAddress, getWei(amount));
+			String recipientAddress, BigDecimal amount, BigInteger nonce, BigInteger gasPrice) throws IOException {
+		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+		Credentials credentials = Credentials.create(privateKeyHex);
+		RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, requestCurrentGasPrice(rpcUrl),
+				gasPrice, recipientAddress, getWei(amount));
 
-	    byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
-	    String hexValue = Numeric.toHexString(signedMessage);
+		byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+		String hexValue = Numeric.toHexString(signedMessage);
 
-	    CompletableFuture<EthSendTransaction> ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync();
-	    return ethSendTransaction;
+		CompletableFuture<EthSendTransaction> ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync();
+		return ethSendTransaction;
 	}
 
 	public static EthSendTransaction createRawTransactionSync(String rpcUrl, String privateKeyHex,
-	        String recipientAddress, BigDecimal amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit) throws IOException {
-	    var web3j = Web3j.build(new HttpService(rpcUrl));
-	    var credentials = Credentials.create(privateKeyHex);
-	    var rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice,
-	            gasLimit, recipientAddress, getWei(amount));
+			String recipientAddress, BigDecimal amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit)
+			throws IOException {
+		var web3j = Web3j.build(new HttpService(rpcUrl));
+		var credentials = Credentials.create(privateKeyHex);
+		var rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice, gasLimit, recipientAddress,
+				getWei(amount));
 
-	    byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
-	    String hexValue = Numeric.toHexString(signedMessage);
+		byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+		String hexValue = Numeric.toHexString(signedMessage);
 
-	    return web3j.ethSendRawTransaction(hexValue).send();
+		return web3j.ethSendRawTransaction(hexValue).send();
 	}
 
-
-	public static BigDecimal getAccountBalance(String rpcUrl, String walletAddress) throws IOException {
+	public static BigDecimal getAccountBalance(String rpcUrl, String walletAddress) {
 		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
-		EthGetBalance ethGetBalance = web3j.ethGetBalance(walletAddress, DefaultBlockParameterName.LATEST)
-				.send();
-		BigInteger wei = ethGetBalance.getBalance();
-		BigDecimal tokenValue = Convert.fromWei(String.valueOf(wei), Convert.Unit.ETHER);
-		return tokenValue;
+		EthGetBalance ethGetBalance = null;
+		while (true) {
+			try {
+				ethGetBalance = web3j.ethGetBalance(walletAddress, DefaultBlockParameterName.LATEST).send();
+				BigInteger wei = ethGetBalance.getBalance();
+				BigDecimal tokenValue = Convert.fromWei(String.valueOf(wei), Convert.Unit.ETHER);
+				return tokenValue;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static TransactionReceipt transferToken(String rpcUrl, String privateKey, String contractAddress,
-	        String address, BigInteger amount) {
-	    var web3j = Web3j.build(new HttpService(rpcUrl));
-	    var credentials = Credentials.create(privateKey);
-	    ERC20 javaToken = null;
-	    try {
-	        javaToken = ERC20.load(contractAddress, web3j, credentials, new DefaultGasProvider());
-	        return javaToken.transfer(address, amount).send();
-	    } catch (Exception e1) {
-	        e1.printStackTrace();
-	    } finally {
-	        if (web3j != null) {
-	            web3j.shutdown();
-	        }
-	    }
-	    return null;
+			String address, BigInteger amount) {
+		var web3j = Web3j.build(new HttpService(rpcUrl));
+		var credentials = Credentials.create(privateKey);
+		ERC20 javaToken = null;
+		try {
+			javaToken = ERC20.load(contractAddress, web3j, credentials, new DefaultGasProvider());
+			return javaToken.transfer(address, amount).send();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		} finally {
+			if (web3j != null) {
+				web3j.shutdown();
+			}
+		}
+		return null;
 	}
 
-	public static CompletableFuture<EthSendTransaction> sendSmartContractTransactionAsync(String rpcUrl, String privateKey, String contractAddress,
-			String address, BigInteger amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit)
+	public static CompletableFuture<EthSendTransaction> sendSmartContractTransactionAsync(String rpcUrl,
+			String privateKey, String contractAddress, String address, BigInteger amount, BigInteger nonce,
+			BigInteger gasPrice, BigInteger gasLimit)
 			throws IOException, TransactionException, InterruptedException, ExecutionException {
 		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
 		Credentials credentials = Credentials.create(privateKey);
@@ -364,31 +373,31 @@ public class EVMUtil implements Serializable {
 		 * RawTransaction rawTransaction = RawTransaction.createTransaction(nounce,
 		 * DefaultGasProvider.GAS_PRICE, DefaultGasProvider.GAS_LIMIT, address, txData);
 		 */
-		RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, gasPrice,
-				gasLimit, contractAddress, encodedFunction);
+		RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, gasPrice, gasLimit, contractAddress,
+				encodedFunction);
 
 		byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
 		String hexValue = Numeric.toHexString(signedMessage);
 		return web3j.ethSendRawTransaction(hexValue).sendAsync();
 
-
 	}
 
 	public static String sendSmartContractTransaction(String rpcUrl, String privateKey, String contractAddress,
-	        String address, BigInteger amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit)
-	        throws IOException, TransactionException, InterruptedException, ExecutionException {
-	    var web3j = Web3j.build(new HttpService(rpcUrl));
-	    var credentials = Credentials.create(privateKey);
-	    var function = new Function("transfer", Arrays.asList(new Address(address), new Uint256(amount)),
-	            Collections.singletonList(new TypeReference<Bool>() {}));
-	    var encodedFunction = FunctionEncoder.encode(function);
-	    var rawTransaction = RawTransaction.createTransaction(nonce, gasPrice,
-	    		gasLimit, contractAddress, encodedFunction);
+			String address, BigInteger amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit)
+			throws IOException, TransactionException, InterruptedException, ExecutionException {
+		var web3j = Web3j.build(new HttpService(rpcUrl));
+		var credentials = Credentials.create(privateKey);
+		var function = new Function("transfer", Arrays.asList(new Address(address), new Uint256(amount)),
+				Collections.singletonList(new TypeReference<Bool>() {
+				}));
+		var encodedFunction = FunctionEncoder.encode(function);
+		var rawTransaction = RawTransaction.createTransaction(nonce, gasPrice, gasLimit, contractAddress,
+				encodedFunction);
 
-	    var signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
-	    var hexValue = Numeric.toHexString(signedMessage);
-	    var ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
-	    return ethSendTransaction.getTransactionHash();
+		var signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+		var hexValue = Numeric.toHexString(signedMessage);
+		var ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
+		return ethSendTransaction.getTransactionHash();
 	}
 
 	public static BigDecimal getTokenBalancSync(String rpcUrl, String privateKey, String contractAddress) {
@@ -420,11 +429,5 @@ public class EVMUtil implements Serializable {
 			}
 		}
 	}
-
-
-
-
-
-
 
 }

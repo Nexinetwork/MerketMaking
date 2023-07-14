@@ -77,6 +77,9 @@ public class TankhahWallet implements Serializable {
 
 	private BigDecimal balance;
 
+	@Column(name = "\"mainCoinBalance\"")
+	private BigDecimal mainCoinBalance;
+
 	@ManyToOne
 	@JoinColumn(name = "\"contractId\"")
 	private SmartContract contract;

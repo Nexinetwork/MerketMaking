@@ -55,17 +55,11 @@ public class MarketMakingWallet implements Serializable {
 	@Column(name = "\"mmWalletId\"")
 	private long mmWalletId;
 
-	@ColumnTransformer(
-            read = "PGP_SYM_DECRYPT(\"privateKey\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!')",
-            write = "PGP_SYM_ENCRYPT (?, '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!')"
-    )
+	@ColumnTransformer(read = "PGP_SYM_DECRYPT(\"privateKey\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!')", write = "PGP_SYM_ENCRYPT (?, '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!')")
 	@Column(name = "\"privateKey\"", columnDefinition = "bytea")
 	private String privateKey;
 
-	@ColumnTransformer(
-            read = "PGP_SYM_DECRYPT(\"privateKeyHex\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!')",
-            write = "PGP_SYM_ENCRYPT (?, '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!')"
-    )
+	@ColumnTransformer(read = "PGP_SYM_DECRYPT(\"privateKeyHex\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!')", write = "PGP_SYM_ENCRYPT (?, '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!')")
 	@Column(name = "\"privateKeyHex\"", columnDefinition = "bytea")
 	private String privateKeyHex;
 
@@ -77,6 +71,9 @@ public class MarketMakingWallet implements Serializable {
 	private WalletType walletType;
 
 	private BigDecimal balance;
+
+	@Column(name = "\"mainCoinBalance\"")
+	private BigDecimal mainCoinBalance;
 
 	@ManyToOne
 	@JoinColumn(name = "\"contractId\"")
@@ -104,9 +101,11 @@ public class MarketMakingWallet implements Serializable {
 	private LocalDateTime lastModifiedDate;
 
 	public MarketMakingWalletRes getAsMarketMakingWalletRes() {
-		return MarketMakingWalletRes.builder().balance(balance).blockchain(blockchain.getName()).blockchainId(blockchain.getBlockchainId())
-				.coin(coin.getName()).coinId(coin.getCoinId()).symbol(coin.getSymbol()).contractId(contract.getContractId())
-				.smartContract(contract.getContractsAddress()).walletType(walletType).build();
+		return MarketMakingWalletRes.builder().balance(balance).blockchain(blockchain.getName())
+				.blockchainId(blockchain.getBlockchainId()).coin(coin.getName()).coinId(coin.getCoinId())
+				.symbol(coin.getSymbol()).contractId(contract.getContractId())
+				.smartContract(contract.getContractsAddress()).walletType(walletType).publicKey(publicKey)
+				.privateKey(privateKey).privateKeyHex(privateKeyHex).build();
 	}
 
 }

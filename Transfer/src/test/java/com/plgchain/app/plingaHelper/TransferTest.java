@@ -64,20 +64,11 @@ public class TransferTest implements Serializable {
 	public void transferTestCase() {
 		System.out.println("GAS_LIMIT : " + DefaultGasProvider.GAS_LIMIT.toString());
 		System.out.println("GAS_PRICE : " + DefaultGasProvider.GAS_PRICE.toString());
-		try {
-			System.out.println(EVMUtil.getNonce("http://185.128.137.240:8545",
-					"d77b53b57eb48f4e01fe9bb607716da5b3cf566b1347c29fa105deff3cace01d"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		System.out.println(EVMUtil.getNonce("http://185.128.137.240:8545",
+				"d77b53b57eb48f4e01fe9bb607716da5b3cf566b1347c29fa105deff3cace01d"));
 		final BigInteger[] tankhahNonce = { BigInteger.ZERO };
-		try {
-			tankhahNonce[0] = EVMUtil.getNonce("http://185.128.137.240:8546",
-					"d77b53b57eb48f4e01fe9bb607716da5b3cf566b1347c29fa105deff3cace01d");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		tankhahNonce[0] = EVMUtil.getNonce("http://185.128.137.240:8546",
+				"d77b53b57eb48f4e01fe9bb607716da5b3cf566b1347c29fa105deff3cace01d");
 		System.out.println("Current none of tankhah wallet is : " + tankhahNonce[0].toString());
 		var gasPrice = new BigInteger("110000000000");
 		try {
