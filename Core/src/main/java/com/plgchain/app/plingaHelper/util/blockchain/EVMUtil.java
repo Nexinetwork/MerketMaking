@@ -12,22 +12,32 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Bool;
+import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.contracts.eip20.generated.ERC20;
 import org.web3j.crypto.Credentials;
+import org.web3j.abi.FunctionEncoder;
+import org.web3j.abi.TypeReference;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.response.EthBlock;
 import org.web3j.protocol.core.methods.response.EthGasPrice;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
@@ -301,17 +311,17 @@ public class EVMUtil implements Serializable {
 
 	public static EthSendTransaction createRawTransactionSync(String rpcUrl, String privateKeyHex,
 	        String recipientAddress, BigDecimal amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit) throws IOException {
-	    Web3j web3j = Web3j.build(new HttpService(rpcUrl));
-	    Credentials credentials = Credentials.create(privateKeyHex);
-	    RawTransaction rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice,
-	    		gasLimit, recipientAddress, getWei(amount));
+	    var web3j = Web3j.build(new HttpService(rpcUrl));
+	    var credentials = Credentials.create(privateKeyHex);
+	    var rawTransaction = RawTransaction.createEtherTransaction(nonce, gasPrice,
+	            gasLimit, recipientAddress, getWei(amount));
 
 	    byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
 	    String hexValue = Numeric.toHexString(signedMessage);
 
-	    EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send();
-	    return ethSendTransaction;
+	    return web3j.ethSendRawTransaction(hexValue).send();
 	}
+
 
 	public static BigDecimal getAccountBalance(String rpcUrl, String walletAddress) throws IOException {
 		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
@@ -321,6 +331,83 @@ public class EVMUtil implements Serializable {
 		BigDecimal tokenValue = Convert.fromWei(String.valueOf(wei), Convert.Unit.ETHER);
 		return tokenValue;
 	}
+
+	public static TransactionReceipt transferToken(String rpcUrl, String privateKey, String contractAddress,
+	        String address, BigInteger amount) {
+	    var web3j = Web3j.build(new HttpService(rpcUrl));
+	    var credentials = Credentials.create(privateKey);
+	    ERC20 javaToken = null;
+	    try {
+	        javaToken = ERC20.load(contractAddress, web3j, credentials, new DefaultGasProvider());
+	        return javaToken.transfer(address, amount).send();
+	    } catch (Exception e1) {
+	        e1.printStackTrace();
+	    } finally {
+	        if (web3j != null) {
+	            web3j.shutdown();
+	        }
+	    }
+	    return null;
+	}
+
+	public static CompletableFuture<EthSendTransaction> sendSmartContractTransactionAsync(String rpcUrl, String privateKey, String contractAddress,
+			String address, BigInteger amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit)
+			throws IOException, TransactionException, InterruptedException, ExecutionException {
+		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+		Credentials credentials = Credentials.create(privateKey);
+		Function function = new Function("transfer", Arrays.asList(new Address(address), new Uint256(amount)),
+				Collections.singletonList(new TypeReference<Bool>() {
+				}));
+		;
+		String encodedFunction = FunctionEncoder.encode(function);
+		/*
+		 * RawTransaction rawTransaction = RawTransaction.createTransaction(nounce,
+		 * DefaultGasProvider.GAS_PRICE, DefaultGasProvider.GAS_LIMIT, address, txData);
+		 */
+		RawTransaction rawTransaction = RawTransaction.createTransaction(nonce, gasPrice,
+				gasLimit, contractAddress, encodedFunction);
+
+		byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+		String hexValue = Numeric.toHexString(signedMessage);
+		return web3j.ethSendRawTransaction(hexValue).sendAsync();
+
+
+	}
+
+	public static String sendSmartContractTransaction(String rpcUrl, String privateKey, String contractAddress,
+	        String address, BigInteger amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit)
+	        throws IOException, TransactionException, InterruptedException, ExecutionException {
+	    var web3j = Web3j.build(new HttpService(rpcUrl));
+	    var credentials = Credentials.create(privateKey);
+	    var function = new Function("transfer", Arrays.asList(new Address(address), new Uint256(amount)),
+	            Collections.singletonList(new TypeReference<Bool>() {}));
+	    var encodedFunction = FunctionEncoder.encode(function);
+	    var rawTransaction = RawTransaction.createTransaction(nonce, gasPrice,
+	    		gasLimit, contractAddress, encodedFunction);
+
+	    var signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+	    var hexValue = Numeric.toHexString(signedMessage);
+	    var ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
+	    return ethSendTransaction.getTransactionHash();
+	}
+
+	public static BigDecimal getTokenBalancSync(String rpcUrl, String privateKey, String contractAddress) {
+		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+		Credentials credentials = Credentials.create(privateKey);
+		ERC20 javaToken = ERC20.load(contractAddress, web3j, credentials, new DefaultGasProvider());
+		while (true) {
+			try {
+				RemoteCall<BigInteger> balanceWei = javaToken.balanceOf(credentials.getAddress());
+				return convertWeiToEther(balanceWei.send());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+
 
 
 
