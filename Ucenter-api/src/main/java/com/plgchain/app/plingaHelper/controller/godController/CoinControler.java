@@ -1,6 +1,8 @@
 package com.plgchain.app.plingaHelper.controller.godController;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.plgchain.app.plingaHelper.bean.BlockchainBean;
 import com.plgchain.app.plingaHelper.controller.BaseController;
+import com.plgchain.app.plingaHelper.entity.TankhahWallet;
+import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.exception.RestActionError;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.type.request.CoinReq;
 import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
+import com.plgchain.app.plingaHelper.type.response.MarketMakingWalletRes;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 
 import jakarta.inject.Inject;
@@ -97,6 +102,16 @@ public class CoinControler extends BaseController implements Serializable {
 			logger.error(e.getMessage());
 			return error(e.getMessage());
 		}
+	}
+
+	@RequestMapping("/contract/findContractsByContractAdress")
+	public MessageResult findContractsByContractAdress(@RequestBody String contractAddress) {
+		logger.info("findContractsByContractAdress fired.");
+		var result = smartContractService.findByContractsAddress(contractAddress)
+		        .stream()
+		        .map(SmartContract::getSmartContractRes)
+		        .collect(Collectors.toList());
+		    return success(result);
 	}
 
 }
