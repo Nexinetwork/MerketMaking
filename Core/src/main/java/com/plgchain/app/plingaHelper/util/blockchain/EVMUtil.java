@@ -384,12 +384,12 @@ public class EVMUtil implements Serializable {
 
 	}
 
-	public static String sendSmartContractTransaction(String rpcUrl, String privateKey, String contractAddress,
-			String address, BigInteger amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit)
+	public static EthSendTransaction sendSmartContractTransactionSync(String rpcUrl, String privateKey, String contractAddress,
+			String address, BigDecimal amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit)
 			throws IOException, TransactionException, InterruptedException, ExecutionException {
 		var web3j = Web3j.build(new HttpService(rpcUrl));
 		var credentials = Credentials.create(privateKey);
-		var function = new Function("transfer", Arrays.asList(new Address(address), new Uint256(amount)),
+		var function = new Function("transfer", Arrays.asList(new Address(address), new Uint256(getWei(amount))),
 				Collections.singletonList(new TypeReference<Bool>() {
 				}));
 		var encodedFunction = FunctionEncoder.encode(function);
@@ -398,8 +398,8 @@ public class EVMUtil implements Serializable {
 
 		var signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
 		var hexValue = Numeric.toHexString(signedMessage);
-		var ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get();
-		return ethSendTransaction.getTransactionHash();
+		var ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send();
+		return ethSendTransaction;
 	}
 
 	public static BigDecimal getTokenBalancSync(String rpcUrl, String privateKey, String contractAddress) {

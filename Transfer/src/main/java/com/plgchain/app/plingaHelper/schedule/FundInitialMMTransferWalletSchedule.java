@@ -3,9 +3,6 @@ package com.plgchain.app.plingaHelper.schedule;
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.bean.TransferBean;
 import com.plgchain.app.plingaHelper.constant.TransactionParallelType;
-import com.plgchain.app.plingaHelper.entity.Blockchain;
-import com.plgchain.app.plingaHelper.entity.TankhahWallet;
-import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.service.MarketMakingService;
 import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
@@ -21,9 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
 @Component
@@ -63,8 +58,8 @@ public class FundInitialMMTransferWalletSchedule implements Serializable {
 	                        var coin = sm.getCoin();
 	                        logger.info("Try to fund for coin {}", coin.getSymbol());
 	                        var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
-	                        var gasPrice = new BigInteger("1100000000");
-	                        var gasLimit = EVMUtil.getGasLimit(blockchain.getRpcUrl()).divide(new BigInteger("10000"));
+	                        //var gasPrice = new BigInteger("1100000000");
+	                        //var gasLimit = EVMUtil.getGasLimit(blockchain.getRpcUrl()).divide(new BigInteger("10000"));
 	                        final BigInteger[] tankhahNonce = { BigInteger.ZERO };
 	                        tankhahNonce[0] = EVMUtil.getNonce(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex());
 	                        logger.info("Current nonce of tankhah wallet is : " + tankhahNonce[0].toString());

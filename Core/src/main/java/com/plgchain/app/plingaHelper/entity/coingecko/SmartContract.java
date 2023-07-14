@@ -16,6 +16,7 @@ import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.TankhahWallet;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
+import com.plgchain.app.plingaHelper.type.response.SmartContractRes;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -102,6 +103,13 @@ public class SmartContract implements Serializable {
 	private LocalDateTime lastUpdateDate;
 
 	private Integer decimal;
+
+	public SmartContractRes getSmartContractRes() {
+		return SmartContractRes.builder().blockchainCoingeckoId(blockchain.getCoingeckoId()).blockchainId(blockchain.getBlockchainId()).blockchainType(blockchain.getBlockchainType())
+				.chainId(blockchain.getChainId()).coinCoingeckoId(coin.getCoingeckoId()).coinId(coin.getCoinId()).coinName(coin.getName()).coinSysmbol(coin.getSymbol())
+				.contractId(contractId).contractsAddress(contractsAddress).decimal(decimal).mainCoin(blockchain.getMainCoin()).rpcUrl(blockchain.getRpcUrl())
+				.build();
+	}
 
 	@Override
 	public boolean equals(Object obj) {
