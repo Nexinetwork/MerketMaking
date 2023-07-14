@@ -64,13 +64,13 @@ public class FixlMMTransferWalletBalanceSchedule implements Serializable {
 							var coin = sm.getCoin();
 							logger.info("Try to fix for coin {}", coin.getSymbol());
 							var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
-							var gasPrice = new BigInteger("1100000000");
-							var gasLimit = EVMUtil.getGasLimit(blockchain.getRpcUrl()).divide(new BigInteger("10000"));
+							//var gasPrice = new BigInteger("1100000000");
+							//var gasLimit = EVMUtil.getGasLimit(blockchain.getRpcUrl()).divide(new BigInteger("10000"));
 							final BigInteger[] tankhahNonce = { BigInteger.ZERO };
 							tankhahNonce[0] = EVMUtil.getNonce(blockchain.getRpcUrl(),
 									tankhahWallet.getPrivateKeyHex());
 							logger.info("Current nonce of tankhah wallet is : " + tankhahNonce[0].toString());
-							mmWalletService.findByContractOrderByMmWalletIdDesc(sm).stream().filter(
+							mmWalletService.findNByContractOrderByRandom(sm,initBean.getFixTransferWalletBalancePerRound()).stream().filter(
 									wallet -> mm.getTransactionParallelType().equals(TransactionParallelType.SYNC))
 									.filter(wallet -> sm.getContractsAddress().equals(EVMUtil.mainToken))
 									.forEach(wallet -> {

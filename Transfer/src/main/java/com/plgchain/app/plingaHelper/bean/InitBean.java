@@ -7,18 +7,11 @@ import java.io.Serializable;
 import java.net.http.HttpClient;
 import java.time.Duration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-
-import com.plgchain.app.plingaHelper.service.BlockchainNodeService;
-import com.plgchain.app.plingaHelper.service.BlockchainService;
-import com.plgchain.app.plingaHelper.service.SmartContractService;
-import com.plgchain.app.plingaHelper.service.SystemConfigService;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
@@ -43,6 +36,10 @@ public class InitBean implements Serializable {
 	private HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
 
 	private int jpaBatchCount = 2000;
+
+	private int fixTransferWalletBalancePerRound = 1000;
+
+	private int transferPerRound = 1000;
 
 	@PostConstruct
 	public void init() {

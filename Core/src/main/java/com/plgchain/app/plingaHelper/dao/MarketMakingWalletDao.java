@@ -2,6 +2,7 @@ package com.plgchain.app.plingaHelper.dao;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.dao.base.BaseLongDao;
@@ -20,4 +21,10 @@ public interface MarketMakingWalletDao extends BaseLongDao<MarketMakingWallet> {
 	public boolean existsByContractAndWalletType(SmartContract contract, WalletType walletType);
 	public List<MarketMakingWallet> findByPublicKey(String publicKey);
 	public List<MarketMakingWallet> findByContractOrderByMmWalletIdDesc(SmartContract contract);
+
+	@Query(value = "SELECT * FROM \"schMarketMaking\".\"tblMMWallet\" WHERE \"contractId\" = :contractId ORDER BY random() LIMIT :count", nativeQuery = true)
+	public List<MarketMakingWallet> findNByContractOrderByRandom(@Param("contractId") long contractId,@Param("count") int count);
+
+	@Query(value = "SELECT * FROM \"schMarketMaking\".\"tblMMWallet\" ORDER BY random() LIMIT :count", nativeQuery = true)
+	public List<MarketMakingWallet> findNOrderByRandom(@Param("count") int count);
 }
