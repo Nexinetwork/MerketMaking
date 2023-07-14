@@ -60,6 +60,10 @@ public class FixlMMTransferWalletBalanceSchedule {
 							final BigInteger[] tankhahNonce = {
 									EVMUtil.getNonce(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex()) };
 							logger.info("Current nonce of tankhah wallet is: " + tankhahNonce[0]);
+							logger.info(String.format(
+									"Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
+									tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(),
+									blockchain.getName(), tankhahNonce[0]));
 							mmWalletService
 									.findNByContractOrderByRandom(sm, initBean.getFixTransferWalletBalancePerRound())
 									.stream()
@@ -135,7 +139,8 @@ public class FixlMMTransferWalletBalanceSchedule {
 											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
 													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
 													wallet.getPublicKey(), sm.getContractsAddress(), amount,
-													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
+													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
+													tankhahNonce[0]);
 											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 										}
 									});
