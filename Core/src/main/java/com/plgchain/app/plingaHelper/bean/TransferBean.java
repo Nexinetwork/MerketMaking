@@ -46,7 +46,7 @@ public class TransferBean implements Serializable {
 		List<MarketMakingWallet> wList = EvmWalletUtil.generateRandomWallet(mm.getInitialWallet()).stream()
 				.map(w -> MarketMakingWallet.builder().balance(w.getBalance()).blockchain(blockchain).coin(coin)
 						.contract(contract).contractAddress(contract.getContractsAddress())
-						.privateKey(w.getPrivateKey()).privateKeyHex(w.getHexKey()).publicKey(w.getPublicKey()).walletType(walletType).build())
+						.privateKey(w.getPrivateKey()).privateKeyHex(w.getHexKey()).publicKey(w.getPublicKey()).walletType(walletType).mainCoinBalance(BigDecimal.ZERO).build())
 				.collect(Collectors.toList());
 
 		marketMakingWalletService.batchSaveAll(wList, jpaBatchCount);
