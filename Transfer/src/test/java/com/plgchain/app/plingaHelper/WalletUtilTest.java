@@ -45,7 +45,7 @@ public class WalletUtilTest implements Serializable {
 		return jToken;
 	}
 
-	// @Test
+	@Test
 	public void getTankhahWalletTestCase() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -64,7 +64,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println(EVMUtil.getNonce(rpcUrl, privateKey));
 	}
 
-	@Test
+	//@Test
 	public void getTokenBalanceTestCase() {
 		String rpcUrl = "http://185.173.129.244:8545";
 		String privateKey = "a56c859dbf1b3911e2e3368302eb258e0ab4e34ee2152594bf9688d5522a9cbc";
