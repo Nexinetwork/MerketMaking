@@ -98,7 +98,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 									.stream()
 									.filter(wallet -> mm.getTransactionParallelType()
 											.equals(TransactionParallelType.SYNC))
-									.filter(wallet -> !sm.getContractsAddress().equals(EVMUtil.mainToken))
+									.filter(wallet -> (!sm.getContractsAddress().equals(EVMUtil.mainToken)))
 									.forEach(wallet -> {
 										BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
 												wallet.getPublicKey());
