@@ -100,11 +100,14 @@ public class FixlMMTransferWalletBalanceSchedule {
 											.equals(TransactionParallelType.SYNC))
 									.filter(wallet -> (!sm.getContractsAddress().equals(EVMUtil.mainToken)))
 									.forEach(wallet -> {
+										logger.info("000000000000000000000000000000000000000000000");
+										logger.info("0101010101010101010101010101 wallet is" + wallet.getPrivateKeyHex() + " : " + wallet.getPublicKey());
 										BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
 												wallet.getPublicKey());
+										logger.info("020202020202020202020202020202020202020202020202 balance is" + balance.toString());
 										BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
 												wallet.getPrivateKeyHex(), sm.getContractsAddress());
-										logger.info("11111111111111111111111111111111111111111 + Token Balance is " + tokenBalance.toString());
+										logger.info("11111111111111111111111111111111111111111 Token Balance is " + tokenBalance.toString());
 										if (balance.compareTo(initBean.getMaxMaincoinInContractWallet()) > 0) {
 											logger.info("222222222222222222222222222222222222222222222222222222222");
 											var amount = NumberUtil.generateRandomNumber(
