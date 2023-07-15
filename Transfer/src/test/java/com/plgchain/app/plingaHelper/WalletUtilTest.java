@@ -45,24 +45,32 @@ public class WalletUtilTest implements Serializable {
 		return jToken;
 	}
 
-	@Test
+	// @Test
 	public void getTankhahWalletTestCase() {
-			// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
-			// BigDecimal("1")).listed(true).build();
-			HttpResponse<String> response = Unirest
-					.post("http://185.173.129.244:7001/api/v1/godaction/wallet/getTankhahWalletByPublicKey")
-					.header("content-type", "application/json").header("Authorization", getAuthToken())
-					// .header("x-api-key", "REPLACE_KEY_VALUE")
-					.body("0xa7bed6c080850a7521f6f8852010cf6a176cddec").asString();
-			System.out.println("Result is : " + response.getBody());
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.244:7001/api/v1/godaction/wallet/getTankhahWalletByPublicKey")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body("0xa7bed6c080850a7521f6f8852010cf6a176cddec").asString();
+		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void getNonce() {
 		String rpcUrl = "http://185.173.129.243:18545";
 		String privateKey = "665a41f51a3b705c8b6cdc85e2b9cbb7baa636c806b9746a99e99966b304baf2";
-		System.out.println(EVMUtil.getNonce(rpcUrl,
-				privateKey));
+		System.out.println(EVMUtil.getNonce(rpcUrl, privateKey));
+	}
+
+	@Test
+	public void getTokenBalanceTestCase() {
+		String rpcUrl = "http://185.173.129.244:8545";
+		String privateKey = "a56c859dbf1b3911e2e3368302eb258e0ab4e34ee2152594bf9688d5522a9cbc";
+		String contractAddress = "0xE61D3f41E12f7De653C68777A791A883f151f103";
+		BigDecimal balance = EVMUtil.getTokenBalancSync(rpcUrl, privateKey, contractAddress);
+		System.out.println("balance : " + balance.toString());
 	}
 
 }

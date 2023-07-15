@@ -130,8 +130,10 @@ public class FixlMMTransferWalletBalanceSchedule {
 											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 											logger.info("555555555555555555555555555555555555555555");
 										}
+										logger.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 										var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
 												mm.getMaxInitial(), mm.getInitialDecimal());
+										logger.info("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 										if (tokenBalance.compareTo(mm.getMaxInitial()) > 0) {
 											logger.info("666666666666666666666666666666666666");
 											var mustReturn = tokenBalance.subtract(amount);
@@ -152,6 +154,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 											logger.info("99999999999999999999999999999999999999999999999999999999");
 										}
+										logger.info("ccccccccccccccccccccccccccccccccccccccccccccccccc");
 									});
 						});
 			} catch (Exception e) {
