@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.dao.MarketMakingDao;
@@ -110,6 +112,14 @@ public class MarketMakingService extends BaseService<MarketMaking> implements Se
 	public Optional<MarketMaking> findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId(boolean initialWalletCreationDone,boolean initialWalletFundingDone){
 		return marketMakingDao.findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId(initialWalletCreationDone,
 				initialWalletFundingDone);
+	}
+
+	public List<MarketMaking> findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(boolean initialWalletCreationDone,boolean initialWalletFundingDone) {
+		return marketMakingDao.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(initialWalletCreationDone, initialWalletFundingDone);
+	}
+
+	public List<MarketMaking> findByInitialWalletCreationDoneOrInitialWalletFundingDoneOrderByRandom(boolean initialWalletCreationDone,boolean initialWalletFundingDone) {
+		return marketMakingDao.findByInitialWalletCreationDoneOrInitialWalletFundingDoneOrderByRandom(initialWalletCreationDone, initialWalletFundingDone);
 	}
 
 }

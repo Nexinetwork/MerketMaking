@@ -38,7 +38,7 @@ public class InitBean implements Serializable {
 
 	private int jpaBatchCount = 2000;
 
-	private int fixTransferWalletBalancePerRound = 1000;
+	private int fixTransferWalletBalancePerRound = 800;
 
 	private int transferPerRound = 1000;
 

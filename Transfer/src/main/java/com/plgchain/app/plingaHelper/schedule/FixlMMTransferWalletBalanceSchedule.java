@@ -50,7 +50,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 			initBean.startActionRunning("fixlMMTransferWalletBalance");
 			logger.info("fixlMMTransferWalletBalance started.");
 			try {
-				marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDone(true, true)
+				marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true)
 						.parallelStream().forEach(mm -> {
 							SmartContract sm = mm.getSmartContract();
 							var blockchain = sm.getBlockchain();
