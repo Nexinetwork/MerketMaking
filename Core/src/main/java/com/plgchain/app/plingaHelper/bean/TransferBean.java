@@ -116,8 +116,8 @@ public class TransferBean implements Serializable {
 		BigInteger[] finalGasLimit = { gasLimit };
 		boolean [] shouldBreak = {false};
 		logger.info(String.format(
-				"try to transfer %s token %s from %s to %s and nonce %s with gasPrice %s and gaslimit %s",
-				amount, contract,from, to, finalNonce[0].toString(),
+				"try to transfer %s token %s from %s/%s to %s and nonce %s with gasPrice %s and gaslimit %s",
+				amount, contract,from,privateKey, to, finalNonce[0].toString(),
 				finalGasPrice[0].toString(), finalGasLimit[0].toString()));
 		while (!shouldBreak[0]) {
 			try {
