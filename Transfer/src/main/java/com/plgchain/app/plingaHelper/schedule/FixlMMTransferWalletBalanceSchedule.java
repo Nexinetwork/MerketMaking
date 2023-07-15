@@ -142,7 +142,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 													tankhahWallet.getPublicKey(), sm.getContractsAddress(), mustReturn,
 													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
 											logger.info("77777777777777777777777777777777777777777777777777777777");
-										} else if (balance.equals(BigDecimal.ZERO)) {
+										} else if (tokenBalance.equals(BigDecimal.ZERO)) {
 											logger.info("888888888888888888888888888888888888888888888888888");
 											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
 													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),

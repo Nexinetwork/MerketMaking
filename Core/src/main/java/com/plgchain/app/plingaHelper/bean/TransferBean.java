@@ -96,6 +96,7 @@ public class TransferBean implements Serializable {
 					else {
 						logger.error(String.format("message is %s and Error is %s but try again.",result.getResult(), result.getError().getMessage()));
 						if (result.getError().getMessage().contains("insufficient funds for gas")) {
+							logger.error(String.format("Insufficent main coin for wallet %s", from));
 							shouldBreak[0] = true;
 						}
 					}
@@ -139,6 +140,7 @@ public class TransferBean implements Serializable {
 					else {
 						logger.error(String.format("message is %s and Error is %s but try again.",result.getResult(), result.getError().getMessage()));
 						if (result.getError().getMessage().contains("insufficient funds for gas")) {
+							logger.error(String.format("Insufficent main coin for wallet %s and contract %s", from,contract));
 							shouldBreak[0] = true;
 						}
 					}
