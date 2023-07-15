@@ -29,10 +29,10 @@ public interface MarketMakingDao extends BaseLongDao<MarketMaking> {
 	public List<MarketMaking> findByInitialWalletCreationDoneAndInitialWalletFundingDone(boolean initialWalletCreationDone,boolean initialWalletFundingDone);
 	public List<MarketMaking> findByInitialWalletCreationDoneOrInitialWalletFundingDone(boolean initialWalletCreationDone,boolean initialWalletFundingDone);
 
-	@Query("SELECT mm FROM MarketMaking wallet mm WHERE mm.initialWalletCreationDone = :initialWalletCreationDone AND mm.initialWalletFundingDone = :initialWalletFundingDone ORDER BY FUNCTION('RANDOM')")
+	@Query("SELECT mm FROM MarketMaking mm WHERE mm.initialWalletCreationDone = :initialWalletCreationDone AND mm.initialWalletFundingDone = :initialWalletFundingDone ORDER BY FUNCTION('RANDOM')")
 	public List<MarketMaking> findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(@Param("initialWalletCreationDone") boolean initialWalletCreationDone,@Param("initialWalletFundingDone") boolean initialWalletFundingDone);
 
-	@Query("SELECT mm FROM MarketMaking wallet mm WHERE mm.initialWalletCreationDone = :initialWalletCreationDone OR mm.initialWalletFundingDone = :initialWalletFundingDone ORDER BY FUNCTION('RANDOM')")
+	@Query("SELECT mm FROM MarketMaking mm WHERE mm.initialWalletCreationDone = :initialWalletCreationDone OR mm.initialWalletFundingDone = :initialWalletFundingDone ORDER BY FUNCTION('RANDOM')")
 	public List<MarketMaking> findByInitialWalletCreationDoneOrInitialWalletFundingDoneOrderByRandom(@Param("initialWalletCreationDone") boolean initialWalletCreationDone,@Param("initialWalletFundingDone") boolean initialWalletFundingDone);
 
 	public Optional<MarketMaking> findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId(boolean initialWalletCreationDone,boolean initialWalletFundingDone);
