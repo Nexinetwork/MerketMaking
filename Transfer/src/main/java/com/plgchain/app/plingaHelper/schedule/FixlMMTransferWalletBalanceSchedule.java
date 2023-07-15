@@ -59,7 +59,6 @@ public class FixlMMTransferWalletBalanceSchedule {
 							var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
 							final BigInteger[] tankhahNonce = {
 									EVMUtil.getNonce(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex()) };
-							logger.info("Current nonce of tankhah wallet is: " + tankhahNonce[0]);
 							logger.info(String.format(
 									"Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
 									tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(),
