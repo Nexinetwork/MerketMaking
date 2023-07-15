@@ -100,21 +100,12 @@ public class FixlMMTransferWalletBalanceSchedule {
 											.equals(TransactionParallelType.SYNC))
 									.filter(wallet -> (!sm.getContractsAddress().equals(EVMUtil.mainToken)))
 									.forEach(wallet -> {
-										logger.info("000000000000000000000000000000000000000000000");
-										logger.info("0101010101010101010101010101 wallet is" + wallet.getPrivateKeyHex() + " : " + wallet.getPublicKey());
 										BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
 												wallet.getPublicKey());
-										logger.info("020202020202020202020202020202020202020202020202 balance is" + balance.toString());
-										logger.info("blockchain.getRpcUrl() : " + blockchain.getRpcUrl());
-										logger.info("wallet.getPrivateKeyHex() : " + wallet.getPrivateKeyHex());
-										logger.info("wallet.getPrivateKey() : " + wallet.getPrivateKey());
-										logger.info("sm.getContractsAddress() : " + sm.getContractsAddress());
 
 										BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
 												wallet.getPrivateKeyHex(), sm.getContractsAddress());
-										logger.info("11111111111111111111111111111111111111111 Token Balance is " + tokenBalance.toString());
 										if (balance.compareTo(initBean.getMaxMaincoinInContractWallet()) > 0) {
-											logger.info("222222222222222222222222222222222222222222222222222222222");
 											var amount = NumberUtil.generateRandomNumber(
 													initBean.getMinMaincoinInContractWallet(),
 													initBean.getMaxMaincoinInContractWallet(),
@@ -126,9 +117,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 													wallet.getPrivateKeyHex(), wallet.getPublicKey(),
 													tankhahWallet.getPublicKey(), mustReturn, EVMUtil.DefaultGasPrice,
 													EVMUtil.DefaultGasLimit, nonce);
-											logger.info("3333333333333333333333333333333333333333333333333333333");
 										} else if (balance.equals(BigDecimal.ZERO)) {
-											logger.info("44444444444444444444444444444444444");
 											var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
 													mm.getMaxInitial(), mm.getInitialDecimal());
 											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
@@ -136,14 +125,10 @@ public class FixlMMTransferWalletBalanceSchedule {
 													wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
 													EVMUtil.DefaultGasLimit, tankhahNonce[0]);
 											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
-											logger.info("555555555555555555555555555555555555555555");
 										}
-										logger.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 										var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
 												mm.getMaxInitial(), mm.getInitialDecimal());
-										logger.info("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
 										if (tokenBalance.compareTo(mm.getMaxInitial()) > 0) {
-											logger.info("666666666666666666666666666666666666");
 											var mustReturn = tokenBalance.subtract(amount);
 											BigInteger nonce = EVMUtil.getNonce(blockchain.getRpcUrl(),
 													wallet.getPrivateKeyHex());
@@ -151,18 +136,14 @@ public class FixlMMTransferWalletBalanceSchedule {
 													wallet.getPrivateKeyHex(), wallet.getPublicKey(),
 													tankhahWallet.getPublicKey(), sm.getContractsAddress(), mustReturn,
 													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
-											logger.info("77777777777777777777777777777777777777777777777777777777");
 										} else if (tokenBalance.equals(BigDecimal.ZERO)) {
-											logger.info("888888888888888888888888888888888888888888888888888");
 											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
 													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
 													wallet.getPublicKey(), sm.getContractsAddress(), amount,
 													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
 													tankhahNonce[0]);
 											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
-											logger.info("99999999999999999999999999999999999999999999999999999999");
 										}
-										logger.info("ccccccccccccccccccccccccccccccccccccccccccccccccc");
 									});
 						});
 			} catch (Exception e) {

@@ -67,7 +67,7 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 	}
 
 	public List<MarketMakingWallet> findNByContractOrderByRandom(SmartContract contract,int count) {
-		return marketMakingWalletDao.findNByContractOrderByRandom(contract.getContractId(),count);
+		return marketMakingWalletDao.findNByContractOrderByRandom(contract,count);
 	}
 
 	public List<MarketMakingWallet> findNOrderByRandom(int count) {
