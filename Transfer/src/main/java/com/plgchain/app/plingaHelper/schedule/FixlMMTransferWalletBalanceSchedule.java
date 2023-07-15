@@ -105,6 +105,11 @@ public class FixlMMTransferWalletBalanceSchedule {
 										BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
 												wallet.getPublicKey());
 										logger.info("020202020202020202020202020202020202020202020202 balance is" + balance.toString());
+										logger.info("blockchain.getRpcUrl() : " + blockchain.getRpcUrl());
+										logger.info("wallet.getPrivateKeyHex() : " + wallet.getPrivateKeyHex());
+										logger.info("wallet.getPrivateKey() : " + wallet.getPrivateKey());
+										logger.info("sm.getContractsAddress() : " + sm.getContractsAddress());
+
 										BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
 												wallet.getPrivateKeyHex(), sm.getContractsAddress());
 										logger.info("11111111111111111111111111111111111111111 Token Balance is " + tokenBalance.toString());
