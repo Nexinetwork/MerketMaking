@@ -265,6 +265,33 @@ public class EVMUtil implements Serializable {
 		return null;
 	}
 
+	public static BigInteger getEstimateGasPrice(String rpcUrl) {
+		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+
+        try {
+            EthGasPrice gasPrice = web3j.ethGasPrice().send();
+            BigInteger gasPriceWei = gasPrice.getGasPrice();
+            BigInteger gasPriceGwei = gasPriceWei.divide(BigInteger.valueOf(1_000_000_000));
+            return gasPriceGwei;
+        } catch (IOException e) {
+            System.out.println("Error occurred while fetching gas price: " + e.getMessage());
+        }
+        return BigInteger.ZERO;
+	}
+
+	public static BigInteger getEstimateGasPriceAsWei(String rpcUrl) {
+		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+
+        try {
+            EthGasPrice gasPrice = web3j.ethGasPrice().send();
+            BigInteger gasPriceWei = gasPrice.getGasPrice();
+            return gasPriceWei;
+        } catch (IOException e) {
+            System.out.println("Error occurred while fetching gas price: " + e.getMessage());
+        }
+        return BigInteger.ZERO;
+	}
+
 	public static BigInteger getEstimateGas(String rpcUrl) {
 		HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
 		HttpRequest request = null;

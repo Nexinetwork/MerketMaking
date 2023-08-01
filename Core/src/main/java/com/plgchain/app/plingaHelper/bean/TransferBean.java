@@ -109,6 +109,47 @@ public class TransferBean implements Serializable {
 	}
 
 	@Async
+	public void transferBetweenToAccount(String rpcUrl, String privateKey, String from, String to, BigDecimal amount,
+			BigInteger gasLimit, BigInteger nonce) {
+		EthSendTransaction result = null;
+		BigInteger[] finalNonce = { nonce };
+		BigInteger[] finalGasPrice = { BigInteger.ZERO };
+		BigInteger[] finalGasLimit = { gasLimit };
+		boolean [] shouldBreak = {false};
+		while (!shouldBreak[0]) {
+			try {
+				finalGasPrice[0] = EVMUtil.getEstimateGasPriceAsWei(rpcUrl);
+				result = EVMUtil.createRawTransactionSync(rpcUrl, privateKey, to, amount, finalNonce[0],
+						finalGasPrice[0], finalGasLimit[0]);
+
+				Optional.ofNullable(result).filter(r -> !r.hasError())
+						.filter(r -> r.getTransactionHash() != null && !r.getTransactionHash().isBlank())
+						.ifPresent(r -> {
+							logger.info(String.format(
+									"Transfered %s Maincoin from %s to %s and txHash is %s with nonce %s with gasPrice %s and gaslimit %s",
+									amount, from, to, r.getTransactionHash(), finalNonce[0].toString(),
+									finalGasPrice[0].toString(), finalGasLimit[0].toString()));
+							shouldBreak[0] = true;
+						});
+				if (result != null) {
+					if (EVMUtil.mostIncreaseNonce(result))
+						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
+					else {
+						logger.error(String.format("message is %s and Error is %s but try again.",result.getResult(), result.getError().getMessage()));
+						if (result.getError().getMessage().contains("insufficient funds for gas")) {
+							logger.error(String.format("Insufficent main coin for wallet %s", from));
+							shouldBreak[0] = true;
+						}
+					}
+				}
+			} catch (Exception e) {
+				logger.error("Error is : " + e.getMessage());
+				shouldBreak[0] = true;
+			}
+		}
+	}
+
+	@Async
 	public void transferBetweenToAccount(String rpcUrl, String privateKey, String from, String to,String contract, BigDecimal amount,
 			BigInteger gasPrice, BigInteger gasLimit, BigInteger nonce) {
 		EthSendTransaction result = null;
@@ -152,7 +193,50 @@ public class TransferBean implements Serializable {
 		}
 	}
 
+	@Async
+	public void transferBetweenToAccount(String rpcUrl, String privateKey, String from, String to,String contract, BigDecimal amount,
+			BigInteger gasLimit, BigInteger nonce) {
+		EthSendTransaction result = null;
+		BigInteger[] finalNonce = { nonce };
+		BigInteger[] finalGasPrice = { BigInteger.ZERO };
+		BigInteger[] finalGasLimit = { gasLimit };
+		boolean [] shouldBreak = {false};
+		while (!shouldBreak[0]) {
+			try {
+				finalGasPrice[0] = EVMUtil.getEstimateGasPriceAsWei(rpcUrl);
+				logger.info(String.format(
+						"try to transfer %s token %s from %s/%s to %s and nonce %s with gasPrice %s and gaslimit %s",
+						amount, contract,from,privateKey, to, finalNonce[0].toString(),
+						finalGasPrice[0].toString(), finalGasLimit[0].toString()));
+				result = EVMUtil.sendSmartContractTransactionSync(rpcUrl, privateKey, contract,to, amount, finalNonce[0],
+						finalGasPrice[0], finalGasLimit[0]);
 
+				Optional.ofNullable(result).filter(r -> !r.hasError())
+						.filter(r -> r.getTransactionHash() != null && !r.getTransactionHash().isBlank())
+						.ifPresent(r -> {
+							logger.info(String.format(
+									"Transfered %s token %s from %s to %s and txHash is %s with nonce %s with gasPrice %s and gaslimit %s",
+									amount, contract,from, to, r.getTransactionHash(), finalNonce[0].toString(),
+									finalGasPrice[0].toString(), finalGasLimit[0].toString()));
+							shouldBreak[0] = true;
+						});
+				if (result != null) {
+					if (EVMUtil.mostIncreaseNonce(result))
+						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
+					else {
+						logger.error(String.format("message is %s and Error is %s but try again.",result.getResult(), result.getError().getMessage()));
+						if (result.getError().getMessage().contains("insufficient funds for gas")) {
+							logger.error(String.format("Insufficent main coin for wallet %s and contract %s", from,contract));
+							shouldBreak[0] = true;
+						}
+					}
+				}
+			} catch (Exception e) {
+				logger.error("Error is : " + e.getMessage());
+				shouldBreak[0] = true;
+			}
+		}
+	}
 
 
 }

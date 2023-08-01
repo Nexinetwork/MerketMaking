@@ -95,6 +95,9 @@ public class Blockchain implements Serializable {
 	@Column(name = "\"isEvm\"",nullable = false)
 	private boolean isEvm;
 
+	@Column(name = "\"autoGas\"",nullable = false)
+	private boolean autoGas;
+
 	@Column(name = "\"nodeCount\"")
 	private int nodeCount;
 

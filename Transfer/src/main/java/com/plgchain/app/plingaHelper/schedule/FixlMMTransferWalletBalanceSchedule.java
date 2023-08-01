@@ -78,17 +78,31 @@ public class FixlMMTransferWalletBalanceSchedule {
 											var mustReturn = balance.subtract(amount);
 											BigInteger nonce = EVMUtil.getNonce(blockchain.getRpcUrl(),
 													wallet.getPrivateKeyHex());
-											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
-													wallet.getPrivateKeyHex(), wallet.getPublicKey(),
-													tankhahWallet.getPublicKey(), mustReturn, EVMUtil.DefaultGasPrice,
-													EVMUtil.DefaultGasLimit, nonce);
+											if (blockchain.isAutoGas()) {
+												transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+														wallet.getPrivateKeyHex(), wallet.getPublicKey(),
+														tankhahWallet.getPublicKey(), mustReturn,
+														EVMUtil.DefaultGasLimit, nonce);
+											} else {
+												transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+														wallet.getPrivateKeyHex(), wallet.getPublicKey(),
+														tankhahWallet.getPublicKey(), mustReturn,
+														EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, nonce);
+											}
 										} else if (balance.equals(BigDecimal.ZERO)) {
 											var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
 													mm.getMaxInitial(), mm.getInitialDecimal());
-											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
-													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-													wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
-													EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+											if (blockchain.isAutoGas()) {
+												transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+														tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+														wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
+														tankhahNonce[0]);
+											} else {
+												transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+														tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+														wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
+														EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+											}
 											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 										}
 									});
@@ -112,17 +126,31 @@ public class FixlMMTransferWalletBalanceSchedule {
 											var mustReturn = balance.subtract(amount);
 											BigInteger nonce = EVMUtil.getNonce(blockchain.getRpcUrl(),
 													wallet.getPrivateKeyHex());
-											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
-													wallet.getPrivateKeyHex(), wallet.getPublicKey(),
-													tankhahWallet.getPublicKey(), mustReturn, EVMUtil.DefaultGasPrice,
-													EVMUtil.DefaultGasLimit, nonce);
+											if (blockchain.isAutoGas()) {
+												transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+														wallet.getPrivateKeyHex(), wallet.getPublicKey(),
+														tankhahWallet.getPublicKey(), mustReturn,
+														EVMUtil.DefaultGasLimit, nonce);
+											} else {
+												transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+														wallet.getPrivateKeyHex(), wallet.getPublicKey(),
+														tankhahWallet.getPublicKey(), mustReturn,
+														EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, nonce);
+											}
 										} else if (balance.equals(BigDecimal.ZERO)) {
 											var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
 													mm.getMaxInitial(), mm.getInitialDecimal());
-											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
-													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-													wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
-													EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+											if (blockchain.isAutoGas()) {
+												transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+														tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+														wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
+														tankhahNonce[0]);
+											} else {
+												transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+														tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+														wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
+														EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+											}
 											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 										}
 										var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
@@ -131,16 +159,31 @@ public class FixlMMTransferWalletBalanceSchedule {
 											var mustReturn = tokenBalance.subtract(amount);
 											BigInteger nonce = EVMUtil.getNonce(blockchain.getRpcUrl(),
 													wallet.getPrivateKeyHex());
-											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
-													wallet.getPrivateKeyHex(), wallet.getPublicKey(),
-													tankhahWallet.getPublicKey(), sm.getContractsAddress(), mustReturn,
-													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
+											if (blockchain.isAutoGas()) {
+												transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+														wallet.getPrivateKeyHex(), wallet.getPublicKey(),
+														tankhahWallet.getPublicKey(), sm.getContractsAddress(),
+														mustReturn, EVMUtil.DefaultTokenGasLimit, nonce);
+											} else {
+												transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+														wallet.getPrivateKeyHex(), wallet.getPublicKey(),
+														tankhahWallet.getPublicKey(), sm.getContractsAddress(),
+														mustReturn, EVMUtil.DefaultGasPrice,
+														EVMUtil.DefaultTokenGasLimit, nonce);
+											}
 										} else if (tokenBalance.equals(BigDecimal.ZERO)) {
-											transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
-													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-													wallet.getPublicKey(), sm.getContractsAddress(), amount,
-													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
-													tankhahNonce[0]);
+											if (blockchain.isAutoGas()) {
+												transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+														tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+														wallet.getPublicKey(), sm.getContractsAddress(), amount,
+														EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
+											} else {
+												transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+														tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+														wallet.getPublicKey(), sm.getContractsAddress(), amount,
+														EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
+														tankhahNonce[0]);
+											}
 											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 										}
 									});

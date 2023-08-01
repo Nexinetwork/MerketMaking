@@ -42,7 +42,7 @@ public class TransactionTest implements Serializable {
 
 	@Test
 	public void getNonceTestCase() {
-		System.out.println(EVMUtil.getNonce("http://185.173.129.243:18545", "bec8b2b1cefafeec549f16f744f61dd70aed2eca27e5ab69b2fb1848ff4737fd"));
+		System.out.println(EVMUtil.getEstimateGasPriceAsWei("http://185.110.191.217:8545"));
 	}
 
 	//@Test
