@@ -14,12 +14,14 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Bool;
 import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.contracts.eip20.generated.ERC20;
 import org.web3j.crypto.Credentials;
@@ -32,6 +34,7 @@ import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.methods.response.EthBlock;
+import org.web3j.protocol.core.methods.response.EthCall;
 import org.web3j.protocol.core.methods.response.EthGasPrice;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
@@ -268,28 +271,28 @@ public class EVMUtil implements Serializable {
 	public static BigInteger getEstimateGasPrice(String rpcUrl) {
 		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
 
-        try {
-            EthGasPrice gasPrice = web3j.ethGasPrice().send();
-            BigInteger gasPriceWei = gasPrice.getGasPrice();
-            BigInteger gasPriceGwei = gasPriceWei.divide(BigInteger.valueOf(1_000_000_000));
-            return gasPriceGwei;
-        } catch (IOException e) {
-            System.out.println("Error occurred while fetching gas price: " + e.getMessage());
-        }
-        return BigInteger.ZERO;
+		try {
+			EthGasPrice gasPrice = web3j.ethGasPrice().send();
+			BigInteger gasPriceWei = gasPrice.getGasPrice();
+			BigInteger gasPriceGwei = gasPriceWei.divide(BigInteger.valueOf(1_000_000_000));
+			return gasPriceGwei;
+		} catch (IOException e) {
+			System.out.println("Error occurred while fetching gas price: " + e.getMessage());
+		}
+		return BigInteger.ZERO;
 	}
 
 	public static BigInteger getEstimateGasPriceAsWei(String rpcUrl) {
 		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
 
-        try {
-            EthGasPrice gasPrice = web3j.ethGasPrice().send();
-            BigInteger gasPriceWei = gasPrice.getGasPrice();
-            return gasPriceWei;
-        } catch (IOException e) {
-            System.out.println("Error occurred while fetching gas price: " + e.getMessage());
-        }
-        return BigInteger.ZERO;
+		try {
+			EthGasPrice gasPrice = web3j.ethGasPrice().send();
+			BigInteger gasPriceWei = gasPrice.getGasPrice();
+			return gasPriceWei;
+		} catch (IOException e) {
+			System.out.println("Error occurred while fetching gas price: " + e.getMessage());
+		}
+		return BigInteger.ZERO;
 	}
 
 	public static BigInteger getEstimateGas(String rpcUrl) {
@@ -412,9 +415,9 @@ public class EVMUtil implements Serializable {
 
 	}
 
-	public static EthSendTransaction sendSmartContractTransactionSync(String rpcUrl, String privateKey, String contractAddress,
-			String address, BigDecimal amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit)
-			throws IOException, TransactionException, InterruptedException, ExecutionException {
+	public static EthSendTransaction sendSmartContractTransactionSync(String rpcUrl, String privateKey,
+			String contractAddress, String address, BigDecimal amount, BigInteger nonce, BigInteger gasPrice,
+			BigInteger gasLimit) throws IOException, TransactionException, InterruptedException, ExecutionException {
 		var web3j = Web3j.build(new HttpService(rpcUrl));
 		var credentials = Credentials.create(privateKey);
 		var function = new Function("transfer", Arrays.asList(new Address(address), new Uint256(getWei(amount))),
@@ -460,4 +463,20 @@ public class EVMUtil implements Serializable {
 		}
 	}
 
+	public static BigInteger calculateTransferGasLimit(String rpcUrl, String contractAddress, String fromAddress,
+			String toAddress, BigInteger tokenAmount) throws Exception {
+		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+		Function function = new Function("transfer", List.of(new Address(toAddress), new Uint256(tokenAmount)),
+				List.of(new TypeReference<Type>() {
+				}));
+		String functionData = FunctionEncoder.encode(function);
+		EthCall ethCall = web3j.ethCall(org.web3j.protocol.core.methods.request.Transaction
+				.createEthCallTransaction(fromAddress, contractAddress, functionData), DefaultBlockParameterName.LATEST)
+				.send();
+		String gasLimitHex = ethCall.getValue();
+		BigInteger gasLimit = new BigInteger(gasLimitHex.substring(2), 16);
+
+		return gasLimit;
+
+	}
 }
