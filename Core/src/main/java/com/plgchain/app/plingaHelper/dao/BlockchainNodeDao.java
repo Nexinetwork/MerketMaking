@@ -16,4 +16,6 @@ public interface BlockchainNodeDao extends BaseLongDao<BlockchainNode> {
 	@Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM BlockchainNode e")
     public boolean anyExist();
 
+	public void deleteByBlockchain(Blockchain blockchain);
+
 }

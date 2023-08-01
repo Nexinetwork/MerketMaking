@@ -71,4 +71,8 @@ public class BlockchainNodeService extends BaseService<BlockchainNode> implement
 		return blockchainNodeDao.saveAll(oList);
 	}
 
+	public void deleteByBlockchain(Blockchain blockchain) {
+		blockchainNodeDao.deleteByBlockchain(blockchain);
+	}
+
 }
