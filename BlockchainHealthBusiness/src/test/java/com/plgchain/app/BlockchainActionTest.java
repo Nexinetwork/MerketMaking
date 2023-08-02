@@ -90,7 +90,7 @@ public class BlockchainActionTest implements Serializable {
 
 	@Test
 	public void deleteAllBlockchainNodesTestCase() {
-		var blockchain = "Nexilix-Pos-V1";
+		var blockchain = "Nexi-DPOS-V1";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/deleteAllBlockchainNode")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())

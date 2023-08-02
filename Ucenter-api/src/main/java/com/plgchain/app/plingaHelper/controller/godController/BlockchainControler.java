@@ -100,10 +100,10 @@ public class BlockchainControler extends BaseController implements Serializable 
 			return success(String.format("all nodes of blockchain %s has been deleted..", blockchain));
 		} catch (RestActionError e) {
 			// TODO Auto-generated catch block
-			error(e.getMessage());
+			logger.error("111111111111111111111 : " + e.getMessage());
 			return error("111111 : " + e.getMessage());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("222222222222222222222222222222 : " + e.getMessage());
 			return error("222222222222222222 : " + e.getMessage());
 		}
 	}
