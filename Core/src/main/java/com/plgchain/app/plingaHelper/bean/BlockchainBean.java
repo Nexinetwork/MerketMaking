@@ -426,5 +426,18 @@ public class BlockchainBean implements Serializable {
 	    logger.info("Fixing wallet has been done");
 	}
 
+	@LogMethod
+	@UpdateBlockchainData
+	public void deleteAllNodesBlockchainNodes(String blockchainName) throws RestActionError {
+		if (Strings.isNullOrEmpty(blockchainName)) {
+			throw new RestActionError("Blockchain is null.");
+		}
+		if (!blockchainService.existsBlockchainByName(blockchainName)) {
+			throw new RestActionError("Invalid Blockchain.");
+		}
+		Optional<Blockchain> bc = blockchainService.findByName(blockchainName);
+		blockchainNodeService.deleteByBlockchain(bc.get());
+	}
+
 
 }

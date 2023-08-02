@@ -45,10 +45,10 @@ public class FixlMMTransferWalletBalanceSchedule {
 
 	@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
 	@Transactional
-	public void fixlMMTransferWalletBalance() {
-		if (!initBean.doesActionRunning("fixlMMTransferWalletBalance")) {
-			initBean.startActionRunning("fixlMMTransferWalletBalance");
-			logger.info("fixlMMTransferWalletBalance started.");
+	public void fixMMTransferWalletBalance() {
+		if (!initBean.doesActionRunning("fixMMTransferWalletBalance")) {
+			initBean.startActionRunning("fixMMTransferWalletBalance");
+			logger.info("fixMMTransferWalletBalance started.");
 			try {
 				marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true)
 						.parallelStream().forEach(mm -> {
@@ -191,10 +191,10 @@ public class FixlMMTransferWalletBalanceSchedule {
 			} catch (Exception e) {
 				logger.error(e.getMessage());
 			}
-			initBean.stopActionRunning("fixlMMTransferWalletBalance");
-			logger.info("fixlMMTransferWalletBalance finished.");
+			initBean.stopActionRunning("fixMMTransferWalletBalance");
+			logger.info("fixMMTransferWalletBalance finished.");
 		} else {
-			logger.warn("Schedule method fixlMMTransferWalletBalance already running, skipping it.");
+			logger.warn("Schedule method fixMMTransferWalletBalance already running, skipping it.");
 		}
 	}
 

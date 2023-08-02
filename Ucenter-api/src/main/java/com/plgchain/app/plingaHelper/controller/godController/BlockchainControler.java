@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson2.JSON;
-import com.netflix.servo.util.Strings;
+import com.google.common.base.Strings;
 import com.plgchain.app.plingaHelper.bean.BlockchainBean;
 import com.plgchain.app.plingaHelper.constant.AdminCommandType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
@@ -77,6 +77,26 @@ public class BlockchainControler extends BaseController implements Serializable 
 			ctr.setAdminCommandType(AdminCommandType.UPDATEBLOCKCHAIN);
 			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
 			return success(String.format("Blockchain node %s has been created.", result.getAsDto()));
+		} catch (RestActionError e) {
+			// TODO Auto-generated catch block
+			error(e.getMessage());
+			return error(e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error(e.getMessage());
+		}
+	}
+
+	@PostMapping("/blockchain/deleteAllBlockchainNode")
+	public MessageResult deleteAllBlockchainNode(@RequestBody String blockchain) {
+		if (Strings.isNullOrEmpty(blockchain))
+			return error("Blockchain name is empty");
+		try {
+			blockchainBean.deleteAllNodesBlockchainNodes(blockchain.trim());
+			CommandToRun ctr = new CommandToRun();
+			ctr.setAdminCommandType(AdminCommandType.UPDATEBLOCKCHAIN);
+			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+			return success(String.format("all nodes of blockchain %s has been deleted..", blockchain));
 		} catch (RestActionError e) {
 			// TODO Auto-generated catch block
 			error(e.getMessage());
