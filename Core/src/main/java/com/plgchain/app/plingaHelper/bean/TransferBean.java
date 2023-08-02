@@ -38,6 +38,8 @@ public class TransferBean implements Serializable {
 
 	private static final Logger logger = LoggerFactory.getLogger(TransferBean.class);
 
+	private static final int waitOnMaxEnqueIsSeconds = 1;
+
 	@Inject
 	private MarketMakingWalletService marketMakingWalletService;
 
@@ -135,17 +137,24 @@ public class TransferBean implements Serializable {
 					if (EVMUtil.mostIncreaseNonce(result))
 						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
 					else {
-						logger.error(String.format("message is %s and Error is %s but try again.", result.getResult(),
-								result.getError().getMessage()));
 						if (result.getError().getMessage().contains("insufficient funds for gas")) {
 							logger.error(String.format("Insufficent main coin for wallet %s", from));
 							shouldBreak[0] = true;
+						} else if (result.getError().getMessage().contains("maximum number of enqueued transactions reached")) {
+							Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 						}
 					}
 				}
 			} catch (Exception e) {
-				logger.error("Error is : " + e.getMessage());
-				if (!e.getMessage().contains("Cannot assign requested address"))
+				//logger.error("Error is : " + e.getMessage());
+				if (e.getMessage().contains("Cannot assign requested address"))
+					try {
+						Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						logger.error(e1.getMessage());;
+					}
+				else
 					shouldBreak[0] = true;
 			}
 		}
@@ -219,17 +228,25 @@ public class TransferBean implements Serializable {
 					if (EVMUtil.mostIncreaseNonce(result))
 						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
 					else {
-						logger.error(String.format("message is %s and Error is %s but try again.", result.getResult(),
-								result.getError().getMessage()));
 						if (result.getError().getMessage().contains("insufficient funds for gas")) {
 							logger.error(String.format("Insufficent main coin for wallet %s", from));
 							shouldBreak[0] = true;
+						} else if (result.getError().getMessage().contains("maximum number of enqueued transactions reached")) {
+							Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 						}
 					}
 				}
 			} catch (Exception e) {
-				logger.error("Error is : " + e.getMessage());
-				shouldBreak[0] = true;
+				//logger.error("Error is : " + e.getMessage());
+				if (e.getMessage().contains("Cannot assign requested address"))
+					try {
+						Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						logger.error(e1.getMessage());;
+					}
+				else
+					shouldBreak[0] = true;
 			}
 		}
 	}
@@ -309,18 +326,26 @@ public class TransferBean implements Serializable {
 					if (EVMUtil.mostIncreaseNonce(result))
 						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
 					else {
-						logger.error(String.format("message is %s and Error is %s but try again.", result.getResult(),
-								result.getError().getMessage()));
 						if (result.getError().getMessage().contains("insufficient funds for gas")) {
 							logger.error(String.format("Insufficent main coin for wallet %s and contract %s", from,
 									contract));
 							shouldBreak[0] = true;
+						} else if (result.getError().getMessage().contains("maximum number of enqueued transactions reached")) {
+							Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 						}
 					}
 				}
 			} catch (Exception e) {
-				logger.error("Error is : " + e.getMessage());
-				shouldBreak[0] = true;
+				//logger.error("Error is : " + e.getMessage());
+				if (e.getMessage().contains("Cannot assign requested address"))
+					try {
+						Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						logger.error(e1.getMessage());;
+					}
+				else
+					shouldBreak[0] = true;
 			}
 		}
 	}
@@ -402,18 +427,26 @@ public class TransferBean implements Serializable {
 					if (EVMUtil.mostIncreaseNonce(result))
 						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
 					else {
-						logger.error(String.format("message is %s and Error is %s but try again.", result.getResult(),
-								result.getError().getMessage()));
 						if (result.getError().getMessage().contains("insufficient funds for gas")) {
 							logger.error(String.format("Insufficent main coin for wallet %s and contract %s", from,
 									contract));
 							shouldBreak[0] = true;
+						} else if (result.getError().getMessage().contains("maximum number of enqueued transactions reached")) {
+							Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 						}
 					}
 				}
 			} catch (Exception e) {
-				logger.error("Error is : " + e.getMessage());
-				shouldBreak[0] = true;
+				//logger.error("Error is : " + e.getMessage());
+				if (e.getMessage().contains("Cannot assign requested address"))
+					try {
+						Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						logger.error(e1.getMessage());;
+					}
+				else
+					shouldBreak[0] = true;
 			}
 		}
 	}
