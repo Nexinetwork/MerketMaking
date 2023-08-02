@@ -93,11 +93,11 @@ public class BlockchainControler extends BaseController implements Serializable 
 		if (Strings.isNullOrEmpty(blockchain))
 			return error("Blockchain name is empty");
 		try {
-			blockchainBean.deleteAllNodesBlockchainNodes(blockchain.trim());
+			Long count = blockchainBean.deleteAllNodesBlockchainNodes(blockchain.trim());
 			CommandToRun ctr = new CommandToRun();
 			ctr.setAdminCommandType(AdminCommandType.UPDATEBLOCKCHAIN);
 			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
-			return success(String.format("all nodes of blockchain %s has been deleted..", blockchain));
+			return success(String.format("%s nodes of blockchain %s has been deleted..", count,blockchain));
 		} catch (RestActionError e) {
 			// TODO Auto-generated catch block
 			logger.error("111111111111111111111 : " + e.getMessage());

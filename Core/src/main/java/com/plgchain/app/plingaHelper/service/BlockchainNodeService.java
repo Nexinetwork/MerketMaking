@@ -15,6 +15,8 @@ import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.service.Base.BaseService;
 
+import jakarta.transaction.Transactional;
+
 /**
  *
  */
@@ -71,8 +73,14 @@ public class BlockchainNodeService extends BaseService<BlockchainNode> implement
 		return blockchainNodeDao.saveAll(oList);
 	}
 
-	public void deleteByBlockchain(Blockchain blockchain) {
-		blockchainNodeDao.deleteByBlockchain(blockchain);
+	@Transactional
+	public List<BlockchainNode> deleteByBlockchain(Blockchain blockchain) {
+		return blockchainNodeDao.deleteByBlockchain(blockchain);
+	}
+
+	@Transactional
+	public Long removeByBlockchain(Blockchain blockchain) {
+		return blockchainNodeDao.removeByBlockchain(blockchain);
 	}
 
 }
