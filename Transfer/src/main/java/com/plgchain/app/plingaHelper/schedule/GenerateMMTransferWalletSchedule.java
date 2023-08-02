@@ -37,6 +37,7 @@ public class GenerateMMTransferWalletSchedule implements Serializable {
 	public void generateMMTransferWallet() {
 		if (!initBean.doesActionRunning("generateMMTransferWallet")) {
 			initBean.startActionRunning("generateMMTransferWallet");
+			logger.info("Running Schedule : generateMMTransferWallet");
 			try {
 				marketMakingService.findByInitialWalletCreationDone(false).forEach(mm -> {
 					transferBean.generateWalletsForMarketmaking(mm, initBean.getJpaBatchCount(), mm.getSmartContract(),
@@ -50,6 +51,7 @@ public class GenerateMMTransferWalletSchedule implements Serializable {
 				logger.error(e.getMessage());
 			}
 			initBean.stopActionRunning("generateMMTransferWallet");
+			logger.info("generateMMTransferWallet finished.");
 		} else {
 			logger.warn("Schedule method generateMMTransferWallet already running, skipping it.");
 		}

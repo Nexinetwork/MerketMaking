@@ -47,6 +47,7 @@ public class FundInitialMMTransferWalletSchedule {
 	public void fundInitialMMTransferWallet() {
 		if (!initBean.doesActionRunning("fundInitialMMTransferWallet")) {
 			initBean.startActionRunning("fundInitialMMTransferWallet");
+			logger.info("Running Schedule : fundInitialMMTransferWallet");
 			try {
 				marketMakingService
 						.findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId(true, false)
@@ -119,6 +120,7 @@ public class FundInitialMMTransferWalletSchedule {
 				logger.error(e.getMessage());
 			}
 			initBean.stopActionRunning("fundInitialMMTransferWallet");
+			logger.info("fundInitialMMTransferWallet finished.");
 		} else
 
 		{
