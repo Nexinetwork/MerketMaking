@@ -101,10 +101,10 @@ public class BlockchainControler extends BaseController implements Serializable 
 		} catch (RestActionError e) {
 			// TODO Auto-generated catch block
 			error(e.getMessage());
-			return error(e.getMessage());
+			return error("111111 : " + e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			return error(e.getMessage());
+			return error("222222222222222222 : " + e.getMessage());
 		}
 	}
 
