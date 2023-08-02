@@ -173,12 +173,12 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	@Test
 	public void createNewSmartContract() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = SmartContractReq.builder().blockchain("Plinga-DPOS").coinId(10379)
-				.contractsAddress("0x47fbc1D04511bfB1C3d64DA950c88815D02114F4").decimal(18).isMain(true)
+		var req = SmartContractReq.builder().blockchain("Nexi-DPOS-V1").coinId(10140)
+				.contractsAddress("0xdF397Aeee4950Aafb7DaD6345747337B510B4951").decimal(18).isMain(true)
 				.marketMaking(true).mustAdd(true).mustCheck(true).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/contract/createNewSmartContract")
@@ -200,7 +200,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void createMarketMaking() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();

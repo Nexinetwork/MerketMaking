@@ -60,7 +60,7 @@ public class EVMUtil implements Serializable {
 	public static BigInteger DefaultGasPrice = new BigInteger("12500000");
 
 	public static BigInteger DefaultGasLimit = new BigInteger("21000");
-	public static BigInteger DefaultTokenGasLimit = new BigInteger("55000");
+	public static BigInteger DefaultTokenGasLimit = new BigInteger("68408");
 
 	public static final String mainToken = "0x0000000000000000000000000000000000001010";
 
