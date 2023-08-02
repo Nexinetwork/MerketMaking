@@ -9,6 +9,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.constant.WalletType;
@@ -90,6 +93,15 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 	public List<MarketMakingWallet> findByContract(SmartContract contract) {
 		return marketMakingWalletDao.findByContract(contract);
 	}
+
+	public Page<MarketMakingWallet> findByContractWithPaging(SmartContract contract, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return marketMakingWalletDao.findByContract(contract, pageable);
+    }
+
+	public Page<MarketMakingWallet> findByContractWithPaging(SmartContract contract, Pageable pageable) {
+        return marketMakingWalletDao.findByContract(contract, pageable);
+    }
 
 	public List<MarketMakingWallet> findByPublicKey(String publicKey) {
 		return marketMakingWalletDao.findByPublicKey(publicKey);

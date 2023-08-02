@@ -48,6 +48,8 @@ public class InitBean implements Serializable {
 
 	private int decimalMaincoinInContractWallet = 2;
 
+	private int selectPageSize = 20000;
+
 	@PostConstruct
 	public void init() {
 

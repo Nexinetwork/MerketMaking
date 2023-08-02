@@ -4,6 +4,7 @@ import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.bean.TransferBean;
 import com.plgchain.app.plingaHelper.constant.TransactionParallelType;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
+import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
 import com.plgchain.app.plingaHelper.service.MarketMakingService;
 import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
 import com.plgchain.app.plingaHelper.service.TankhahWalletService;
@@ -15,6 +16,8 @@ import jakarta.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -55,63 +58,76 @@ public class FundInitialMMTransferWalletSchedule {
 							SmartContract sm = mm.getSmartContract();
 							var blockchain = sm.getBlockchain();
 							var coin = sm.getCoin();
-							logger.info("Try to fund for coin {}", coin.getSymbol());
+							logger.info("Try to fund for coin {}", sm.getCoin().getSymbol());
 							var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
-							final BigInteger[] tankhahNonce = {
-									EVMUtil.getNonce(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex()) };
+							final BigInteger[] tankhahNonce = { EVMUtil.getNonce(sm.getBlockchain().getRpcUrl(),
+									tankhahWallet.getPrivateKeyHex()) };
 							logger.info("Current nonce of tankhah wallet is: " + tankhahNonce[0]);
-							mmWalletService.findByContract(sm).stream().filter(
-									wallet -> mm.getTransactionParallelType().equals(TransactionParallelType.SYNC))
-									.forEach(wallet -> {
-										if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
-											var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
-													mm.getMaxInitial(), mm.getInitialDecimal());
-											if (blockchain.isAutoGas()) {
-												transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-														tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-														wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
-														tankhahNonce[0]);
+
+							int page = 0;
+							int size = initBean.getSelectPageSize();
+							Page<MarketMakingWallet> mmWalletPage;
+							do {
+								PageRequest pageable = PageRequest.of(page, size);
+								mmWalletPage = mmWalletService.findByContractWithPaging(sm, pageable);
+								mmWalletPage.getContent().stream().filter(
+										wallet -> mm.getTransactionParallelType().equals(TransactionParallelType.SYNC))
+										.forEach(wallet -> {
+											if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
+												var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
+														mm.getMaxInitial(), mm.getInitialDecimal());
+												if (blockchain.isAutoGas()) {
+													transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+															tankhahWallet.getPrivateKeyHex(),
+															tankhahWallet.getPublicKey(), wallet.getPublicKey(), amount,
+															EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+												} else {
+													transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+															tankhahWallet.getPrivateKeyHex(),
+															tankhahWallet.getPublicKey(), wallet.getPublicKey(), amount,
+															EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit,
+															tankhahNonce[0]);
+												}
+												tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 											} else {
-												transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-														tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-														wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
-														EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+												var mainCoinAmount = NumberUtil.generateRandomNumber(
+														initBean.getMinMaincoinInContractWallet(),
+														initBean.getMaxMaincoinInContractWallet(),
+														initBean.getDecimalMaincoinInContractWallet());
+												if (blockchain.isAutoGas()) {
+													transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+															tankhahWallet.getPrivateKeyHex(),
+															tankhahWallet.getPublicKey(), wallet.getPublicKey(),
+															mainCoinAmount, EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+												} else {
+													transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+															tankhahWallet.getPrivateKeyHex(),
+															tankhahWallet.getPublicKey(), wallet.getPublicKey(),
+															mainCoinAmount, EVMUtil.DefaultGasPrice,
+															EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+												}
+												tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+												var tokenAmount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
+														mm.getMaxInitial(), mm.getInitialDecimal());
+												if (blockchain.isAutoGas()) {
+													transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+															tankhahWallet.getPrivateKeyHex(),
+															tankhahWallet.getPublicKey(), wallet.getPublicKey(),
+															sm.getContractsAddress(), tokenAmount,
+															EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
+												} else {
+													transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+															tankhahWallet.getPrivateKeyHex(),
+															tankhahWallet.getPublicKey(), wallet.getPublicKey(),
+															sm.getContractsAddress(), tokenAmount,
+															EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
+															tankhahNonce[0]);
+												}
+												tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 											}
-											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
-										} else {
-											var mainCoinAmount = NumberUtil.generateRandomNumber(
-													initBean.getMinMaincoinInContractWallet(),
-													initBean.getMaxMaincoinInContractWallet(),
-													initBean.getDecimalMaincoinInContractWallet());
-											if (blockchain.isAutoGas()) {
-												transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-														tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-														wallet.getPublicKey(), mainCoinAmount, EVMUtil.DefaultGasLimit,
-														tankhahNonce[0]);
-											} else {
-												transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-														tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-														wallet.getPublicKey(), mainCoinAmount, EVMUtil.DefaultGasPrice,
-														EVMUtil.DefaultGasLimit, tankhahNonce[0]);
-											}
-											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
-											var tokenAmount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
-													mm.getMaxInitial(), mm.getInitialDecimal());
-											if (blockchain.isAutoGas()) {
-												transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-														tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-														wallet.getPublicKey(), sm.getContractsAddress(), tokenAmount,
-														EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
-											} else {
-												transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-														tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-														wallet.getPublicKey(), sm.getContractsAddress(), tokenAmount,
-														EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
-														tankhahNonce[0]);
-											}
-											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
-										}
-									});
+										});
+								page++;
+							} while (mmWalletPage.hasNext());
 
 							mm.setInitialWalletFundingDone(true);
 							marketMakingService.save(mm);
@@ -121,9 +137,7 @@ public class FundInitialMMTransferWalletSchedule {
 			}
 			initBean.stopActionRunning("fundInitialMMTransferWallet");
 			logger.info("fundInitialMMTransferWallet finished.");
-		} else
-
-		{
+		} else {
 			logger.warn("Schedule method fundInitialMMTransferWallet already running, skipping it.");
 		}
 	}
