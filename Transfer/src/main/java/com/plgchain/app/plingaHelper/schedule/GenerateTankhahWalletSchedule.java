@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Component
@@ -40,7 +41,7 @@ public class GenerateTankhahWalletSchedule implements Serializable {
 			smartContracts.forEach(smartContract -> {
 				try {
 					EvmWalletDto w = EvmWalletUtil.generateRandomWallet();
-					TankhahWallet tankhahWallet = TankhahWallet.builder().balance(w.getBalance())
+					TankhahWallet tankhahWallet = TankhahWallet.builder().balance(BigDecimal.ZERO).mainCoinBalance(BigDecimal.ZERO)
 							.contract(smartContract).privateKey(w.getPrivateKey()).privateKeyHex(w.getHexKey())
 							.tankhahWalletType(TankhahWalletType.TRANSFER).publicKey(w.getPublicKey()).build();
 					tankhahWallet = tankhahWalletService.save(tankhahWallet);

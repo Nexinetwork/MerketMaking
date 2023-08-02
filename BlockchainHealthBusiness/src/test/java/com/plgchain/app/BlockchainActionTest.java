@@ -52,20 +52,22 @@ public class BlockchainActionTest implements Serializable {
 		return jToken;
 	}
 
-	// @Test
+	//@Test
 	public void createBlockchaintestCase() {
 		Blockchain blockchain = new Blockchain();
-		blockchain.setName("Nexilix-Pos-V1");
+		blockchain.setName("Nexi-DPOS-V2");
 		blockchain.setEvm(true);
 		blockchain.setMustCheck(true);
-		blockchain.setChainId(new BigInteger("240"));
-		blockchain.setMainCoin("NEXILIX");
-		blockchain.setBlockExplorer("https://scan.nexilix.com");
-		blockchain.setBlockchainType(BlockchainTechType.POS);
+		blockchain.setChainId(new BigInteger("4243"));
+		blockchain.setMainCoin("NexiV2");
+		blockchain.setBlockExplorer("https://v2.nexiscan.com");
+		blockchain.setBlockchainType(BlockchainTechType.DPOS);
 		blockchain.setBlockDuration(2);
-		blockchain.setRpcUrl("https://rpcurl.pos.nexilix.com/");
+		blockchain.setRpcUrl("http://185.128.137.244:28545");
 		blockchain.setHeight(new BigInteger("0"));
-		blockchain.setCoingeckoId("nexilix");
+		blockchain.setCoingeckoId("nexiV2");
+		blockchain.setFullName("Nexi-DPOS-V2");
+		blockchain.setAutoGas(false);
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewBlockchain")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -74,11 +76,11 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	// @Test
+	//@Test
 	public void createNodeTestCase() {
-		var node = BlockchainNodeDto.builder().blockchain("Nexilix-Pos-V1").enabled(true).serverIp("185.173.129.244")
-				.sshPort(22424).rpcUrl("http://185.173.129.244:8545").enabled(true)
-				.nodeType(BlockchainNodeType.BLOCKCHAINNODE).validator(true).serviceNeme("plgchain1.service")
+		var node = BlockchainNodeDto.builder().blockchain("Plinga-DPOS").serverIp("185.173.129.243")
+				.sshPort(22).rpcUrl("http://185.173.129.243:8547").enabled(true)
+				.nodeType(BlockchainNodeType.BLOCKCHAINNODE).validator(true).serviceNeme("plgchain3.service")
 				.mustCheck(true).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/createNewNode")
@@ -88,9 +90,9 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void deleteAllBlockchainNodesTestCase() {
-		var blockchain = "Nexi-DPOS-V1";
+		var blockchain = "Nexilix-Pos-V1";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/deleteAllBlockchainNode")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -125,7 +127,7 @@ public class BlockchainActionTest implements Serializable {
 	public void createNewCoinTestCase() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = CoinReq.builder().name("ZEROX").symbol("ZEROX").listed(true).build();
+		var req = CoinReq.builder().name("Power Pay").symbol("POWER").listed(true).build();
 		HttpResponse<String> response = Unirest.post("http://185.173.129.244:7001/api/v1/godaction/coin/createNewCoin")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
@@ -171,12 +173,12 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	@Test
 	public void createNewSmartContract() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = SmartContractReq.builder().blockchain("Nexilix-Pos-V1").coinId(10137)
-				.contractsAddress("0x30199Be78D0A2A885b3E03f7D5B08DE2ad251648").decimal(18).isMain(true)
+		var req = SmartContractReq.builder().blockchain("Plinga-DPOS").coinId(10379)
+				.contractsAddress("0x47fbc1D04511bfB1C3d64DA950c88815D02114F4").decimal(18).isMain(true)
 				.marketMaking(true).mustAdd(true).mustCheck(true).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/contract/createNewSmartContract")
