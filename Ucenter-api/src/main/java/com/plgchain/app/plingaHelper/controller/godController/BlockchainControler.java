@@ -87,7 +87,7 @@ public class BlockchainControler extends BaseController implements Serializable 
 		}
 	}
 
-	@PostMapping("/blockchain/deleteAllBlockchainNode")
+	@RequestMapping("/blockchain/deleteAllBlockchainNode")
 	public MessageResult deleteAllBlockchainNode(@RequestBody String blockchain) {
 		if (Strings.isNullOrEmpty(blockchain))
 			return error("Blockchain name is empty");

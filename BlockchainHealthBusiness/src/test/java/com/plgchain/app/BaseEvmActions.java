@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.plgchain.app.simple;
+package com.plgchain.app;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -17,7 +17,7 @@ public class BaseEvmActions implements Serializable {
 
 	private static final long serialVersionUID = 2821972374571321960L;
 
-	@Test
+	//@Test
 	public void getGasPriceTestCase() {
 		try {
 			System.out.println(EVMUtil.requestCurrentGasPrice("https://rpcurl.mainnet.plgchain.com").toString());
