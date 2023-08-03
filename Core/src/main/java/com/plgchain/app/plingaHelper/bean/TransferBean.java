@@ -87,10 +87,12 @@ public class TransferBean implements Serializable {
 				Optional.ofNullable(result).filter(r -> !r.hasError())
 						.filter(r -> r.getTransactionHash() != null && !r.getTransactionHash().isBlank())
 						.ifPresent(r -> {
-							logger.info(String.format(
-									"Transfered %s Maincoin from %s to %s and txHash is %s with nonce %s with gasPrice %s and gaslimit %s",
-									amount, from, to, r.getTransactionHash(), finalNonce[0].toString(),
-									finalGasPrice[0].toString(), finalGasLimit[0].toString()));
+							/*
+							 * logger.info(String.format(
+							 * "Transfered %s Maincoin from %s to %s and txHash is %s with nonce %s with gasPrice %s and gaslimit %s"
+							 * , amount, from, to, r.getTransactionHash(), finalNonce[0].toString(),
+							 * finalGasPrice[0].toString(), finalGasLimit[0].toString()));
+							 */
 							shouldBreak[0] = true;
 						});
 				if (result != null) {
@@ -140,19 +142,21 @@ public class TransferBean implements Serializable {
 						if (result.getError().getMessage().contains("insufficient funds for gas")) {
 							logger.error(String.format("Insufficent main coin for wallet %s", from));
 							shouldBreak[0] = true;
-						} else if (result.getError().getMessage().contains("maximum number of enqueued transactions reached")) {
+						} else if (result.getError().getMessage()
+								.contains("maximum number of enqueued transactions reached")) {
 							Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 						}
 					}
 				}
 			} catch (Exception e) {
-				//logger.error("Error is : " + e.getMessage());
+				// logger.error("Error is : " + e.getMessage());
 				if (e.getMessage().contains("Cannot assign requested address"))
 					try {
 						Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 					} catch (InterruptedException e1) {
 						// TODO Auto-generated catch block
-						logger.error(e1.getMessage());;
+						logger.error(e1.getMessage());
+						;
 					}
 				else
 					shouldBreak[0] = true;
@@ -171,6 +175,9 @@ public class TransferBean implements Serializable {
 		while (!shouldBreak[0]) {
 			try {
 				finalGasPrice[0] = EVMUtil.getEstimateGasPriceAsWei(rpcUrl);
+				logger.info(String.format(
+						"Try to transfer maincoin for contract as fee in %s from %s/%s to %s with amount %s with gaslimit %s and gasprice %s with nonce %s",
+						rpcUrl, from, privateKey, to, amount, gasLimit, finalGasPrice[0],finalNonce[0]));
 				result = EVMUtil.createRawTransactionSync(rpcUrl, privateKey, to, amount, finalNonce[0],
 						finalGasPrice[0], finalGasLimit[0]);
 
@@ -231,19 +238,21 @@ public class TransferBean implements Serializable {
 						if (result.getError().getMessage().contains("insufficient funds for gas")) {
 							logger.error(String.format("Insufficent main coin for wallet %s", from));
 							shouldBreak[0] = true;
-						} else if (result.getError().getMessage().contains("maximum number of enqueued transactions reached")) {
+						} else if (result.getError().getMessage()
+								.contains("maximum number of enqueued transactions reached")) {
 							Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 						}
 					}
 				}
 			} catch (Exception e) {
-				//logger.error("Error is : " + e.getMessage());
+				// logger.error("Error is : " + e.getMessage());
 				if (e.getMessage().contains("Cannot assign requested address"))
 					try {
 						Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 					} catch (InterruptedException e1) {
 						// TODO Auto-generated catch block
-						logger.error(e1.getMessage());;
+						logger.error(e1.getMessage());
+						;
 					}
 				else
 					shouldBreak[0] = true;
@@ -259,10 +268,12 @@ public class TransferBean implements Serializable {
 		BigInteger[] finalGasPrice = { gasPrice };
 		BigInteger[] finalGasLimit = { gasLimit };
 		boolean[] shouldBreak = { false };
-		logger.info(String.format(
-				"try to transfer %s token %s from %s/%s to %s and nonce %s with gasPrice %s and gaslimit %s", amount,
-				contract, from, privateKey, to, finalNonce[0].toString(), finalGasPrice[0].toString(),
-				finalGasLimit[0].toString()));
+		/*
+		 * logger.info(String.format(
+		 * "try to transfer %s token %s from %s/%s to %s and nonce %s with gasPrice %s and gaslimit %s"
+		 * , amount, contract, from, privateKey, to, finalNonce[0].toString(),
+		 * finalGasPrice[0].toString(), finalGasLimit[0].toString()));
+		 */
 		while (!shouldBreak[0]) {
 			try {
 				result = EVMUtil.sendSmartContractTransactionSync(rpcUrl, privateKey, contract, to, amount,
@@ -330,19 +341,21 @@ public class TransferBean implements Serializable {
 							logger.error(String.format("Insufficent main coin for wallet %s and contract %s", from,
 									contract));
 							shouldBreak[0] = true;
-						} else if (result.getError().getMessage().contains("maximum number of enqueued transactions reached")) {
+						} else if (result.getError().getMessage()
+								.contains("maximum number of enqueued transactions reached")) {
 							Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 						}
 					}
 				}
 			} catch (Exception e) {
-				//logger.error("Error is : " + e.getMessage());
+				// logger.error("Error is : " + e.getMessage());
 				if (e.getMessage().contains("Cannot assign requested address"))
 					try {
 						Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 					} catch (InterruptedException e1) {
 						// TODO Auto-generated catch block
-						logger.error(e1.getMessage());;
+						logger.error(e1.getMessage());
+						;
 					}
 				else
 					shouldBreak[0] = true;
@@ -358,9 +371,12 @@ public class TransferBean implements Serializable {
 		BigInteger[] finalGasPrice = { BigInteger.ZERO };
 		BigInteger[] finalGasLimit = { gasLimit };
 		boolean[] shouldBreak = { false };
+		logger.info("0000000000000000000000000000000000000000000000000000000000000000000000000000000");
 		while (!shouldBreak[0]) {
 			try {
+				logger.info("11111111111111111111111111111111111111111111111111111111111111111111111111");
 				finalGasPrice[0] = EVMUtil.getEstimateGasPriceAsWei(rpcUrl);
+				logger.info("222222222222222222222222222222222222222222222222222222222222222222222222222222");
 				logger.info(String.format(
 						"try to transfer %s token %s from %s/%s to %s and nonce %s with gasPrice %s and gaslimit %s",
 						amount, contract, from, privateKey, to, finalNonce[0].toString(), finalGasPrice[0].toString(),
@@ -431,19 +447,21 @@ public class TransferBean implements Serializable {
 							logger.error(String.format("Insufficent main coin for wallet %s and contract %s", from,
 									contract));
 							shouldBreak[0] = true;
-						} else if (result.getError().getMessage().contains("maximum number of enqueued transactions reached")) {
+						} else if (result.getError().getMessage()
+								.contains("maximum number of enqueued transactions reached")) {
 							Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 						}
 					}
 				}
 			} catch (Exception e) {
-				//logger.error("Error is : " + e.getMessage());
+				// logger.error("Error is : " + e.getMessage());
 				if (e.getMessage().contains("Cannot assign requested address"))
 					try {
 						Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 					} catch (InterruptedException e1) {
 						// TODO Auto-generated catch block
-						logger.error(e1.getMessage());;
+						logger.error(e1.getMessage());
+						;
 					}
 				else
 					shouldBreak[0] = true;
