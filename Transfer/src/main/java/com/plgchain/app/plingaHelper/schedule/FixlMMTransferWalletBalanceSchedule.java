@@ -66,10 +66,8 @@ public class FixlMMTransferWalletBalanceSchedule {
 									blockchain.getName(), tankhahNonce[0]));
 							// PageRequest pageable = PageRequest.of(0,
 							// initBean.getFixTransferWalletBalancePerRound());
-							mmWalletService
-									.findNWalletsRandomByContractIdNative(sm,
-											initBean.getFixTransferWalletBalancePerRound())
-									.forEach(wallet -> {
+							mmWalletService.findNWalletsRandomByContractIdNative(sm,
+									initBean.getFixTransferWalletBalancePerRound()).forEach(wallet -> {
 										if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
 											BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
 													wallet.getPublicKey());
