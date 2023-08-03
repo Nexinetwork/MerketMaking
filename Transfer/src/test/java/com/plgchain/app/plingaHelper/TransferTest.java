@@ -8,9 +8,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.jupiter.api.Test;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.gas.DefaultGasProvider;
 
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
@@ -98,7 +100,7 @@ public class TransferTest implements Serializable {
 		}
 	}
 
-	@Test
+	//@Test
 	public void transferTestCase() {
 		System.out.println("GAS_LIMIT : " + DefaultGasProvider.GAS_LIMIT.toString());
 		System.out.println("GAS_PRICE : " + DefaultGasProvider.GAS_PRICE.toString());
@@ -126,6 +128,37 @@ public class TransferTest implements Serializable {
 
 		// System.out.println(EvmWalletUtil.generateWallet(new
 		// BigInteger("46295382012785272375870482308001729876667835349322542732133821350485638298354")));
+	}
+
+	@Test
+	public void transferTestTokenWithDynamicGasPriceCase() {
+		var privateKey = "233a0f2308d201fa548e06a81080062efd58dbd77adfa68f660a8a6601711a61";
+		var rpcUrl = "http://185.128.137.240:8545";
+		var contract = "0x47fbc1D04511bfB1C3d64DA950c88815D02114F4";
+		var to = "0x8f6101eA765e70950918B7D3bFcfA0931C7dEA78";
+		var amount  = new BigDecimal(1);
+		BigInteger gasPrice = EVMUtil.getEstimateGasPriceAsWei(rpcUrl);
+		BigInteger nonce = EVMUtil.getNonce(rpcUrl,
+				privateKey);
+		System.out.println("Current none of tankhah wallet is : " + nonce.toString());
+		System.out.println("Estimate gas price : " + gasPrice);
+		try {
+			var result = EVMUtil.sendSmartContractTransactionSync(rpcUrl, privateKey, contract, to, amount,
+					nonce, gasPrice, EVMUtil.DefaultTokenGasLimit);
+			System.out.println(result);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransactionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

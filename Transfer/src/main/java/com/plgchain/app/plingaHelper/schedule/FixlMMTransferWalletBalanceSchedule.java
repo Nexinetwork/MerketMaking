@@ -113,6 +113,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 											.equals(TransactionParallelType.SYNC))
 									.filter(wallet -> (!sm.getContractsAddress().equals(EVMUtil.mainToken)))
 									.forEach(wallet -> {
+										logger.info("11111111111111111111111111111111111111111111111111111");
 										BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
 												wallet.getPublicKey());
 
