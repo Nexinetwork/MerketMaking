@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.dao.base.BaseLongDao;
+import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
 
@@ -35,4 +36,7 @@ public interface MarketMakingWalletDao extends BaseLongDao<MarketMakingWallet> {
 
 	@Query("SELECT wallet FROM MarketMakingWallet wallet ORDER BY FUNCTION('RANDOM') LIMIT :count")
 	public List<MarketMakingWallet> findNOrderByRandom(@Param("count") int count);
+
+	@Query(nativeQuery=true, value="SELECT \"mmWalletId\",PGP_SYM_DECRYPT( \"privateKey\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!' ) as \"privateKey\",PGP_SYM_DECRYPT( \"privateKeyHex\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!' ) as \"privateKeyHex\",\"publicKey\",balance,\"mainCoinBalance\",\"contractId\",\"coinId\",\"blockchainId\",\"contractAddress\",\"creationDate\",\"lastModifiedDate\" FROM \"schMarketMaking\".\"tblMMWallet\" WHERE \"contractId\"= :contractId ORDER BY random() LIMIT :count")
+	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdNative(@Param("contractId") long contractId,@Param("count") int count);
 }

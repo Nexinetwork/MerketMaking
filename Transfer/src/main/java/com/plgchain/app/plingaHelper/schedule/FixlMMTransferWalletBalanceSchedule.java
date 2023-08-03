@@ -107,18 +107,14 @@ public class FixlMMTransferWalletBalanceSchedule {
 											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 										}
 									});
-							logger.info("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
-							PageRequest pageable = PageRequest.of(0, initBean.getFixTransferWalletBalancePerRound());
+							//PageRequest pageable = PageRequest.of(0, initBean.getFixTransferWalletBalancePerRound());
 							mmWalletService
-									.findRandomByContract(sm, pageable)
+									.findNWalletsRandomByContractIdNative(sm, initBean.getFixTransferWalletBalancePerRound())
 									.stream()
 									.filter(wallet -> mm.getTransactionParallelType()
 											.equals(TransactionParallelType.SYNC))
 									.filter(wallet -> (!sm.getContractsAddress().equals(EVMUtil.mainToken)))
 									.forEach(wallet -> {
-										logger.info("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-										if (sm.getContractsAddress().equals("0x47fbc1D04511bfB1C3d64DA950c88815D02114F4"))
-											logger.info("a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1aq");
 										BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
 												wallet.getPublicKey());
 

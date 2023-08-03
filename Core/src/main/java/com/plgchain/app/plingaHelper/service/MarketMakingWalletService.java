@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.dao.MarketMakingWalletDao;
+import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
 import com.plgchain.app.plingaHelper.service.Base.BaseService;
@@ -129,6 +130,14 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 
 	public boolean existsByContractAndWalletType(SmartContract contract, WalletType walletType) {
 		return marketMakingWalletDao.existsByContractAndWalletType(contract, walletType);
+	}
+
+	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdNative(long contractId,int count) {
+		return marketMakingWalletDao.findNWalletsRandomByContractIdNative(contractId, count);
+	}
+
+	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdNative(SmartContract contract,int count) {
+		return marketMakingWalletDao.findNWalletsRandomByContractIdNative(contract.getContractId(), count);
 	}
 
 }
