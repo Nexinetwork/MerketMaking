@@ -70,8 +70,8 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 		return marketMakingWalletDao.findByContractOrderByMmWalletIdDesc(contract);
 	}
 
-	public List<MarketMakingWallet> findNByContractOrderByRandom(SmartContract contract,int count) {
-		return marketMakingWalletDao.findNByContractOrderByRandom(contract,count);
+	public List<MarketMakingWallet> findNByContractOrderByRandom(SmartContract contract, int count) {
+		return marketMakingWalletDao.findNByContractOrderByRandom(contract, count);
 	}
 
 	public Page<MarketMakingWallet> findRandomByContract(SmartContract contract, Pageable pageable) {
@@ -83,30 +83,23 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 	}
 
 	public List<MarketMakingWallet> batchSaveAll(List<MarketMakingWallet> oList, int count) {
-        return IntStream.range(0, oList.size())
-                .boxed()
-                .collect(Collectors.groupingBy(index -> index / count))
-                .values()
-                .stream()
-                .map(batchIndexes -> batchIndexes.stream()
-                        .map(oList::get)
-                        .collect(Collectors.toList()))
-                .flatMap(batchList -> saveAll(batchList).stream())
-                .collect(Collectors.toList());
-    }
+		return IntStream.range(0, oList.size()).boxed().collect(Collectors.groupingBy(index -> index / count)).values()
+				.stream().map(batchIndexes -> batchIndexes.stream().map(oList::get).collect(Collectors.toList()))
+				.flatMap(batchList -> saveAll(batchList).stream()).collect(Collectors.toList());
+	}
 
 	public List<MarketMakingWallet> findByContract(SmartContract contract) {
 		return marketMakingWalletDao.findByContract(contract);
 	}
 
 	public Page<MarketMakingWallet> findByContractWithPaging(SmartContract contract, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return marketMakingWalletDao.findByContract(contract, pageable);
-    }
+		Pageable pageable = PageRequest.of(page, size);
+		return marketMakingWalletDao.findByContract(contract, pageable);
+	}
 
 	public Page<MarketMakingWallet> findByContractWithPaging(SmartContract contract, Pageable pageable) {
-        return marketMakingWalletDao.findByContract(contract, pageable);
-    }
+		return marketMakingWalletDao.findByContract(contract, pageable);
+	}
 
 	public List<MarketMakingWallet> findByPublicKey(String publicKey) {
 		return marketMakingWalletDao.findByPublicKey(publicKey);
@@ -132,12 +125,14 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 		return marketMakingWalletDao.existsByContractAndWalletType(contract, walletType);
 	}
 
-	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdNative(long contractId,int count) {
-		return marketMakingWalletDao.findNWalletsRandomByContractIdNative(contractId, count);
+	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdNative(long contractId, int count) {
+		return marketMakingWalletDao.findNWalletsRandomByContractIdNative(contractId, count).stream()
+				.map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap)).collect(Collectors.toList());
 	}
 
-	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdNative(SmartContract contract,int count) {
-		return marketMakingWalletDao.findNWalletsRandomByContractIdNative(contract.getContractId(), count);
+	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdNative(SmartContract contract, int count) {
+		return marketMakingWalletDao.findNWalletsRandomByContractIdNative(contract.getContractId(), count).stream()
+				.map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap)).collect(Collectors.toList());
 	}
 
 }

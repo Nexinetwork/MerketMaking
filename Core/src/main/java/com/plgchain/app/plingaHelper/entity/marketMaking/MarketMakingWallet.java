@@ -29,6 +29,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -89,6 +90,15 @@ public class MarketMakingWallet implements Serializable {
 
 	@Column(name = "\"contractAddress\"")
 	private String contractAddress;
+
+	@Transient
+	private long contractId;
+
+	@Transient
+	private long coinId;
+
+	@Transient
+	private long blockchainId;
 
 	@CreationTimestamp
 	@Column(name = "\"creationDate\"")
