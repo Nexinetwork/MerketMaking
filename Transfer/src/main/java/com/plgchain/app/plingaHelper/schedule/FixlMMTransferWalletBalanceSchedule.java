@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -106,13 +107,16 @@ public class FixlMMTransferWalletBalanceSchedule {
 											tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 										}
 									});
+							logger.info("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq");
+							PageRequest pageable = PageRequest.of(0, initBean.getFixTransferWalletBalancePerRound());
 							mmWalletService
-									.findNByContractOrderByRandom(sm, initBean.getFixTransferWalletBalancePerRound())
+									.findRandomByContract(sm, pageable)
 									.stream()
 									.filter(wallet -> mm.getTransactionParallelType()
 											.equals(TransactionParallelType.SYNC))
 									.filter(wallet -> (!sm.getContractsAddress().equals(EVMUtil.mainToken)))
 									.forEach(wallet -> {
+										logger.info("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
 										if (sm.getContractsAddress().equals("0x47fbc1D04511bfB1C3d64DA950c88815D02114F4"))
 											logger.info("a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1aq");
 										BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),

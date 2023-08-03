@@ -30,6 +30,9 @@ public interface MarketMakingWalletDao extends BaseLongDao<MarketMakingWallet> {
 	@Query("SELECT wallet FROM MarketMakingWallet wallet WHERE wallet.contract = :contract ORDER BY FUNCTION('RANDOM') LIMIT :count")
 	public List<MarketMakingWallet> findNByContractOrderByRandom(@Param("contract") SmartContract contract, @Param("count") int count);
 
+	@Query("SELECT wallet FROM MarketMakingWallet wallet WHERE wallet.contract = :contract ORDER BY RANDOM()")
+    public Page<MarketMakingWallet> findRandomByContract(@Param("contract") SmartContract contract, Pageable pageable);
+
 	@Query("SELECT wallet FROM MarketMakingWallet wallet ORDER BY FUNCTION('RANDOM') LIMIT :count")
 	public List<MarketMakingWallet> findNOrderByRandom(@Param("count") int count);
 }
