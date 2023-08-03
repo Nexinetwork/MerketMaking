@@ -119,6 +119,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 
 										BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
 												wallet.getPrivateKeyHex(), sm.getContractsAddress());
+										logger.info(String.format("222222222222222222   %s 2222222222222222222222222222222222", tokenBalance));
 										if (balance.compareTo(initBean.getMaxMaincoinInContractWallet()) > 0) {
 											var amount = NumberUtil.generateRandomNumber(
 													initBean.getMinMaincoinInContractWallet(),
