@@ -38,7 +38,7 @@ public class TransferBean implements Serializable {
 
 	private static final Logger logger = LoggerFactory.getLogger(TransferBean.class);
 
-	private static final int waitOnMaxEnqueIsSeconds = 1;
+	private static final int waitOnMaxEnqueIsSeconds = 2;
 
 	@Inject
 	private MarketMakingWalletService marketMakingWalletService;

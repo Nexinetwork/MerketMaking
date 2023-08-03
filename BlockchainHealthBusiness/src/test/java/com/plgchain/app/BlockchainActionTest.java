@@ -173,7 +173,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void createNewSmartContract() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -200,12 +200,12 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	@Test
 	public void createMarketMaking() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = MarketMakingReq.builder().currentTransferWalletCount(0).dailyAddWallet(1000).initialDecimal(2).initialWallet(774323).initialWalletCreationDone(false)
-				.initialWalletFundingDone(true).minInitial(new BigDecimal(10)).maxInitial(new BigDecimal(423)).smartContractId(12136).transactionParallelType(TransactionParallelType.SYNC).build();
+		var req = MarketMakingReq.builder().currentTransferWalletCount(0).dailyAddWallet(1000).initialDecimal(2).initialWallet(85323).initialWalletCreationDone(false)
+				.initialWalletFundingDone(true).minInitial(new BigDecimal(5)).maxInitial(new BigDecimal(10)).smartContractId(12138).transactionParallelType(TransactionParallelType.SYNC).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/marketMaking/createOrUpdateMarketMaking")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
