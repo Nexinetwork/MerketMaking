@@ -195,17 +195,19 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 	    return allWalletsList.stream().limit(count).collect(Collectors.toList());
 	}
 
-	public List<MarketMakingWalletDto> findؤAllWalletsyContractAsDto(SmartContract contract) {
-	    Set<MarketMakingWalletDto> allWalletsSet = new HashSet<>(findAllAsDto());
+	public List<MarketMakingWalletDto> findNWalletsyContractAsDto(SmartContract contract) {
+	    List<MarketMakingWalletDto> allWallets = findAllAsDto();
 
-	    // Convert the set back to list
-	    List<MarketMakingWalletDto> allWalletsList = new ArrayList<>(allWalletsSet);
+	    // Filter the list based on the contractId
+	    List<MarketMakingWalletDto> filteredWallets = allWallets.stream()
+	            .filter(wallet -> wallet.getContractId() == contract.getContractId())
+	            .collect(Collectors.toList());
 
 	    // Shuffle the list of MarketMakingWalletDto
-	    Collections.shuffle(allWalletsList);
+	    Collections.shuffle(filteredWallets);
 
-	    // Return the first 'count' elements
-	    return allWalletsList;
+	    // Return the list
+	    return filteredWallets;
 	}
 
 }
