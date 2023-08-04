@@ -371,12 +371,9 @@ public class TransferBean implements Serializable {
 		BigInteger[] finalGasPrice = { BigInteger.ZERO };
 		BigInteger[] finalGasLimit = { gasLimit };
 		boolean[] shouldBreak = { false };
-		logger.info("0000000000000000000000000000000000000000000000000000000000000000000000000000000");
 		while (!shouldBreak[0]) {
 			try {
-				logger.info("11111111111111111111111111111111111111111111111111111111111111111111111111");
 				finalGasPrice[0] = EVMUtil.getEstimateGasPriceAsWei(rpcUrl);
-				logger.info("222222222222222222222222222222222222222222222222222222222222222222222222222222");
 				logger.info(String.format(
 						"try to transfer %s token %s from %s/%s to %s and nonce %s with gasPrice %s and gaslimit %s",
 						amount, contract, from, privateKey, to, finalNonce[0].toString(), finalGasPrice[0].toString(),
