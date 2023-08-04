@@ -61,7 +61,7 @@ public class InitBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		marketMakingWalletService.findAllAsDto();
-		logger.info("Wallet cache has been created.");
+		logger.info("Transfer Wallet cache has been created.");
 	}
 
 	public boolean doesActionRunning(String action) {
