@@ -75,6 +75,7 @@ public class FundInitialMMTransferWalletSchedule {
 								mmWalletPage.getContent().stream().filter(
 										wallet -> mm.getTransactionParallelType().equals(TransactionParallelType.SYNC))
 										.forEach(wallet -> {
+											logger.info(String.format("Proccessing wallet %s of contract %s of coin %s of blockchain %s",wallet.getPublicKey(), sm.getContractsAddress(),coin.getSymbol(),blockchain.getName()));
 											if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
 												var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
 														mm.getMaxInitial(), mm.getInitialDecimal());
