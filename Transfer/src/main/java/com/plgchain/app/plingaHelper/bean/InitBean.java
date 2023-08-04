@@ -14,10 +14,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.plgchain.app.plingaHelper.entity.Blockchain;
+import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
+import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
+import com.plgchain.app.plingaHelper.service.BlockchainService;
+import com.plgchain.app.plingaHelper.service.CoinService;
+import com.plgchain.app.plingaHelper.service.MarketMakingService;
 import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -58,11 +65,18 @@ public class InitBean implements Serializable {
 	@Inject
 	private MarketMakingWalletService marketMakingWalletService;
 
+	@Inject
+	private MarketMakingService marketMakingService;
+
+	@Inject
+	private BlockchainService blockchainService;
+
+	@Inject
+	private CoinService coinService;
+
 	@PostConstruct
 	public void init() {
-		logger.info("start to create Transfer Wallet cache.");
-		marketMakingWalletService.findAllAsDto();
-		logger.info("Transfer Wallet cache has been created.");
+		writeWalletDataToCache();
 	}
 
 	public boolean doesActionRunning(String action) {
@@ -75,6 +89,18 @@ public class InitBean implements Serializable {
 
 	public void stopActionRunning(String action) {
 		lockedMethod.remove(action);
+	}
+
+	@Transactional
+	public void writeWalletDataToCache() {
+		marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true)
+		.stream().forEach(mm -> {
+			SmartContract sm = mm.getSmartContract();
+			Coin coin = sm.getCoin();
+			Blockchain blockchain = sm.getBlockchain();
+			marketMakingWalletService.findAllWalletsByContractIdNativeAsCache(sm.getContractId());
+			logger.info(String.format("Contract %s for coin %s and blockchain %s has been write to cache", sm.getContractsAddress(),coin.getSymbol(),blockchain.getName()));
+		});
 	}
 
 }

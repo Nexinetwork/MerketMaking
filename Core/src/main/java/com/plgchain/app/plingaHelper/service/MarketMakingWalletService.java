@@ -214,7 +214,7 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 	    return result.stream().limit(count).collect(Collectors.toList());
 	}
 
-	public Page<MarketMakingWalletDto> findPageableWalletsByContractId(long contractId, @PageableDefault Pageable pageable) {
+	public Page<MarketMakingWalletDto> findPageableWalletsNativeAsCacheByContractId(long contractId, @PageableDefault Pageable pageable) {
         List<MarketMakingWalletDto> allWallets = findAllWalletsByContractIdNativeAsCache(contractId);
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), allWallets.size());
