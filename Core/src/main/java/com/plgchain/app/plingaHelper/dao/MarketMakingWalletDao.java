@@ -40,5 +40,5 @@ public interface MarketMakingWalletDao extends BaseLongDao<MarketMakingWallet> {
 	public List<MarketMakingWallet> findNWalletsRandomByContractIdNative(@Param("contractId") long contractId,@Param("count") int count);
 
 	@Query(nativeQuery=true, value="SELECT \"mmWalletId\",PGP_SYM_DECRYPT( \"privateKey\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!' ) as \"privateKey\",PGP_SYM_DECRYPT( \"privateKeyHex\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!' ) as \"privateKeyHex\",\"publicKey\",balance,\"mainCoinBalance\",\"contractId\",\"coinId\",\"blockchainId\",\"contractAddress\",\"walletType\",\"creationDate\",\"lastModifiedDate\" FROM \"schMarketMaking\".\"tblMMWallet\" WHERE \"contractId\"= :contractId")
-	public List<MarketMakingWallet> findAllWalletsyContractIdNative(@Param("contractId") long contractId);
+	public List<MarketMakingWallet> findAllWalletsByContractIdNative(@Param("contractId") long contractId);
 }

@@ -17,8 +17,10 @@ import java.util.stream.IntStream;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.constant.WalletType;
@@ -180,15 +182,45 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 				.map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap)).collect(Collectors.toList());
 	}
 
-	@Cacheable(value ="MarketMakingWalletDtoes", key = "#contract.contractId")
-	public List<MarketMakingWalletDto> findNWalletsyContractIdNativeAsCache(SmartContract contract, int count) {
-		Set<MarketMakingWalletDto> data = Set.copyOf(marketMakingWalletDao.findAllWalletsyContractIdNative(contract.getContractId()).stream()
-				.map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap)).collect(Collectors.toList()));
-		List<MarketMakingWalletDto> shuffledData = data.stream().collect(Collectors.toList());
-	    Collections.shuffle(shuffledData);
-
-	    return shuffledData.stream().limit(count).collect(Collectors.toList());
+	@Cacheable(value ="MarketMakingWalletDtoes", key = "#contractId")
+	public List<MarketMakingWalletDto> findAllWalletsByContractIdNativeAsCache(long contractId) {
+		List<MarketMakingWallet> wallets = marketMakingWalletDao.findAllWalletsByContractIdNative(contractId);
+	    List<MarketMakingWalletDto> result = wallets.stream()
+	            .map(MarketMakingWalletDto::new)
+	            .collect(Collectors.toList());
+	    return result;
 	}
+
+	@Cacheable(value ="MarketMakingWalletDtoes", key = "#contract.contractId")
+	public List<MarketMakingWalletDto> findAllWalletsByContractIdNativeAsCache(SmartContract contract) {
+	    return findAllWalletsByContractIdNativeAsCache(contract.getContractId());
+	}
+
+	@Cacheable(value ="MarketMakingWalletDtoes", key = "#contract.contractId")
+	public List<MarketMakingWalletDto> findAllWalletsByContractIdNativeAsCacheShuffle(SmartContract contract) {
+		List<MarketMakingWalletDto> allWalletsList =  findAllWalletsByContractIdNativeAsCache(contract.getContractId());
+		Collections.shuffle(allWalletsList);
+		return allWalletsList;
+	}
+
+	public List<MarketMakingWalletDto> findNWalletsyContractIdNativeAsCache(SmartContract contract, int count) {
+		List<MarketMakingWalletDto> result = findAllWalletsByContractIdNativeAsCache(contract.getContractId());
+	    return result.stream().limit(count).collect(Collectors.toList());
+	}
+
+	public List<MarketMakingWalletDto> findNWalletsyContractIdNativeAsCacheShuffle(SmartContract contract, int count) {
+		List<MarketMakingWalletDto> result = findAllWalletsByContractIdNativeAsCache(contract.getContractId());
+		Collections.shuffle(result);
+	    return result.stream().limit(count).collect(Collectors.toList());
+	}
+
+	public Page<MarketMakingWalletDto> findPageableWalletsByContractId(long contractId, @PageableDefault Pageable pageable) {
+        List<MarketMakingWalletDto> allWallets = findAllWalletsByContractIdNativeAsCache(contractId);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), allWallets.size());
+        Page<MarketMakingWalletDto> page = new PageImpl<>(allWallets.subList(start, end), pageable, allWallets.size());
+        return page;
+    }
 
 	public List<MarketMakingWalletDto> findNWalletsyContractId(SmartContract contract, int count) {
 	    Set<MarketMakingWalletDto> allWalletsSet = new HashSet<>(findAllAsDto());
@@ -202,6 +234,8 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 	    // Return the first 'count' elements
 	    return allWalletsList.stream().limit(count).collect(Collectors.toList());
 	}
+
+
 
 	public List<MarketMakingWalletDto> findNWalletsyContractAsDto(SmartContract contract) {
 	    List<MarketMakingWalletDto> allWallets = findAllAsDto();
