@@ -33,6 +33,7 @@ public class FundInitialMMTransferWalletSchedule {
 	private final TransferBean transferBean;
 	private final TankhahWalletService tankhahWalletService;
 	private final MarketMakingWalletService mmWalletService;
+	private final int sleepInSeconds = 3;
 
 	@Inject
 	public FundInitialMMTransferWalletSchedule(InitBean initBean, MarketMakingService marketMakingService,
@@ -58,6 +59,7 @@ public class FundInitialMMTransferWalletSchedule {
 							SmartContract sm = mm.getSmartContract();
 							var blockchain = sm.getBlockchain();
 							var coin = sm.getCoin();
+							final int[] enqueued = { 0 };
 							logger.info("Try to fund for coin {}", sm.getCoin().getSymbol());
 							var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
 							final BigInteger[] tankhahNonce = { EVMUtil.getNonce(sm.getBlockchain().getRpcUrl(),
@@ -89,6 +91,16 @@ public class FundInitialMMTransferWalletSchedule {
 															tankhahNonce[0]);
 												}
 												tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+												enqueued[0]++;
+												if (enqueued[0] >= 100) {
+													try {
+														Thread.sleep(sleepInSeconds * 1000);
+													} catch (InterruptedException e) {
+														// TODO Auto-generated catch block
+														e.printStackTrace();
+													}
+													enqueued[0] = 0;
+												}
 											} else {
 												var mainCoinAmount = NumberUtil.generateRandomNumber(
 														initBean.getMinMaincoinInContractWallet(),
@@ -124,6 +136,16 @@ public class FundInitialMMTransferWalletSchedule {
 															tankhahNonce[0]);
 												}
 												tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+												enqueued[0]++;
+												if (enqueued[0] >= 100) {
+													try {
+														Thread.sleep(sleepInSeconds * 1000);
+													} catch (InterruptedException e) {
+														// TODO Auto-generated catch block
+														e.printStackTrace();
+													}
+													enqueued[0] = 0;
+												}
 											}
 										});
 								page++;
