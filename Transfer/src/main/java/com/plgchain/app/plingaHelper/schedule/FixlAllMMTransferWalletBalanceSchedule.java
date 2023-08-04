@@ -21,9 +21,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 @Component
-public class FixlMMTransferWalletBalanceSchedule {
+public class FixlAllMMTransferWalletBalanceSchedule {
 
-	private static final Logger logger = LoggerFactory.getLogger(FixlMMTransferWalletBalanceSchedule.class);
+	private static final Logger logger = LoggerFactory.getLogger(FixlAllMMTransferWalletBalanceSchedule.class);
 
 	private final InitBean initBean;
 	private final MarketMakingService marketMakingService;
@@ -31,8 +31,10 @@ public class FixlMMTransferWalletBalanceSchedule {
 	private final TankhahWalletService tankhahWalletService;
 	private final MarketMakingWalletService mmWalletService;
 
+	private final int sleepInSeconds = 2;
+
 	@Inject
-	public FixlMMTransferWalletBalanceSchedule(InitBean initBean, MarketMakingService marketMakingService,
+	public FixlAllMMTransferWalletBalanceSchedule(InitBean initBean, MarketMakingService marketMakingService,
 			TransferBean transferBean, TankhahWalletService tankhahWalletService,
 			MarketMakingWalletService mmWalletService) {
 		this.initBean = initBean;
@@ -42,12 +44,12 @@ public class FixlMMTransferWalletBalanceSchedule {
 		this.mmWalletService = mmWalletService;
 	}
 
-	//@Scheduled(cron = "0 */15 * * * *", zone = "GMT")
+	@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
 	@Transactional
-	public void fixMMTransferWalletBalance() {
-		if (!initBean.doesActionRunning("fixMMTransferWalletBalance")) {
-			initBean.startActionRunning("fixMMTransferWalletBalance");
-			logger.info("fixMMTransferWalletBalance started.");
+	public void fixlAllMMTransferWalletBalance() {
+		if (!initBean.doesActionRunning("fixlAllMMTransferWalletBalance")) {
+			initBean.startActionRunning("fixlAllMMTransferWalletBalance");
+			logger.info("fixlAllMMTransferWalletBalance started.");
 			try {
 				marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true)
 						.parallelStream().forEach(mm -> {
@@ -64,8 +66,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 									blockchain.getName(), tankhahNonce[0]));
 							// PageRequest pageable = PageRequest.of(0,
 							// initBean.getFixTransferWalletBalancePerRound());
-							mmWalletService.findNWalletsRandomByContractIdNative(sm,
-									initBean.getFixTransferWalletBalancePerRound()).forEach(wallet -> {
+							mmWalletService.findؤAllWalletsyContractAsDto(sm).forEach(wallet -> {
 										if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
 											BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
 													wallet.getPublicKey());
@@ -102,6 +103,12 @@ public class FixlMMTransferWalletBalanceSchedule {
 															tankhahNonce[0]);
 												}
 												tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+												try {
+													Thread.sleep(sleepInSeconds * 1000);
+												} catch (InterruptedException e) {
+													// TODO Auto-generated catch block
+													e.printStackTrace();
+												}
 											}
 										} else {
 											BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
@@ -144,6 +151,12 @@ public class FixlMMTransferWalletBalanceSchedule {
 															tankhahNonce[0]);
 												}
 												tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+												try {
+													Thread.sleep(sleepInSeconds * 1000);
+												} catch (InterruptedException e) {
+													// TODO Auto-generated catch block
+													e.printStackTrace();
+												}
 											}
 											var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
 													mm.getMaxInitial(), mm.getInitialDecimal());
@@ -178,6 +191,12 @@ public class FixlMMTransferWalletBalanceSchedule {
 															EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
 												}
 												tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+												try {
+													Thread.sleep(sleepInSeconds * 1000);
+												} catch (InterruptedException e) {
+													// TODO Auto-generated catch block
+													e.printStackTrace();
+												}
 											}
 										}
 									});
@@ -185,10 +204,10 @@ public class FixlMMTransferWalletBalanceSchedule {
 			} catch (Exception e) {
 				logger.error(e.getMessage());
 			}
-			initBean.stopActionRunning("fixMMTransferWalletBalance");
-			logger.info("fixMMTransferWalletBalance finished.");
+			initBean.stopActionRunning("fixlAllMMTransferWalletBalance");
+			logger.info("fixlAllMMTransferWalletBalance finished.");
 		} else {
-			logger.warn("Schedule method fixMMTransferWalletBalance already running, skipping it.");
+			logger.warn("Schedule method fixlAllMMTransferWalletBalance already running, skipping it.");
 		}
 	}
 

@@ -6,8 +6,6 @@ package com.plgchain.app.plingaHelper.bean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.net.http.HttpClient;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
+
 import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -54,9 +55,13 @@ public class InitBean implements Serializable {
 
 	private int selectPageSize = 20000;
 
+	@Inject
+	private MarketMakingWalletService marketMakingWalletService;
+
 	@PostConstruct
 	public void init() {
-
+		marketMakingWalletService.findAllAsDto();
+		logger.info("Wallet cache has been created.");
 	}
 
 	public boolean doesActionRunning(String action) {

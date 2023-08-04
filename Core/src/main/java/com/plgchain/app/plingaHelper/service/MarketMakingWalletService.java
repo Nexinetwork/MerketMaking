@@ -4,11 +4,18 @@
 package com.plgchain.app.plingaHelper.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -46,9 +53,18 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 		return marketMakingWalletDao.saveAndFlush(mmw);
 	}
 
+	@Cacheable(value = "MarketMakingWallet", key = "#result.contractId")
 	public List<MarketMakingWallet> findAll() {
 		return marketMakingWalletDao.findAll();
 	}
+
+	@Cacheable(value = "MarketMakingWalletDtoes", key = "#result.contractId")
+    public List<MarketMakingWalletDto> findAllAsDto() {
+        List<MarketMakingWallet> wallets = marketMakingWalletDao.findAll();
+        return wallets.stream()
+                .map(MarketMakingWalletDto::new)
+                .collect(Collectors.toList());
+    }
 
 	public boolean anyExist() {
 		return marketMakingWalletDao.anyExist();
@@ -82,11 +98,32 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 		return marketMakingWalletDao.findNOrderByRandom(count);
 	}
 
-	public List<MarketMakingWallet> batchSaveAll(List<MarketMakingWallet> oList, int count) {
-		return IntStream.range(0, oList.size()).boxed().collect(Collectors.groupingBy(index -> index / count)).values()
-				.stream().map(batchIndexes -> batchIndexes.stream().map(oList::get).collect(Collectors.toList()))
-				.flatMap(batchList -> saveAll(batchList).stream()).collect(Collectors.toList());
-	}
+	/*
+	 * public List<MarketMakingWallet> batchSaveAll(List<MarketMakingWallet> oList,
+	 * int count) { return IntStream.range(0,
+	 * oList.size()).boxed().collect(Collectors.groupingBy(index -> index /
+	 * count)).values() .stream().map(batchIndexes ->
+	 * batchIndexes.stream().map(oList::get).collect(Collectors.toList()))
+	 * .flatMap(batchList ->
+	 * saveAll(batchList).stream()).collect(Collectors.toList()); }
+	 */
+
+	@CachePut(value = "MarketMakingWalleta", key = "#contractId")
+    public List<MarketMakingWallet> batchSaveAll(List<MarketMakingWallet> oList, int count) {
+        Map<Long, List<MarketMakingWallet>> contractIdToWalletsMap = IntStream.range(0, oList.size())
+                .boxed()
+                .collect(Collectors.groupingBy(index -> index / count))
+                .values()
+                .stream()
+                .map(batchIndexes -> batchIndexes.stream().map(oList::get).collect(Collectors.toList()))
+                .flatMap(batchList -> saveAll(batchList).stream())
+                .collect(Collectors.groupingBy(MarketMakingWallet::getContractId));
+
+        List<MarketMakingWallet> allWallets = new ArrayList<>();
+        contractIdToWalletsMap.values().forEach(allWallets::addAll);
+
+        return allWallets;
+    }
 
 	public List<MarketMakingWallet> findByContract(SmartContract contract) {
 		return marketMakingWalletDao.findByContract(contract);
@@ -133,6 +170,42 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdNative(SmartContract contract, int count) {
 		return marketMakingWalletDao.findNWalletsRandomByContractIdNative(contract.getContractId(), count).stream()
 				.map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap)).collect(Collectors.toList());
+	}
+
+	@Cacheable(value ="MarketMakingWalletDtoes", key = "#contract.contractId")
+	public List<MarketMakingWalletDto> findNWalletsyContractIdNativeAsCache(SmartContract contract, int count) {
+		Set<MarketMakingWalletDto> data = Set.copyOf(marketMakingWalletDao.findAllWalletsyContractIdNative(contract.getContractId()).stream()
+				.map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap)).collect(Collectors.toList()));
+		List<MarketMakingWalletDto> shuffledData = data.stream().collect(Collectors.toList());
+	    Collections.shuffle(shuffledData);
+
+	    return shuffledData.stream().limit(count).collect(Collectors.toList());
+	}
+
+	public List<MarketMakingWalletDto> findNWalletsyContractId(SmartContract contract, int count) {
+	    Set<MarketMakingWalletDto> allWalletsSet = new HashSet<>(findAllAsDto());
+
+	    // Convert the set back to list
+	    List<MarketMakingWalletDto> allWalletsList = new ArrayList<>(allWalletsSet);
+
+	    // Shuffle the list of MarketMakingWalletDto
+	    Collections.shuffle(allWalletsList);
+
+	    // Return the first 'count' elements
+	    return allWalletsList.stream().limit(count).collect(Collectors.toList());
+	}
+
+	public List<MarketMakingWalletDto> findؤAllWalletsyContractAsDto(SmartContract contract) {
+	    Set<MarketMakingWalletDto> allWalletsSet = new HashSet<>(findAllAsDto());
+
+	    // Convert the set back to list
+	    List<MarketMakingWalletDto> allWalletsList = new ArrayList<>(allWalletsSet);
+
+	    // Shuffle the list of MarketMakingWalletDto
+	    Collections.shuffle(allWalletsList);
+
+	    // Return the first 'count' elements
+	    return allWalletsList;
 	}
 
 }
