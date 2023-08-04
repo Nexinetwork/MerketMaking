@@ -31,7 +31,7 @@ public class FixlAllMMTransferWalletBalanceSchedule {
 	private final TankhahWalletService tankhahWalletService;
 	private final MarketMakingWalletService mmWalletService;
 
-	private final int sleepInSeconds = 2;
+	private final int sleepInSeconds = 1;
 
 	@Inject
 	public FixlAllMMTransferWalletBalanceSchedule(InitBean initBean, MarketMakingService marketMakingService,
