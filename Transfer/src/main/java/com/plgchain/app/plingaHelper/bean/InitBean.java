@@ -7,13 +7,21 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.net.http.HttpClient;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
@@ -62,6 +70,8 @@ public class InitBean implements Serializable {
 
 	private int selectPageSize = 20000;
 
+	private Map<Long, List<MarketMakingWalletDto>> transferWalletMapCache = new HashMap<Long, List<MarketMakingWalletDto>>();
+
 	@Inject
 	private MarketMakingWalletService marketMakingWalletService;
 
@@ -91,16 +101,32 @@ public class InitBean implements Serializable {
 		lockedMethod.remove(action);
 	}
 
+
 	@Transactional
 	public void writeWalletDataToCache() {
 		marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true)
 		.stream().forEach(mm -> {
 			SmartContract sm = mm.getSmartContract();
+			transferWalletMapCache.put(sm.getContractId(), marketMakingWalletService.findAllWalletsByContractIdNative(sm.getContractId()));
 			Coin coin = sm.getCoin();
 			Blockchain blockchain = sm.getBlockchain();
-			marketMakingWalletService.findAllWalletsByContractIdNativeAsCache(sm.getContractId());
 			logger.info(String.format("Contract %s for coin %s and blockchain %s has been write to cache", sm.getContractsAddress(),coin.getSymbol(),blockchain.getName()));
 		});
 	}
+
+	public List<MarketMakingWalletDto> getAllWalletsByContractId(long contractId) {
+		return transferWalletMapCache.get(contractId);
+	}
+
+	public Page<MarketMakingWalletDto> getMMWalletList(long contractId, Pageable pageable) {
+	    List<MarketMakingWalletDto> walletDtos = transferWalletMapCache.get(contractId);
+
+	    int start = (int) pageable.getOffset();
+	    int end = Math.min((start + pageable.getPageSize()), walletDtos.size());
+	    List<MarketMakingWalletDto> sublist = walletDtos.subList(start, end);
+
+	    return new PageImpl<>(sublist, pageable, walletDtos.size());
+	}
+
 
 }

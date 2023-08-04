@@ -191,6 +191,14 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 	    return result;
 	}
 
+	public List<MarketMakingWalletDto> findAllWalletsByContractIdNative(long contractId) {
+		List<MarketMakingWallet> wallets = marketMakingWalletDao.findAllWalletsByContractIdNative(contractId);
+	    List<MarketMakingWalletDto> result = wallets.stream()
+	            .map(MarketMakingWalletDto::new)
+	            .collect(Collectors.toList());
+	    return result;
+	}
+
 	@Cacheable(value ="MarketMakingWalletDtoes", key = "#contract.contractId")
 	public List<MarketMakingWalletDto> findAllWalletsByContractIdNativeAsCache(SmartContract contract) {
 	    return findAllWalletsByContractIdNativeAsCache(contract.getContractId());

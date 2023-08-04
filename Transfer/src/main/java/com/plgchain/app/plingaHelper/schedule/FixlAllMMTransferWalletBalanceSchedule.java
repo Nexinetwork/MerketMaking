@@ -73,8 +73,8 @@ public class FixlAllMMTransferWalletBalanceSchedule {
 							do {
 								PageRequest pageable = PageRequest.of(page,
 										initBean.getFixTransferWalletBalancePerRound());
-								mmWalletPageDto = mmWalletService
-										.findPageableWalletsNativeAsCacheByContractId(sm.getContractId(), pageable);
+								mmWalletPageDto = initBean
+										.getMMWalletList(sm.getContractId(), pageable);
 								mmWalletPageDto.stream().forEach(wallet -> {
 									if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
 										BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
