@@ -58,13 +58,21 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 		return marketMakingWalletDao.findAll();
 	}
 
-	@Cacheable(value = "MarketMakingWalletDtoes", key = "#result.contractId")
-    public List<MarketMakingWalletDto> findAllAsDto() {
-        List<MarketMakingWallet> wallets = marketMakingWalletDao.findAll();
-        return wallets.stream()
-                .map(MarketMakingWalletDto::new)
-                .collect(Collectors.toList());
-    }
+	/*
+	 * @Cacheable(value = "MarketMakingWalletDtoes", key = "#result.contractId")
+	 * public List<MarketMakingWalletDto> findAllAsDto() { List<MarketMakingWallet>
+	 * wallets = marketMakingWalletDao.findAll(); return wallets.stream()
+	 * .map(MarketMakingWalletDto::new) .collect(Collectors.toList()); }
+	 */
+
+	@CachePut(value = "MarketMakingWalletDtoes", key = "#result.contractId")
+	public List<MarketMakingWalletDto> findAllAsDto() {
+	    List<MarketMakingWallet> wallets = marketMakingWalletDao.findAll();
+	    List<MarketMakingWalletDto> result = wallets.stream()
+	            .map(MarketMakingWalletDto::new)
+	            .collect(Collectors.toList());
+	    return result;
+	}
 
 	public boolean anyExist() {
 		return marketMakingWalletDao.anyExist();
