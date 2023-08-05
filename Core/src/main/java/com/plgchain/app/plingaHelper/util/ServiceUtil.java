@@ -59,4 +59,80 @@ public class ServiceUtil implements Serializable {
 		return result;
 	}
 
+	public static boolean stopService(String ip, int port, String privPath, String serviceName) {
+		boolean result = false;
+		JSch jSch = new JSch();
+		ChannelExec channel = null;
+		Session session = null;
+		try {
+			jSch.addIdentity(privPath);
+			session = jSch.getSession("root", ip, port);
+			session.setConfig("StrictHostKeyChecking", "no");
+			session.connect();
+			String command = "systemctl stop " + serviceName;
+			channel = (ChannelExec) session.openChannel("exec");
+			channel.setCommand(command);
+			channel.connect();
+
+			if (channel.getExitStatus() == 0) {
+				result = true;
+			} else {
+				result = false;
+			}
+		} catch (JSchException e) {
+			logger.error("Service stop error " + e.getMessage());
+		} finally {
+			if (channel != null) {
+				if (channel.isConnected())
+					channel.disconnect();
+				channel = null;
+			}
+			if (session != null) {
+				if (session.isConnected())
+					session.disconnect();
+				session = null;
+			}
+			jSch = null;
+		}
+		return result;
+	}
+
+	public static boolean startService(String ip, int port, String privPath, String serviceName) {
+		boolean result = false;
+		JSch jSch = new JSch();
+		ChannelExec channel = null;
+		Session session = null;
+		try {
+			jSch.addIdentity(privPath);
+			session = jSch.getSession("root", ip, port);
+			session.setConfig("StrictHostKeyChecking", "no");
+			session.connect();
+			String command = "systemctl start " + serviceName;
+			channel = (ChannelExec) session.openChannel("exec");
+			channel.setCommand(command);
+			channel.connect();
+
+			if (channel.getExitStatus() == 0) {
+				result = true;
+			} else {
+				result = false;
+			}
+		} catch (JSchException e) {
+			logger.error("Service start error " + e.getMessage());
+		} finally {
+			if (channel != null) {
+				if (channel.isConnected())
+					channel.disconnect();
+				channel = null;
+			}
+			if (session != null) {
+				if (session.isConnected())
+					session.disconnect();
+				session = null;
+			}
+			jSch = null;
+		}
+		return result;
+	}
+
 }

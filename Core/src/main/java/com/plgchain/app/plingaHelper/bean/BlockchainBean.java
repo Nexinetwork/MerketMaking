@@ -35,6 +35,7 @@ import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.MarketMakingService;
 import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
+import com.plgchain.app.plingaHelper.service.SystemConfigService;
 import com.plgchain.app.plingaHelper.service.TankhahWalletService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.type.request.CoinReq;
@@ -42,6 +43,7 @@ import com.plgchain.app.plingaHelper.type.request.ContractReq;
 import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
 import com.plgchain.app.plingaHelper.type.response.TankhahWalletRes;
+import com.plgchain.app.plingaHelper.util.ServiceUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 
 import jakarta.inject.Inject;
@@ -80,6 +82,9 @@ public class BlockchainBean implements Serializable {
 
 	@Inject
 	private MarketMakingWalletService marketMakingWalletService;
+
+	@Inject
+	private SystemConfigService systemConfigService;
 
 	@LogMethod
 	public Blockchain createBlockchain(Blockchain blockchain) throws RestActionError {
@@ -435,6 +440,42 @@ public class BlockchainBean implements Serializable {
 		}
 		Optional<Blockchain> bc = blockchainService.findByName(blockchainName);
 		return blockchainNodeService.removeByBlockchain(bc.get());
+	}
+
+	@Transactional
+	public void stopAllNodesOfBlockchain(String blockchainName) {
+		Optional<Blockchain> bc = blockchainService.findByName(blockchainName);
+		bc.orElseThrow(() -> new RuntimeException("Blockchain not found"));
+		var privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
+		bc.get().getNodeList().forEach(node -> {
+			ServiceUtil.stopService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
+			logger.info(String.format("Server %s with service %s has been stopped.",
+					node.getServerIp(), node.getServiceNeme()));
+		});
+	}
+
+	@Transactional
+	public void startAllNodesOfBlockchain(String blockchainName) {
+		Optional<Blockchain> bc = blockchainService.findByName(blockchainName);
+		bc.orElseThrow(() -> new RuntimeException("Blockchain not found"));
+		var privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
+		bc.get().getNodeList().forEach(node -> {
+			ServiceUtil.startService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
+			logger.info(String.format("Server %s with service %s has been started.",
+					node.getServerIp(), node.getServiceNeme()));
+		});
+	}
+
+	@Transactional
+	public void restartAllNodesOfBlockchain(String blockchainName) {
+		Optional<Blockchain> bc = blockchainService.findByName(blockchainName);
+		bc.orElseThrow(() -> new RuntimeException("Blockchain not found"));
+		var privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
+		bc.get().getNodeList().forEach(node -> {
+			ServiceUtil.restartService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
+			logger.info(String.format("Server %s with service %s has been restarted.",
+					node.getServerIp(), node.getServiceNeme()));
+		});
 	}
 
 

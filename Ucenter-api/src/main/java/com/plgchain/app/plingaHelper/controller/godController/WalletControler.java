@@ -6,20 +6,28 @@ package com.plgchain.app.plingaHelper.controller.godController;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.bean.BlockchainBean;
+import com.plgchain.app.plingaHelper.constant.AdminCommandType;
+import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.controller.BaseController;
 import com.plgchain.app.plingaHelper.entity.TankhahWallet;
+import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
 import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
+import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.service.TankhahWalletService;
+import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.type.response.MarketMakingWalletRes;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 
@@ -46,6 +54,12 @@ public class WalletControler extends BaseController implements Serializable {
 
 	@Inject
 	private MarketMakingWalletService marketMakingWalletService;
+
+	@Inject
+	private KafkaTemplate<String, String> kafkaTemplate;
+
+	@Inject
+	private SmartContractService smartContractService;
 
 	@RequestMapping("/wallet/fixWalletPrivatekeys")
 	public MessageResult fixWalletPrivatekeys() {
@@ -77,6 +91,22 @@ public class WalletControler extends BaseController implements Serializable {
 	        .map(MarketMakingWallet::getAsMarketMakingWalletRes)
 	        .collect(Collectors.toList());
 	    return success(result);
+	}
+
+	@RequestMapping("/wallet/correctMetamaskTransWalletsFunding")
+	public MessageResult correctMetamaskTransWalletsFunding(@RequestBody Long contractId) {
+	    if (contractId == null)
+	    	error("ContractId is null");
+	    if (contractId < 0)
+	    	error("ContractId is null");
+	    Optional<SmartContract> sm = smartContractService.findById(contractId);
+	    if (sm.isEmpty())
+	    	error("Invalid contractId.");
+	    CommandToRun ctr = new CommandToRun();
+		ctr.setAdminCommandType(AdminCommandType.FIXTRANSFERWALLETFUNDING);
+		ctr.setLong1(contractId);
+		kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+	    return success("Actions Successfully put in queue please be paitent.");
 	}
 
 

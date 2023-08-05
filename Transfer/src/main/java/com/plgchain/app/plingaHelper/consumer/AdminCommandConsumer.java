@@ -14,8 +14,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson2.JSON;
-import com.plgchain.app.plingaHelper.bean.BlockchainBean;
 import com.plgchain.app.plingaHelper.bean.InitBean;
+import com.plgchain.app.plingaHelper.bean.WalletActionBean;
 import com.plgchain.app.plingaHelper.constant.AdminCommandType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
@@ -32,27 +32,21 @@ public class AdminCommandConsumer implements Serializable {
 	private static final long serialVersionUID = 8556636738432380764L;
 	private final static Logger logger = LoggerFactory.getLogger(AdminCommandConsumer.class);
 
-	@Inject
+	@Autowired
 	private InitBean initBean;
 
 	@Inject
-	private BlockchainBean blockchainBean;
+	private WalletActionBean walletActionBean;
 
-	@KafkaListener(topics = SysConstant.KAFKA_ADMIN_COMMAND, containerFactory = "kafkaListenerContainerFactory", groupId = "BlockchainHealthBusiness.handleAdminCommand")
+	@KafkaListener(topics = SysConstant.KAFKA_ADMIN_COMMAND, containerFactory = "kafkaListenerContainerFactory", groupId = "TransferService.handleAdminCommand")
 	public void handleAdminCommand(List<ConsumerRecord<String, String>> records) {
 		try {
 			for (int i = 0; i < records.size(); i++) {
 				ConsumerRecord<String, String> record = records.get(i);
 				logger.info("New message is : " + record.value());
 				CommandToRun ctr = JSON.parseObject(record.value(), CommandToRun.class);
-				if (ctr.getAdminCommandType().equals(AdminCommandType.UPDATEBLOCKCHAIN)) {
-					initBean.writeBlockchainToRedis();
-				} else if (ctr.getAdminCommandType().equals(AdminCommandType.STOPALLNODESOFBLOCKCHAIN)) {
-					blockchainBean.stopAllNodesOfBlockchain(ctr.getStr1());
-				} else if (ctr.getAdminCommandType().equals(AdminCommandType.STARTALLNODESOFBLOCKCHAIN)) {
-					blockchainBean.startAllNodesOfBlockchain(ctr.getStr1());
-				} else if (ctr.getAdminCommandType().equals(AdminCommandType.RESTARTALLNODESOFBLOCKCHAIN)) {
-					blockchainBean.restartAllNodesOfBlockchain(ctr.getStr1());
+				if (ctr.getAdminCommandType().equals(AdminCommandType.FIXTRANSFERWALLETFUNDING)) {
+					walletActionBean.fixAllTransferWalletsByContractId(ctr.getLong1());
 				}
 			}
 		} catch (Exception e) {

@@ -146,4 +146,52 @@ public class BlockchainControler extends BaseController implements Serializable 
 		}
 	}
 
+	@PostMapping("/blocjchain/stopAllNodesOfBlockchain")
+	public MessageResult stopAllNodesOfBlockchain(@RequestBody String blockchain) {
+		try {
+			if (Strings.isNullOrEmpty(blockchain))
+				error("blockchain is empty");
+			CommandToRun ctr = new CommandToRun();
+			ctr.setAdminCommandType(AdminCommandType.STOPALLNODESOFBLOCKCHAIN);
+			ctr.setStr1(blockchain);
+			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+			return success("Blockchain stop command has been sent");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error(e.getMessage());
+		}
+	}
+
+	@PostMapping("/blocjchain/startAllNodesOfBlockchain")
+	public MessageResult startAllNodesOfBlockchain(@RequestBody String blockchain) {
+		try {
+			if (Strings.isNullOrEmpty(blockchain))
+				error("blockchain is empty");
+			CommandToRun ctr = new CommandToRun();
+			ctr.setAdminCommandType(AdminCommandType.STARTALLNODESOFBLOCKCHAIN);
+			ctr.setStr1(blockchain);
+			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+			return success("Blockchain start command has been sent");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error(e.getMessage());
+		}
+	}
+
+	@PostMapping("/blocjchain/restartAllNodesOfBlockchain")
+	public MessageResult restartAllNodesOfBlockchain(@RequestBody String blockchain) {
+		try {
+			if (Strings.isNullOrEmpty(blockchain))
+				error("blockchain is empty");
+			CommandToRun ctr = new CommandToRun();
+			ctr.setAdminCommandType(AdminCommandType.RESTARTALLNODESOFBLOCKCHAIN);
+			ctr.setStr1(blockchain);
+			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+			return success("Blockchain restart command has been sent");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return error(e.getMessage());
+		}
+	}
+
 }
