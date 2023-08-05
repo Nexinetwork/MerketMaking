@@ -47,7 +47,7 @@ public class FixlAllMMTransferWalletBalanceSchedule {
 		this.mmWalletService = mmWalletService;
 	}
 
-	@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
+	//@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
 	@Transactional
 	public void fixlAllMMTransferWalletBalance() {
 		if (!initBean.doesActionRunning("fixlAllMMTransferWalletBalance")) {
