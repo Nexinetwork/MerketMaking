@@ -200,7 +200,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void createMarketMaking() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -236,6 +236,17 @@ public class BlockchainActionTest implements Serializable {
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	@Test
+	public void stopAllNodesOfBlockchain() {
+		var blockchain = "Plinga-DPOS";
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/stopAllNodesOfBlockchain")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(blockchain).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 

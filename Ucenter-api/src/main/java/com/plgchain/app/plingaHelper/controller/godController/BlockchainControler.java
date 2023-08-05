@@ -146,7 +146,7 @@ public class BlockchainControler extends BaseController implements Serializable 
 		}
 	}
 
-	@PostMapping("/blocjchain/stopAllNodesOfBlockchain")
+	@PostMapping("/blockchain/stopAllNodesOfBlockchain")
 	public MessageResult stopAllNodesOfBlockchain(@RequestBody String blockchain) {
 		try {
 			if (Strings.isNullOrEmpty(blockchain))
@@ -162,7 +162,7 @@ public class BlockchainControler extends BaseController implements Serializable 
 		}
 	}
 
-	@PostMapping("/blocjchain/startAllNodesOfBlockchain")
+	@PostMapping("/blockchain/startAllNodesOfBlockchain")
 	public MessageResult startAllNodesOfBlockchain(@RequestBody String blockchain) {
 		try {
 			if (Strings.isNullOrEmpty(blockchain))
@@ -178,7 +178,7 @@ public class BlockchainControler extends BaseController implements Serializable 
 		}
 	}
 
-	@PostMapping("/blocjchain/restartAllNodesOfBlockchain")
+	@PostMapping("/blockchain/restartAllNodesOfBlockchain")
 	public MessageResult restartAllNodesOfBlockchain(@RequestBody String blockchain) {
 		try {
 			if (Strings.isNullOrEmpty(blockchain))
