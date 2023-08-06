@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.net.http.HttpClient;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -72,7 +71,7 @@ public class InitBean implements Serializable {
 
 	public final int cachedContracts = 20000;
 
-	private Map<Long, List<MarketMakingWalletDto>> transferWalletMapCache = new HashMap<Long, List<MarketMakingWalletDto>>();
+	private Map<Long, Set<MarketMakingWalletDto>> transferWalletMapCache = new HashMap<Long, Set<MarketMakingWalletDto>>();
 
 	@Inject
 	private MarketMakingWalletService marketMakingWalletService;
@@ -109,7 +108,7 @@ public class InitBean implements Serializable {
 		marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true)
 		.stream().forEach(mm -> {
 			SmartContract sm = mm.getSmartContract();
-			transferWalletMapCache.put(sm.getContractId(), marketMakingWalletService.findNWalletsRandomByContractIdNative(sm.getContractId(),cachedContracts));
+			transferWalletMapCache.put(sm.getContractId(), Set.copyOf(marketMakingWalletService.findNWalletsRandomByContractIdNative(sm.getContractId(),cachedContracts)));
 			Coin coin = sm.getCoin();
 			Blockchain blockchain = sm.getBlockchain();
 			logger.info(String.format("Contract %s for coin %s and blockchain %s has been write to cache", sm.getContractsAddress(),coin.getSymbol(),blockchain.getName()));
@@ -117,11 +116,11 @@ public class InitBean implements Serializable {
 	}
 
 	public List<MarketMakingWalletDto> getAllWalletsByContractId(long contractId) {
-		return transferWalletMapCache.get(contractId);
+		return List.copyOf(transferWalletMapCache.get(contractId));
 	}
 
 	public Page<MarketMakingWalletDto> getMMWalletList(long contractId, Pageable pageable) {
-	    List<MarketMakingWalletDto> walletDtos = transferWalletMapCache.get(contractId);
+	    List<MarketMakingWalletDto> walletDtos = List.copyOf(transferWalletMapCache.get(contractId));
 
 	    int start = (int) pageable.getOffset();
 	    int end = Math.min((start + pageable.getPageSize()), walletDtos.size());
