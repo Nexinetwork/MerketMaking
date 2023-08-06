@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
@@ -188,6 +189,17 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdNative(SmartContract contract, int count) {
 		return marketMakingWalletDao.findNWalletsRandomByContractIdNative(contract.getContractId(), count).stream()
 				.map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap)).collect(Collectors.toList());
+	}
+
+	public Page<MarketMakingWalletDto> findAllWalletsByContractIdAndWalletTypeNativePaged(long contractId,
+			WalletType walletType, Pageable pageable) {
+		List<MarketMakingWalletDto> dtoList = marketMakingWalletDao
+	            .findAllWalletsByContractIdAndWalletTypeNativePaged(contractId, walletType.getOrdinal(), pageable)
+	            .stream()
+	            .map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap))
+	            .collect(Collectors.toList());
+
+	    return new PageImpl<>(dtoList, pageable, dtoList.size());
 	}
 
 	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdAndWalletTypeNativeTABLESAMPLE(long contractId,

@@ -68,6 +68,8 @@ public class InitBean implements Serializable {
 
 	private int decimalMaincoinInContractWallet = 2;
 
+	private final int sleepInSeconds = 5;
+
 	private int selectPageSize = 20000;
 
 	public final int cachedContracts = 20000;
@@ -136,6 +138,19 @@ public class InitBean implements Serializable {
 	    List<MarketMakingWalletDto> sublist = walletDtos.subList(start, end);
 
 	    return new PageImpl<>(sublist, pageable, walletDtos.size());
+	}
+
+	public List<MarketMakingWalletDto> getNTransferWallet(long contractId,int count) {
+		List<MarketMakingWalletDto> walletDtos = List.copyOf(transferWalletMapCache.get(contractId));
+		if (walletDtos.size() <= count) {
+			transferWalletMapCache.put(contractId, new HashSet<MarketMakingWalletDto>());
+			return walletDtos;
+		} else {
+			var newList = walletDtos.subList(0, count);
+			walletDtos.removeAll(newList);
+			transferWalletMapCache.put(contractId, Set.copyOf(walletDtos));
+			return newList;
+		}
 	}
 
 

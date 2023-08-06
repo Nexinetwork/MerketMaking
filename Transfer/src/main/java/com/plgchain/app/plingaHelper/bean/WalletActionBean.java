@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
@@ -37,8 +38,6 @@ public class WalletActionBean implements Serializable {
 	private final TankhahWalletService tankhahWalletService;
 	private final MarketMakingWalletService mmWalletService;
 	private final SmartContractService smartContractService;
-
-	private final int sleepInSeconds = 3;
 
 	@Inject
 	public WalletActionBean(InitBean initBean, MarketMakingService marketMakingService,
@@ -74,9 +73,7 @@ public class WalletActionBean implements Serializable {
 		do {
 			PageRequest pageable = PageRequest.of(page,
 					initBean.getFixTransferWalletBalancePerRound());
-			mmWalletPageDto = initBean
-					.getMMWalletList(sm.getContractId(), pageable);
-			mmWalletPageDto.stream().forEach(wallet -> {
+			mmWalletService.findAllWalletsByContractIdAndWalletTypeNativePaged(contractId, WalletType.TRANSFER,pageable) .stream().forEach(wallet -> {
 				if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
 					BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
 							wallet.getPublicKey());
@@ -115,7 +112,7 @@ public class WalletActionBean implements Serializable {
 						enqueued[0]++;
 						if (enqueued[0] >= 100) {
 							try {
-								Thread.sleep(sleepInSeconds * 1000);
+								Thread.sleep(initBean.getSleepInSeconds() * 1000);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -166,7 +163,7 @@ public class WalletActionBean implements Serializable {
 						enqueued[0]++;
 						if (enqueued[0] >= 100) {
 							try {
-								Thread.sleep(sleepInSeconds * 1000);
+								Thread.sleep(initBean.getSleepInSeconds() * 1000);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -209,7 +206,7 @@ public class WalletActionBean implements Serializable {
 						enqueued[0]++;
 						if (enqueued[0] >= 100) {
 							try {
-								Thread.sleep(sleepInSeconds * 1000);
+								Thread.sleep(initBean.getSleepInSeconds() * 1000);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();

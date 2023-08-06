@@ -52,6 +52,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 						.parallelStream().forEach(mm -> {
 							SmartContract sm = mm.getSmartContract();
 							var blockchain = sm.getBlockchain();
+							final int[] enqueued = { 0 };
 							var coin = sm.getCoin();
 							logger.info("Try to fix for coin {}", coin.getSymbol());
 							var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
@@ -101,6 +102,16 @@ public class FixlMMTransferWalletBalanceSchedule {
 															tankhahNonce[0]);
 												}
 												tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+												enqueued[0]++;
+												if (enqueued[0] >= 100) {
+													try {
+														Thread.sleep(initBean.getSleepInSeconds() * 1000);
+													} catch (InterruptedException e) {
+														// TODO Auto-generated catch block
+														e.printStackTrace();
+													}
+													enqueued[0] = 0;
+												}
 											}
 										} else {
 											BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
@@ -143,6 +154,16 @@ public class FixlMMTransferWalletBalanceSchedule {
 															tankhahNonce[0]);
 												}
 												tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+												enqueued[0]++;
+												if (enqueued[0] >= 100) {
+													try {
+														Thread.sleep(initBean.getSleepInSeconds() * 1000);
+													} catch (InterruptedException e) {
+														// TODO Auto-generated catch block
+														e.printStackTrace();
+													}
+													enqueued[0] = 0;
+												}
 											}
 											var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
 													mm.getMaxInitial(), mm.getInitialDecimal());
@@ -177,6 +198,16 @@ public class FixlMMTransferWalletBalanceSchedule {
 															EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
 												}
 												tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+												enqueued[0]++;
+												if (enqueued[0] >= 100) {
+													try {
+														Thread.sleep(initBean.getSleepInSeconds() * 1000);
+													} catch (InterruptedException e) {
+														// TODO Auto-generated catch block
+														e.printStackTrace();
+													}
+													enqueued[0] = 0;
+												}
 											}
 										}
 									});

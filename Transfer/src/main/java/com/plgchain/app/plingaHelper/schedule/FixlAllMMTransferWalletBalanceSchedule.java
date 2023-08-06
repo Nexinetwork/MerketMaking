@@ -34,8 +34,6 @@ public class FixlAllMMTransferWalletBalanceSchedule {
 	private final TankhahWalletService tankhahWalletService;
 	private final MarketMakingWalletService mmWalletService;
 
-	private final int sleepInSeconds = 3;
-
 	@Inject
 	public FixlAllMMTransferWalletBalanceSchedule(InitBean initBean, MarketMakingService marketMakingService,
 			TransferBean transferBean, TankhahWalletService tankhahWalletService,
@@ -114,7 +112,7 @@ public class FixlAllMMTransferWalletBalanceSchedule {
 											enqueued[0]++;
 											if (enqueued[0] >= 100) {
 												try {
-													Thread.sleep(sleepInSeconds * 1000);
+													Thread.sleep(initBean.getSleepInSeconds() * 1000);
 												} catch (InterruptedException e) {
 													// TODO Auto-generated catch block
 													e.printStackTrace();
@@ -165,7 +163,7 @@ public class FixlAllMMTransferWalletBalanceSchedule {
 											enqueued[0]++;
 											if (enqueued[0] >= 100) {
 												try {
-													Thread.sleep(sleepInSeconds * 1000);
+													Thread.sleep(initBean.getSleepInSeconds() * 1000);
 												} catch (InterruptedException e) {
 													// TODO Auto-generated catch block
 													e.printStackTrace();
@@ -208,7 +206,7 @@ public class FixlAllMMTransferWalletBalanceSchedule {
 											enqueued[0]++;
 											if (enqueued[0] >= 100) {
 												try {
-													Thread.sleep(sleepInSeconds * 1000);
+													Thread.sleep(initBean.getSleepInSeconds() * 1000);
 												} catch (InterruptedException e) {
 													// TODO Auto-generated catch block
 													e.printStackTrace();
