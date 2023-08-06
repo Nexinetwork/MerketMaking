@@ -331,12 +331,8 @@ public class BlockchainBean implements Serializable {
 
 		MarketMaking mm = smartContract.getMarketMakingObject();
 		if (mm == null) {
-		    mm = MarketMaking.builder()
-		        .smartContract(smartContract)
-		        .currentTransferWalletCount(0)
-		        .initialWalletCreationDone(false)
-		        .initialWalletFundingDone(false)
-		        .build();
+			mm = MarketMaking.builder().smartContract(smartContract).currentTransferWalletCount(0)
+					.initialWalletCreationDone(false).initialWalletFundingDone(false).build();
 		}
 
 		mm.setDailyAddWallet(mmReq.getDailyAddWallet());
@@ -397,38 +393,34 @@ public class BlockchainBean implements Serializable {
 	}
 
 	public void fixWalletPrivatekeys() {
-	    var tankhahWallets = tankhahWalletService.findAll();
-	    var marketMakingWallets = marketMakingWalletService.findAll();
+		var tankhahWallets = tankhahWalletService.findAll();
+		var marketMakingWallets = marketMakingWalletService.findAll();
 
-	    var tankhahWalletsToUpdate = tankhahWallets.stream()
-	            .filter(wallet -> Strings.isNullOrEmpty(wallet.getPrivateKeyHex()))
-	            .peek(wallet -> {
-	                EvmWalletDto wDto = EvmWalletUtil.generateWallet(new BigInteger(wallet.getPrivateKey()));
-	                wallet.setPrivateKeyHex(wDto.getHexKey());
-	                logger.info(String.format("Private key of tankhahwallet %s has been set to %s.",
-	                        wallet.getPublicKey(), wallet.getPrivateKeyHex()));
-	            })
-	            .collect(Collectors.toList());
+		var tankhahWalletsToUpdate = tankhahWallets.stream()
+				.filter(wallet -> Strings.isNullOrEmpty(wallet.getPrivateKeyHex())).peek(wallet -> {
+					EvmWalletDto wDto = EvmWalletUtil.generateWallet(new BigInteger(wallet.getPrivateKey()));
+					wallet.setPrivateKeyHex(wDto.getHexKey());
+					logger.info(String.format("Private key of tankhahwallet %s has been set to %s.",
+							wallet.getPublicKey(), wallet.getPrivateKeyHex()));
+				}).collect(Collectors.toList());
 
-	    var marketMakingWalletsToUpdate = marketMakingWallets.stream()
-	            .filter(wallet -> Strings.isNullOrEmpty(wallet.getPrivateKeyHex()))
-	            .peek(wallet -> {
-	                EvmWalletDto wDto = EvmWalletUtil.generateWallet(new BigInteger(wallet.getPrivateKey()));
-	                wallet.setPrivateKeyHex(wDto.getHexKey());
-	                logger.info(String.format("Private key of Transfer Wallet %s has been set to %s.",
-	                        wallet.getPublicKey(), wallet.getPrivateKeyHex()));
-	            })
-	            .collect(Collectors.toList());
+		var marketMakingWalletsToUpdate = marketMakingWallets.stream()
+				.filter(wallet -> Strings.isNullOrEmpty(wallet.getPrivateKeyHex())).peek(wallet -> {
+					EvmWalletDto wDto = EvmWalletUtil.generateWallet(new BigInteger(wallet.getPrivateKey()));
+					wallet.setPrivateKeyHex(wDto.getHexKey());
+					logger.info(String.format("Private key of Transfer Wallet %s has been set to %s.",
+							wallet.getPublicKey(), wallet.getPrivateKeyHex()));
+				}).collect(Collectors.toList());
 
-	    if (!tankhahWalletsToUpdate.isEmpty()) {
-	        tankhahWalletService.saveAll(tankhahWalletsToUpdate);
-	    }
+		if (!tankhahWalletsToUpdate.isEmpty()) {
+			tankhahWalletService.saveAll(tankhahWalletsToUpdate);
+		}
 
-	    if (!marketMakingWalletsToUpdate.isEmpty()) {
-	        marketMakingWalletService.saveAll(marketMakingWalletsToUpdate);
-	    }
+		if (!marketMakingWalletsToUpdate.isEmpty()) {
+			marketMakingWalletService.saveAll(marketMakingWalletsToUpdate);
+		}
 
-	    logger.info("Fixing wallet has been done");
+		logger.info("Fixing wallet has been done");
 	}
 
 	public Long deleteAllNodesBlockchainNodes(String blockchainName) throws RestActionError {
@@ -448,9 +440,13 @@ public class BlockchainBean implements Serializable {
 		bc.orElseThrow(() -> new RuntimeException("Blockchain not found"));
 		var privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
 		bc.get().getNodeList().forEach(node -> {
-			ServiceUtil.stopService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
-			logger.info(String.format("Server %s with service %s has been stopped.",
-					node.getServerIp(), node.getServiceNeme()));
+			try {
+				ServiceUtil.stopService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
+				logger.info(String.format("Server %s with service %s has been stopped.", node.getServerIp(),
+						node.getServiceNeme()));
+			} catch (Exception e) {
+				logger.error("System Stop Error is : " + e.getMessage());
+			}
 		});
 	}
 
@@ -460,9 +456,13 @@ public class BlockchainBean implements Serializable {
 		bc.orElseThrow(() -> new RuntimeException("Blockchain not found"));
 		var privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
 		bc.get().getNodeList().forEach(node -> {
-			ServiceUtil.startService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
-			logger.info(String.format("Server %s with service %s has been started.",
-					node.getServerIp(), node.getServiceNeme()));
+			try {
+				ServiceUtil.startService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
+				logger.info(String.format("Server %s with service %s has been started.", node.getServerIp(),
+						node.getServiceNeme()));
+			} catch (Exception e) {
+				logger.error("System start Error is : " + e.getMessage());
+			}
 		});
 	}
 
@@ -472,11 +472,14 @@ public class BlockchainBean implements Serializable {
 		bc.orElseThrow(() -> new RuntimeException("Blockchain not found"));
 		var privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
 		bc.get().getNodeList().forEach(node -> {
-			ServiceUtil.restartService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
-			logger.info(String.format("Server %s with service %s has been restarted.",
-					node.getServerIp(), node.getServiceNeme()));
+			try {
+				ServiceUtil.restartService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
+				logger.info(String.format("Server %s with service %s has been restarted.", node.getServerIp(),
+						node.getServiceNeme()));
+			} catch (Exception e) {
+				logger.error("System restart Error is : " + e.getMessage());
+			}
 		});
 	}
-
 
 }
