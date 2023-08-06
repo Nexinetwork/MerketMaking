@@ -42,7 +42,7 @@ public class ServiceUtil implements Serializable {
 				result = false;
 			}
 		} catch (JSchException e) {
-			logger.error("Service restart error " + e.getMessage());
+			logger.error(String.format("System restart error in ip %s/%s and service %s", ip,port,serviceName));
 		} finally {
 			if (channel != null) {
 				if (channel.isConnected())
@@ -80,7 +80,7 @@ public class ServiceUtil implements Serializable {
 				result = false;
 			}
 		} catch (JSchException e) {
-			logger.error("Service stop error " + e.getMessage());
+			logger.error(String.format("System stop error in ip %s/%s and service %s", ip,port,serviceName));
 		} finally {
 			if (channel != null) {
 				if (channel.isConnected())
@@ -118,7 +118,7 @@ public class ServiceUtil implements Serializable {
 				result = false;
 			}
 		} catch (JSchException e) {
-			logger.error("Service start error " + e.getMessage());
+			logger.error(String.format("System start error in ip %s/%s and service %s", ip,port,serviceName));
 		} finally {
 			if (channel != null) {
 				if (channel.isConnected())
