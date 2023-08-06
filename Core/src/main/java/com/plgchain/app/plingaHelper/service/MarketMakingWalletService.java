@@ -20,7 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
@@ -177,8 +176,23 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 				.map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap)).collect(Collectors.toList());
 	}
 
+	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdAndWalletTypeNative(long contractId,WalletType walletType,int count) {
+		return marketMakingWalletDao.findNWalletsRandomByContractIdAndWalletTypeNative(contractId,walletType.getOrdinal(), count).stream()
+				.map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap)).collect(Collectors.toList());
+	}
+
+	public List<MarketMakingWalletDto> findAllWalletsByContractIdAndWalletTypeNative(long contractId,WalletType walletType) {
+		return marketMakingWalletDao.findAllWalletsByContractIdAndWalletTypeNative(contractId,walletType.getOrdinal()).stream()
+		.map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap)).collect(Collectors.toList());
+	}
+
 	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdNative(SmartContract contract, int count) {
 		return marketMakingWalletDao.findNWalletsRandomByContractIdNative(contract.getContractId(), count).stream()
+				.map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap)).collect(Collectors.toList());
+	}
+
+	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdAndWalletTypeNativeTABLESAMPLE(long contractId,WalletType walletType,int count) {
+		return marketMakingWalletDao.findNWalletsRandomByContractIdAndWalletTypeNativeTABLESAMPLE(contractId,walletType.getOrdinal(), count).stream()
 				.map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap)).collect(Collectors.toList());
 	}
 

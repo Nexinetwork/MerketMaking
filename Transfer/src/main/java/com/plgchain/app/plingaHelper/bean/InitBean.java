@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
@@ -108,7 +109,7 @@ public class InitBean implements Serializable {
 		marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true)
 		.stream().forEach(mm -> {
 			SmartContract sm = mm.getSmartContract();
-			transferWalletMapCache.put(sm.getContractId(), Set.copyOf(marketMakingWalletService.findNWalletsRandomByContractIdNative(sm.getContractId(),cachedContracts)));
+			transferWalletMapCache.put(sm.getContractId(), Set.copyOf(marketMakingWalletService.findNWalletsRandomByContractIdAndWalletTypeNative(sm.getContractId(),WalletType.TRANSFER,cachedContracts)));
 			Coin coin = sm.getCoin();
 			Blockchain blockchain = sm.getBlockchain();
 			logger.info(String.format("Contract %s for coin %s and blockchain %s has been write to cache", sm.getContractsAddress(),coin.getSymbol(),blockchain.getName()));
