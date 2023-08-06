@@ -239,11 +239,33 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void stopAllNodesOfBlockchain() {
 		var blockchain = "Plinga-DPOS";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/stopAllNodesOfBlockchain")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(blockchain).asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	//@Test
+	public void startAllNodesOfBlockchain() {
+		var blockchain = "Plinga-DPOS";
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/startAllNodesOfBlockchain")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(blockchain).asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	@Test
+	public void restartAllNodesOfBlockchain() {
+		var blockchain = "Plinga-DPOS";
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.244:7001/api/v1/godaction/blockchain/restartAllNodesOfBlockchain")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(blockchain).asString();

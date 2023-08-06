@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 
@@ -118,7 +119,6 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 	 * saveAll(batchList).stream()).collect(Collectors.toList()); }
 	 */
 
-	@CachePut(value = "MarketMakingWalleta", key = "#contractId")
     public List<MarketMakingWallet> batchSaveAll(List<MarketMakingWallet> oList, int count) {
         Map<Long, List<MarketMakingWallet>> contractIdToWalletsMap = IntStream.range(0, oList.size())
                 .boxed()
@@ -182,7 +182,6 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 				.map(tupleBackedMap -> new MarketMakingWalletDto(tupleBackedMap)).collect(Collectors.toList());
 	}
 
-	@Cacheable(value ="MarketMakingWalletDtoes", key = "#contractId")
 	public List<MarketMakingWalletDto> findAllWalletsByContractIdNativeAsCache(long contractId) {
 		List<MarketMakingWallet> wallets = marketMakingWalletDao.findAllWalletsByContractIdNative(contractId);
 	    List<MarketMakingWalletDto> result = wallets.stream()
@@ -258,6 +257,12 @@ public class MarketMakingWalletService extends BaseService<MarketMakingWallet> i
 
 	    // Return the list
 	    return filteredWallets;
+	}
+
+	public List<MarketMakingWalletDto> findNWalletsRandomByContractIdNativeTABLESAMPLE(long contractId,int count) {
+		List<MarketMakingWalletDto> filteredWallets = marketMakingWalletDao.findNWalletsRandomByContractIdNativeTABLESAMPLE(contractId, count).stream().map(MarketMakingWalletDto::new)
+	            .collect(Collectors.toList());
+		return filteredWallets;
 	}
 
 }

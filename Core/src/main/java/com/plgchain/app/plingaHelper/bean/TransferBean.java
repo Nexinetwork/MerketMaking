@@ -79,6 +79,22 @@ public class TransferBean implements Serializable {
 		BigInteger[] finalGasPrice = { gasPrice };
 		BigInteger[] finalGasLimit = { gasLimit };
 		boolean[] shouldBreak = { false };
+		if (finalGasPrice[0] == null) {
+			logger.error("Transaction Gasprice is null");
+			throw new RuntimeException("Gas price is Zero");
+		}
+		else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+			logger.error("Transaction Gasprice is zero");
+			throw new RuntimeException("Gas price is Zero");
+		}
+		else if (finalGasLimit[0] == null) {
+			logger.error("Transaction Gaslimit is null");
+			throw new RuntimeException("Gas Limit is Zero");
+		}
+		else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+			logger.error("Transaction Gaslimit is zero");
+			throw new RuntimeException("Gas Limit is Zero");
+		}
 		while (!shouldBreak[0]) {
 			try {
 				result = EVMUtil.createRawTransactionSync(rpcUrl, privateKey, to, amount, finalNonce[0],
@@ -121,6 +137,22 @@ public class TransferBean implements Serializable {
 		BigInteger[] finalGasPrice = { gasPrice };
 		BigInteger[] finalGasLimit = { gasLimit };
 		boolean[] shouldBreak = { false };
+		if (finalGasPrice[0] == null) {
+			logger.error("Transaction Gasprice is null");
+			throw new RuntimeException("Gas price is Zero");
+		}
+		else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+			logger.error("Transaction Gasprice is zero");
+			throw new RuntimeException("Gas price is Zero");
+		}
+		else if (finalGasLimit[0] == null) {
+			logger.error("Transaction Gaslimit is null");
+			throw new RuntimeException("Gas Limit is Zero");
+		}
+		else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+			logger.error("Transaction Gaslimit is zero");
+			throw new RuntimeException("Gas Limit is Zero");
+		}
 		while (!shouldBreak[0]) {
 			try {
 				result = EVMUtil.createRawTransactionSync(rpcUrl, privateKey, to, amount, finalNonce[0],
@@ -175,9 +207,25 @@ public class TransferBean implements Serializable {
 		while (!shouldBreak[0]) {
 			try {
 				finalGasPrice[0] = EVMUtil.getEstimateGasPriceAsWei(rpcUrl);
+				if (finalGasPrice[0] == null) {
+					logger.error("Transaction Gasprice is null");
+					throw new RuntimeException("Gas price is Zero");
+				}
+				else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+					logger.error("Transaction Gasprice is zero");
+					throw new RuntimeException("Gas price is Zero");
+				}
+				else if (finalGasLimit[0] == null) {
+					logger.error("Transaction Gaslimit is null");
+					throw new RuntimeException("Gas Limit is Zero");
+				}
+				else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+					logger.error("Transaction Gaslimit is zero");
+					throw new RuntimeException("Gas Limit is Zero");
+				}
 				logger.info(String.format(
 						"Try to transfer maincoin for contract as fee in %s from %s/%s to %s with amount %s with gaslimit %s and gasprice %s with nonce %s",
-						rpcUrl, from, privateKey, to, amount, gasLimit, finalGasPrice[0],finalNonce[0]));
+						rpcUrl, from, privateKey, to, amount, gasLimit, finalGasPrice[0], finalNonce[0]));
 				result = EVMUtil.createRawTransactionSync(rpcUrl, privateKey, to, amount, finalNonce[0],
 						finalGasPrice[0], finalGasLimit[0]);
 
@@ -219,6 +267,22 @@ public class TransferBean implements Serializable {
 		while (!shouldBreak[0]) {
 			try {
 				finalGasPrice[0] = EVMUtil.getEstimateGasPriceAsWei(rpcUrl);
+				if (finalGasPrice[0] == null) {
+					logger.error("Transaction Gasprice is null");
+					throw new RuntimeException("Gas price is Zero");
+				}
+				else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+					logger.error("Transaction Gasprice is zero");
+					throw new RuntimeException("Gas price is Zero");
+				}
+				else if (finalGasLimit[0] == null) {
+					logger.error("Transaction Gaslimit is null");
+					throw new RuntimeException("Gas Limit is Zero");
+				}
+				else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+					logger.error("Transaction Gaslimit is zero");
+					throw new RuntimeException("Gas Limit is Zero");
+				}
 				result = EVMUtil.createRawTransactionSync(rpcUrl, privateKey, to, amount, finalNonce[0],
 						finalGasPrice[0], finalGasLimit[0]);
 
@@ -268,6 +332,22 @@ public class TransferBean implements Serializable {
 		BigInteger[] finalGasPrice = { gasPrice };
 		BigInteger[] finalGasLimit = { gasLimit };
 		boolean[] shouldBreak = { false };
+		if (finalGasPrice[0] == null) {
+			logger.error("Transaction Gasprice is null");
+			throw new RuntimeException("Gas price is Zero");
+		}
+		else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+			logger.error("Transaction Gasprice is zero");
+			throw new RuntimeException("Gas price is Zero");
+		}
+		else if (finalGasLimit[0] == null) {
+			logger.error("Transaction Gaslimit is null");
+			throw new RuntimeException("Gas Limit is Zero");
+		}
+		else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+			logger.error("Transaction Gaslimit is zero");
+			throw new RuntimeException("Gas Limit is Zero");
+		}
 		/*
 		 * logger.info(String.format(
 		 * "try to transfer %s token %s from %s/%s to %s and nonce %s with gasPrice %s and gaslimit %s"
@@ -315,6 +395,22 @@ public class TransferBean implements Serializable {
 		BigInteger[] finalGasPrice = { gasPrice };
 		BigInteger[] finalGasLimit = { gasLimit };
 		boolean[] shouldBreak = { false };
+		if (finalGasPrice[0] == null) {
+			logger.error("Transaction Gasprice is null");
+			throw new RuntimeException("Gas price is Zero");
+		}
+		else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+			logger.error("Transaction Gasprice is zero");
+			throw new RuntimeException("Gas price is Zero");
+		}
+		else if (finalGasLimit[0] == null) {
+			logger.error("Transaction Gaslimit is null");
+			throw new RuntimeException("Gas Limit is Zero");
+		}
+		else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+			logger.error("Transaction Gaslimit is zero");
+			throw new RuntimeException("Gas Limit is Zero");
+		}
 		logger.info(String.format(
 				"try to transfer %s token %s from %s/%s to %s and nonce %s with gasPrice %s and gaslimit %s", amount,
 				contract, from, privateKey, to, finalNonce[0].toString(), finalGasPrice[0].toString(),
@@ -374,6 +470,22 @@ public class TransferBean implements Serializable {
 		while (!shouldBreak[0]) {
 			try {
 				finalGasPrice[0] = EVMUtil.getEstimateGasPriceAsWei(rpcUrl);
+				if (finalGasPrice[0] == null) {
+					logger.error("Transaction Gasprice is null");
+					throw new RuntimeException("Gas price is Zero");
+				}
+				else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+					logger.error("Transaction Gasprice is zero");
+					throw new RuntimeException("Gas price is Zero");
+				}
+				else if (finalGasLimit[0] == null) {
+					logger.error("Transaction Gaslimit is null");
+					throw new RuntimeException("Gas Limit is Zero");
+				}
+				else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+					logger.error("Transaction Gaslimit is zero");
+					throw new RuntimeException("Gas Limit is Zero");
+				}
 				logger.info(String.format(
 						"try to transfer %s token %s from %s/%s to %s and nonce %s with gasPrice %s and gaslimit %s",
 						amount, contract, from, privateKey, to, finalNonce[0].toString(), finalGasPrice[0].toString(),
@@ -420,6 +532,22 @@ public class TransferBean implements Serializable {
 		while (!shouldBreak[0]) {
 			try {
 				finalGasPrice[0] = EVMUtil.getEstimateGasPriceAsWei(rpcUrl);
+				if (finalGasPrice[0] == null) {
+					logger.error("Transaction Gasprice is null");
+					throw new RuntimeException("Gas price is Zero");
+				}
+				else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+					logger.error("Transaction Gasprice is zero");
+					throw new RuntimeException("Gas price is Zero");
+				}
+				else if (finalGasLimit[0] == null) {
+					logger.error("Transaction Gaslimit is null");
+					throw new RuntimeException("Gas Limit is Zero");
+				}
+				else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+					logger.error("Transaction Gaslimit is zero");
+					throw new RuntimeException("Gas Limit is Zero");
+				}
 				logger.info(String.format(
 						"try to transfer %s token %s from %s/%s to %s and nonce %s with gasPrice %s and gaslimit %s",
 						amount, contract, from, privateKey, to, finalNonce[0].toString(), finalGasPrice[0].toString(),

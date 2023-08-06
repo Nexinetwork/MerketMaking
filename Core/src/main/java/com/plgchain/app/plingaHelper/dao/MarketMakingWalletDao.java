@@ -41,4 +41,8 @@ public interface MarketMakingWalletDao extends BaseLongDao<MarketMakingWallet> {
 
 	@Query(nativeQuery=true, value="SELECT \"mmWalletId\",PGP_SYM_DECRYPT( \"privateKey\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!' ) as \"privateKey\",PGP_SYM_DECRYPT( \"privateKeyHex\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!' ) as \"privateKeyHex\",\"publicKey\",balance,\"mainCoinBalance\",\"contractId\",\"coinId\",\"blockchainId\",\"contractAddress\",\"walletType\",\"creationDate\",\"lastModifiedDate\" FROM \"schMarketMaking\".\"tblMMWallet\" WHERE \"contractId\"= :contractId")
 	public List<MarketMakingWallet> findAllWalletsByContractIdNative(@Param("contractId") long contractId);
+
+	@Query(nativeQuery=true, value="SELECT \"mmWalletId\",PGP_SYM_DECRYPT( \"privateKey\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!' ) as \"privateKey\",PGP_SYM_DECRYPT( \"privateKeyHex\", '!@MYLoveTeted2023secretLOGINILoveYouTedTed@!' ) as \"privateKeyHex\",\"publicKey\",balance,\"mainCoinBalance\",\"contractId\",\"coinId\",\"blockchainId\",\"contractAddress\",\"walletType\",\"creationDate\",\"lastModifiedDate\" FROM \"schMarketMaking\".\"tblMMWallet\" TABLESAMPLE WHERE \"contractId\"= :contractId system_rows(:count)")
+	public List<MarketMakingWallet> findNWalletsRandomByContractIdNativeTABLESAMPLE(@Param("contractId") long contractId,@Param("count") int count);
+
 }

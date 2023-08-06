@@ -67,6 +67,8 @@ public class InitBean implements Serializable {
 
 	private boolean initCoingecko = false;
 
+	private boolean checkNodeHealth = false;
+
 	private List<String> lockedMethod = new ArrayList<String>();
 
 	private HttpClient httpClient = HttpClient.newBuilder()

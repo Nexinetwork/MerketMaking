@@ -70,6 +70,8 @@ public class InitBean implements Serializable {
 
 	private int selectPageSize = 20000;
 
+	public final int cachedContracts = 20000;
+
 	private Map<Long, List<MarketMakingWalletDto>> transferWalletMapCache = new HashMap<Long, List<MarketMakingWalletDto>>();
 
 	@Inject
@@ -107,7 +109,7 @@ public class InitBean implements Serializable {
 		marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true)
 		.stream().forEach(mm -> {
 			SmartContract sm = mm.getSmartContract();
-			transferWalletMapCache.put(sm.getContractId(), marketMakingWalletService.findAllWalletsByContractIdNative(sm.getContractId()));
+			transferWalletMapCache.put(sm.getContractId(), marketMakingWalletService.findNWalletsRandomByContractIdNative(sm.getContractId(),cachedContracts));
 			Coin coin = sm.getCoin();
 			Blockchain blockchain = sm.getBlockchain();
 			logger.info(String.format("Contract %s for coin %s and blockchain %s has been write to cache", sm.getContractsAddress(),coin.getSymbol(),blockchain.getName()));
