@@ -239,7 +239,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void stopAllNodesOfBlockchain() {
 		var blockchain = "Plinga-DPOS";
 		HttpResponse<String> response = Unirest

@@ -53,7 +53,7 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.244:7001/api/v1/godaction/wallet/getTankhahWalletByPublicKey")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body("0x45b6c1309a7ee2b121603df700d03e7b9062e56e").asString();
+				.body("0xb1de7ecfdb124c72b793df17b3e51cf59f63d0fd").asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
