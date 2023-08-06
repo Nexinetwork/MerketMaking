@@ -53,7 +53,7 @@ public class FillWalletCacheSchedule implements Serializable {
 							initBean.fillWalletCache(sm.getContractId(), marketMakingWalletService
 									.findNWalletsRandomByContractIdAndWalletTypeNative(sm.getContractId(),WalletType.TRANSFER, count));
 						} else {
-							logger.info(String.format("contract %s is full in no need to fill", count,
+							logger.info(String.format("contract %s is full in no need to fill",
 									sm.getContractsAddress()));
 						}
 					});

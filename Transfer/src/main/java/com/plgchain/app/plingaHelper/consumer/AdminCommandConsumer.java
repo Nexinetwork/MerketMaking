@@ -46,7 +46,7 @@ public class AdminCommandConsumer implements Serializable {
 				logger.info("New message is : " + record.value());
 				CommandToRun ctr = JSON.parseObject(record.value(), CommandToRun.class);
 				if (ctr.getAdminCommandType().equals(AdminCommandType.FIXTRANSFERWALLETFUNDING)) {
-					walletActionBean.fixAllTransferWalletsByContractId(ctr.getLong1());
+					walletActionBean.fixAllTransferWalletsByContractIdInOneAction(ctr.getLong1());
 				}
 			}
 		} catch (Exception e) {
