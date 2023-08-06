@@ -7,6 +7,7 @@ import java.io.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.constant.WalletType;
@@ -20,6 +21,7 @@ import jakarta.transaction.Transactional;
 /**
  *
  */
+@Component
 public class FillWalletCacheSchedule implements Serializable {
 
 	private static final long serialVersionUID = 4204493912959339744L;
