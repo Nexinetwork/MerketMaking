@@ -455,6 +455,16 @@
 				<artifactId>unirest-java</artifactId>
 				<version>4.0.0-RC2</version>
 			</dependency>
+
+			<!--
+			https://mvnrepository.com/artifact/com.konghq/unirest-object-mappers-gson -->
+			<dependency>
+				<groupId>com.konghq</groupId>
+				<artifactId>unirest-object-mappers-gson</artifactId>
+				<version>4.0.4</version>
+				<scope>test</scope>
+			</dependency>
+
 			<!--
 			https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
 			<dependency>

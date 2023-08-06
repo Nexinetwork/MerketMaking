@@ -279,6 +279,12 @@
 			<groupId>com.github.mwiede</groupId>
 			<artifactId>jsch</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>com.konghq</groupId>
+			<artifactId>unirest-object-mappers-gson</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

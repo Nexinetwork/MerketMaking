@@ -3,7 +3,6 @@
  */
 package com.plgchain.app.plingaHelper;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
-import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.util.SecurityUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 
@@ -77,6 +75,7 @@ public class WalletUtilTest implements Serializable {
 	public void correctMetamaskTransWalletsFunding() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
+		int a = 1;
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.244:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFunding")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
