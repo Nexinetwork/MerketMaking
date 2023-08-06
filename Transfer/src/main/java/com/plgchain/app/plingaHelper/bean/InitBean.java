@@ -115,6 +115,14 @@ public class InitBean implements Serializable {
 		});
 	}
 
+	public int getWalletCacheCount(long contractId) {
+		return transferWalletMapCache.get(contractId).size();
+	}
+
+	public void fillWalletCache(long contractId,List<MarketMakingWalletDto> lst) {
+		transferWalletMapCache.get(contractId).addAll(Set.copyOf(lst));
+	}
+
 	public List<MarketMakingWalletDto> getAllWalletsByContractId(long contractId) {
 		return List.copyOf(transferWalletMapCache.get(contractId));
 	}
