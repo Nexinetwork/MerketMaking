@@ -445,7 +445,7 @@ public class BlockchainBean implements Serializable {
 				logger.info(String.format("Server %s with service %s has been stopped.", node.getServerIp(),
 						node.getServiceNeme()));
 			} catch (Exception e) {
-				logger.error("System Stop Error is : " + e.getMessage());
+				logger.error(String.format("System stop error in ip %s/%s and service %s", node.getServerIp(),node.getSshPort(),node.getServiceNeme()));
 			}
 		});
 	}
@@ -461,7 +461,7 @@ public class BlockchainBean implements Serializable {
 				logger.info(String.format("Server %s with service %s has been started.", node.getServerIp(),
 						node.getServiceNeme()));
 			} catch (Exception e) {
-				logger.error("System start Error is : " + e.getMessage());
+				logger.error(String.format("System start error in ip %s/%s and service %s", node.getServerIp(),node.getSshPort(),node.getServiceNeme()));
 			}
 		});
 	}
@@ -477,7 +477,7 @@ public class BlockchainBean implements Serializable {
 				logger.info(String.format("Server %s with service %s has been restarted.", node.getServerIp(),
 						node.getServiceNeme()));
 			} catch (Exception e) {
-				logger.error("System restart Error is : " + e.getMessage());
+				logger.error(String.format("System restart error in ip %s/%s and service %s", node.getServerIp(),node.getSshPort(),node.getServiceNeme()));
 			}
 		});
 	}
