@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.plgchain.app.plingaHelper.bean.InitBean;
+import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.service.MarketMakingService;
 import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
@@ -48,7 +49,7 @@ public class FillWalletCacheSchedule implements Serializable {
 							logger.info(
 									String.format("Try to load %s of contract %s", count, sm.getContractsAddress()));
 							initBean.fillWalletCache(sm.getContractId(), marketMakingWalletService
-									.findNWalletsRandomByContractIdNative(sm.getContractId(), count));
+									.findNWalletsRandomByContractIdAndWalletTypeNative(sm.getContractId(),WalletType.TRANSFER, count));
 						} else {
 							logger.info(String.format("contract %s is full in no need to fill", count,
 									sm.getContractsAddress()));
