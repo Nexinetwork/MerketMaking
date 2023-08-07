@@ -80,7 +80,7 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.244:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFunding")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body(12124).asString();
+				.body("12136").asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 

@@ -93,8 +93,8 @@ public class WalletActionBean implements Serializable {
 											EVMUtil.DefaultGasLimit, nonce);
 								}
 							} else if (balance.equals(BigDecimal.ZERO)) {
-								var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(), mm.getMaxInitial(),
-										mm.getInitialDecimal());
+								var amount = NumberUtil.generateRandomNumber(initBean.getMinMaincoinInContractWallet(), initBean.getMaxMaincoinInContractWallet(),
+										initBean.getDecimalMaincoinInContractWallet());
 								if (blockchain.isAutoGas()) {
 									transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
 											tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
@@ -140,8 +140,8 @@ public class WalletActionBean implements Serializable {
 											EVMUtil.DefaultGasLimit, nonce);
 								}
 							} else if (balance.equals(BigDecimal.ZERO)) {
-								var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(), mm.getMaxInitial(),
-										mm.getInitialDecimal());
+								var amount = NumberUtil.generateRandomNumber(initBean.getMinMaincoinInContractWallet(), initBean.getMaxMaincoinInContractWallet(),
+										initBean.getDecimalMaincoinInContractWallet());
 								if (blockchain.isAutoGas()) {
 									transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
 											tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
@@ -292,8 +292,8 @@ public class WalletActionBean implements Serializable {
 										EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, nonce);
 							}
 						} else if (balance.equals(BigDecimal.ZERO)) {
-							var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(), mm.getMaxInitial(),
-									mm.getInitialDecimal());
+							var amount = NumberUtil.generateRandomNumber(initBean.getMinMaincoinInContractWallet(), initBean.getMaxMaincoinInContractWallet(),
+									initBean.getDecimalMaincoinInContractWallet());
 							if (blockchain.isAutoGas()) {
 								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 										tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
