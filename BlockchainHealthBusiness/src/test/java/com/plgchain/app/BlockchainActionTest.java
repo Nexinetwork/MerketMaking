@@ -177,8 +177,8 @@ public class BlockchainActionTest implements Serializable {
 	public void createNewSmartContract() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = SmartContractReq.builder().blockchain("Nexi-DPOS-V1").coinId(10141)
-				.contractsAddress("0xEA52c1F8Ef64c3BfCc043e01081618b5A7159bD1").decimal(18).isMain(true)
+		var req = SmartContractReq.builder().blockchain("Nexi-DPOS-V1").coinId(10143)
+				.contractsAddress("0x9032ba5aa0d59888E582E8aa5893b53b07DEceC1").decimal(18).isMain(true)
 				.marketMaking(true).mustAdd(true).mustCheck(true).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/contract/createNewSmartContract")

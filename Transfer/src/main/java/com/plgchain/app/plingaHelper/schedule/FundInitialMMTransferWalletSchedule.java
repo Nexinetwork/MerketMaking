@@ -46,7 +46,7 @@ public class FundInitialMMTransferWalletSchedule {
 		this.mmWalletService = mmWalletService;
 	}
 
-	@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
+	//@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
 	@Transactional
 	public void fundInitialMMTransferWallet() {
 		if (!initBean.doesActionRunning("fundInitialMMTransferWallet")) {
