@@ -33,7 +33,7 @@ public class FundInitialMMTransferWalletSchedule {
 	private final TransferBean transferBean;
 	private final TankhahWalletService tankhahWalletService;
 	private final MarketMakingWalletService mmWalletService;
-	private final int sleepInSeconds = 3;
+	private final int sleepInSeconds = 4;
 
 	@Inject
 	public FundInitialMMTransferWalletSchedule(InitBean initBean, MarketMakingService marketMakingService,

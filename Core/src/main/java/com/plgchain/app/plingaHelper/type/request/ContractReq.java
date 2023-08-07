@@ -35,6 +35,12 @@ public class ContractReq implements Serializable {
 
 	private String blockchainCoingeckoId;
 
+	private String blockchainName;
+
+	private Long blockchainId;
+
+	private Long contractId;
+
 	private String coinCoingeckoId;
 
 	private boolean marketMaking;

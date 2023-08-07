@@ -214,7 +214,9 @@ public class BlockchainBean implements Serializable {
 	public SmartContract createSmartContract(ContractReq contractReq) throws RestActionError {
 		if (contractReq == null)
 			throw new RestActionError("Contract Object is Null");
-		if (Strings.isNullOrEmpty(contractReq.getBlockchainCoingeckoId()))
+		if (Strings.isNullOrEmpty(contractReq.getBlockchainCoingeckoId())
+				&& Strings.isNullOrEmpty(contractReq.getBlockchainName())
+				&& (contractReq.getBlockchainId() == null || contractReq.getBlockchainId() <= 0))
 			throw new RestActionError("Blockchain is blank");
 		if (Strings.isNullOrEmpty(contractReq.getCoinCoingeckoId()))
 			throw new RestActionError("Coin is blank");
@@ -445,7 +447,8 @@ public class BlockchainBean implements Serializable {
 				logger.info(String.format("Server %s with service %s has been stopped.", node.getServerIp(),
 						node.getServiceNeme()));
 			} catch (Exception e) {
-				logger.error(String.format("System stop error in ip %s/%s and service %s", node.getServerIp(),node.getSshPort(),node.getServiceNeme()));
+				logger.error(String.format("System stop error in ip %s/%s and service %s", node.getServerIp(),
+						node.getSshPort(), node.getServiceNeme()));
 			}
 		});
 	}
@@ -461,7 +464,8 @@ public class BlockchainBean implements Serializable {
 				logger.info(String.format("Server %s with service %s has been started.", node.getServerIp(),
 						node.getServiceNeme()));
 			} catch (Exception e) {
-				logger.error(String.format("System start error in ip %s/%s and service %s", node.getServerIp(),node.getSshPort(),node.getServiceNeme()));
+				logger.error(String.format("System start error in ip %s/%s and service %s", node.getServerIp(),
+						node.getSshPort(), node.getServiceNeme()));
 			}
 		});
 	}
@@ -477,7 +481,8 @@ public class BlockchainBean implements Serializable {
 				logger.info(String.format("Server %s with service %s has been restarted.", node.getServerIp(),
 						node.getServiceNeme()));
 			} catch (Exception e) {
-				logger.error(String.format("System restart error in ip %s/%s and service %s", node.getServerIp(),node.getSshPort(),node.getServiceNeme()));
+				logger.error(String.format("System restart error in ip %s/%s and service %s", node.getServerIp(),
+						node.getSshPort(), node.getServiceNeme()));
 			}
 		});
 	}

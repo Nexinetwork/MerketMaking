@@ -28,7 +28,7 @@ public class WalletUtilTest implements Serializable {
 		String jToken = "";
 		var auth = SigninRequest.builder().email("info@Plinga.technology").password("MYLoveArash2023plgchainLOGIN")
 				.build();
-		HttpResponse<String> response = Unirest.post("http://185.173.129.244:7001/api/v1/auth/signin")
+		HttpResponse<String> response = Unirest.post("http://185.173.129.83:7001/api/v1/auth/signin")
 				.header("content-type", "application/json")
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(auth)).asString();
@@ -48,10 +48,10 @@ public class WalletUtilTest implements Serializable {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
 		HttpResponse<String> response = Unirest
-				.post("http://185.173.129.244:7001/api/v1/godaction/wallet/getTankhahWalletByPublicKey")
+				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/getTankhahWalletByPublicKey")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body("0xb1de7ecfdb124c72b793df17b3e51cf59f63d0fd").asString();
+				.body("0xda656e7aaca983109a1def82f3df2c31ecd84f34").asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
@@ -64,23 +64,23 @@ public class WalletUtilTest implements Serializable {
 
 	//@Test
 	public void getTokenBalanceTestCase() {
-		String rpcUrl = "http://185.173.129.244:8545";
+		String rpcUrl = "http://185.173.129.83:8545";
 		String privateKey = "a56c859dbf1b3911e2e3368302eb258e0ab4e34ee2152594bf9688d5522a9cbc";
 		String contractAddress = "0xE61D3f41E12f7De653C68777A791A883f151f103";
 		BigDecimal balance = EVMUtil.getTokenBalancSync(rpcUrl, privateKey, contractAddress);
 		System.out.println("balance : " + balance.toString());
 	}
 
-	@Test
+	//@Test
 	public void correctMetamaskTransWalletsFunding() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
 		int a = 1;
 		HttpResponse<String> response = Unirest
-				.post("http://185.173.129.244:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFunding")
+				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFunding")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body("12136").asString();
+				.body("12124").asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 

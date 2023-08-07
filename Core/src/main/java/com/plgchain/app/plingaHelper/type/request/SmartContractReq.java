@@ -30,6 +30,8 @@ public class SmartContractReq implements Serializable {
 
 	private String coin;
 
+	private String coingeckoId;
+
 	private long coinId;
 
 	private String contractsAddress;
