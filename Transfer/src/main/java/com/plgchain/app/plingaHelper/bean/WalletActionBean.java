@@ -220,7 +220,7 @@ public class WalletActionBean implements Serializable {
 		Coin coin = sm.getCoin();
 		var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
 		var mm = marketMakingService.findBySmartContract(sm).get();
-		if (!(mm.isInitialWalletCreationDone() && mm.isInitialWalletFundingDone()))
+		if (!mm.isInitialWalletCreationDone())
 			throw new InvalidMarketMaking();
 		final int[] enqueued = { 0 };
 		final BigInteger[] tankhahNonce = {
