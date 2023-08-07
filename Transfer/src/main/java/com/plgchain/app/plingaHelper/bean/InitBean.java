@@ -90,7 +90,7 @@ public class InitBean implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		writeWalletDataToCache();
+		//writeWalletDataToCache();
 	}
 
 	public boolean doesActionRunning(String action) {

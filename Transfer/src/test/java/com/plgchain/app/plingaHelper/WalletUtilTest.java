@@ -43,7 +43,7 @@ public class WalletUtilTest implements Serializable {
 		return jToken;
 	}
 
-	@Test
+	//@Test
 	public void getTankhahWalletTestCase() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -71,7 +71,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("balance : " + balance.toString());
 	}
 
-	//@Test
+	@Test
 	public void correctMetamaskTransWalletsFunding() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -80,7 +80,7 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFunding")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body("12124").asString();
+				.body("12143").asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 

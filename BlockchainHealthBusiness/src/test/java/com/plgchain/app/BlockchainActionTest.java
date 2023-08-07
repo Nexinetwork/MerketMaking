@@ -177,8 +177,8 @@ public class BlockchainActionTest implements Serializable {
 	public void createNewSmartContract() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = SmartContractReq.builder().blockchain("Nexi-DPOS-V1").coinId(10143)
-				.contractsAddress("0x9032ba5aa0d59888E582E8aa5893b53b07DEceC1").decimal(18).isMain(true)
+		var req = SmartContractReq.builder().blockchain("Nexi-DPOS-V1").coinId(10145)
+				.contractsAddress("0x883277f7D623612034db92A2dC16A8BEC20a8FB5").decimal(18).isMain(true)
 				.marketMaking(true).mustAdd(true).mustCheck(true).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/contract/createNewSmartContract")
@@ -204,8 +204,8 @@ public class BlockchainActionTest implements Serializable {
 	public void createMarketMaking() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = MarketMakingReq.builder().currentTransferWalletCount(0).dailyAddWallet(1000).initialDecimal(2).initialWallet(89450).initialWalletCreationDone(false)
-				.initialWalletFundingDone(false).minInitial(new BigDecimal(4)).maxInitial(new BigDecimal(12)).smartContractId(12141).transactionParallelType(TransactionParallelType.SYNC).build();
+		var req = MarketMakingReq.builder().currentTransferWalletCount(0).dailyAddWallet(1000).initialDecimal(2).initialWallet(95736).initialWalletCreationDone(false)
+				.initialWalletFundingDone(false).minInitial(new BigDecimal(4)).maxInitial(new BigDecimal(10)).smartContractId(12143).transactionParallelType(TransactionParallelType.SYNC).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/marketMaking/createOrUpdateMarketMaking")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -250,7 +250,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void startAllNodesOfBlockchain() {
 		var blockchain = "Nexi-DPOS-V1";
 		HttpResponse<String> response = Unirest
