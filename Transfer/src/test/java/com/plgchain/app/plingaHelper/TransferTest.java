@@ -103,10 +103,10 @@ public class TransferTest implements Serializable {
 	public void transferTestCase() {
 		System.out.println("GAS_LIMIT : " + DefaultGasProvider.GAS_LIMIT.toString());
 		System.out.println("GAS_PRICE : " + DefaultGasProvider.GAS_PRICE.toString());
-		System.out.println(EVMUtil.getNonce("http://185.128.137.240:8545",
-				"d77b53b57eb48f4e01fe9bb607716da5b3cf566b1347c29fa105deff3cace01d"));
+		System.out.println(EVMUtil.getNonceByPrivateKey("http://185.128.137.240:8545",
+				"a89f99d8ed7d7513e63b6123113c81f3ddda8de6cf2bba66eb6247774ee1d0a4"));
 		final BigInteger[] tankhahNonce = { BigInteger.ZERO };
-		tankhahNonce[0] = EVMUtil.getNonce("http://185.128.137.240:8546",
+		tankhahNonce[0] = EVMUtil.getNonceByPrivateKey("http://185.128.137.240:8546",
 				"d77b53b57eb48f4e01fe9bb607716da5b3cf566b1347c29fa105deff3cace01d");
 		System.out.println("Current none of tankhah wallet is : " + tankhahNonce[0].toString());
 		var gasPrice = new BigInteger("110000000000");
@@ -137,7 +137,7 @@ public class TransferTest implements Serializable {
 		var to = "0x8f6101eA765e70950918B7D3bFcfA0931C7dEA78";
 		var amount  = new BigDecimal(1);
 		BigInteger gasPrice = EVMUtil.getEstimateGasPriceAsWei(rpcUrl);
-		BigInteger nonce = EVMUtil.getNonce(rpcUrl,
+		BigInteger nonce = EVMUtil.getNonceByPrivateKey(rpcUrl,
 				privateKey);
 		System.out.println("Current none of tankhah wallet is : " + nonce.toString());
 		System.out.println("Estimate gas price : " + gasPrice);

@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
@@ -62,7 +61,7 @@ public class FundInitialMMTransferWalletSchedule {
 							final int[] enqueued = { 0 };
 							logger.info("Try to fund for coin {}", sm.getCoin().getSymbol());
 							var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
-							final BigInteger[] tankhahNonce = { EVMUtil.getNonce(sm.getBlockchain().getRpcUrl(),
+							final BigInteger[] tankhahNonce = { EVMUtil.getNonceByPrivateKey(sm.getBlockchain().getRpcUrl(),
 									tankhahWallet.getPrivateKeyHex()) };
 							logger.info("Current nonce of tankhah wallet is: " + tankhahNonce[0]);
 

@@ -298,6 +298,9 @@ public class TransferBean implements Serializable {
 									finalGasPrice[0].toString(), finalGasLimit[0].toString()));
 							shouldBreak[0] = true;
 						});
+				if (result.hasError()) {
+					logger.info("Error is " + result.getError().getMessage());
+				}
 				if (result != null) {
 					if (EVMUtil.mostIncreaseNonce(result))
 						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);

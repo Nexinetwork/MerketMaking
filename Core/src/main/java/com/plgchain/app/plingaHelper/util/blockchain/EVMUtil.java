@@ -104,7 +104,7 @@ public class EVMUtil implements Serializable {
 		return TransactionEncoder.signMessage(rawTransaction, credentials);
 	}
 
-	public static BigInteger getNonce(String rpcUrl, String privateKeyHex) {
+	public static BigInteger getNonceByPrivateKey(String rpcUrl, String privateKeyHex) {
 		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
 		Credentials credentials = Credentials.create(privateKeyHex);
 		EthGetTransactionCount ethGetTransactionCount;
@@ -152,7 +152,7 @@ public class EVMUtil implements Serializable {
 		 * DefaultBlockParameterName.LATEST).send();
 		 */
 		// BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-		RawTransaction rawTransaction = RawTransaction.createEtherTransaction(getNonce(rpcUrl, privateKeyHex),
+		RawTransaction rawTransaction = RawTransaction.createEtherTransaction(getNonceByPrivateKey(rpcUrl, privateKeyHex),
 				DefaultGasPrice, getGasLimit(rpcUrl), recipientAddress, getWei(amount));
 
 		// Sign the transaction

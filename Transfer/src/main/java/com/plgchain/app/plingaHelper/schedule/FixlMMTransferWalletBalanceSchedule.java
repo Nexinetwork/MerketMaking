@@ -57,7 +57,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 							logger.info("Try to fix for coin {}", coin.getSymbol());
 							var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
 							final BigInteger[] tankhahNonce = {
-									EVMUtil.getNonce(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex()) };
+									EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex()) };
 							logger.info(String.format(
 									"Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
 									tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(),
@@ -73,7 +73,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 												var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(),
 														mm.getMaxInitial(), mm.getInitialDecimal());
 												var mustReturn = balance.subtract(amount);
-												BigInteger nonce = EVMUtil.getNonce(blockchain.getRpcUrl(),
+												BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
 														wallet.getPrivateKeyHex());
 												if (blockchain.isAutoGas()) {
 													transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
@@ -125,7 +125,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 														initBean.getMaxMaincoinInContractWallet(),
 														initBean.getDecimalMaincoinInContractWallet());
 												var mustReturn = balance.subtract(amount);
-												BigInteger nonce = EVMUtil.getNonce(blockchain.getRpcUrl(),
+												BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
 														wallet.getPrivateKeyHex());
 												if (blockchain.isAutoGas()) {
 													transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
@@ -169,7 +169,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 													mm.getMaxInitial(), mm.getInitialDecimal());
 											if (tokenBalance.compareTo(mm.getMaxInitial()) > 0) {
 												var mustReturn = tokenBalance.subtract(amount);
-												BigInteger nonce = EVMUtil.getNonce(blockchain.getRpcUrl(),
+												BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
 														wallet.getPrivateKeyHex());
 												if (blockchain.isAutoGas()) {
 													transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
