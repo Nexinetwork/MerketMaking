@@ -173,10 +173,13 @@ public class TransferBean implements Serializable {
 						} else if (result.getError().getMessage()
 								.contains("maximum number of enqueued transactions reached")) {
 							throw new RuntimeException("maximum number of enqueued transactions reached");
+						} else {
+							logger.error("error occured in message and is :" + result.getError().getMessage());
 						}
 					}
 				}
 			} catch (ConnectException e) {
+				logger.error("ConnectException occured in message and is :" + result.getError().getMessage());
 				try {
 					Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 				} catch (InterruptedException e1) {
@@ -186,7 +189,7 @@ public class TransferBean implements Serializable {
 				}
 			} catch (Exception e) {
 				logger.error("Transfer Error is : " + e.getMessage());
-				if (e.getMessage().contains("Cannot assign requested address"))
+				if (e.getMessage().contains("Cannot assign requested address")) {
 					try {
 						Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
 					} catch (InterruptedException e1) {
@@ -194,8 +197,10 @@ public class TransferBean implements Serializable {
 						logger.error(e1.getMessage());
 						;
 					}
-				else
+				}
+				else {
 					shouldBreak[0] = true;
+				}
 			}
 		}
 	}

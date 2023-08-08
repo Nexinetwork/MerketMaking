@@ -43,7 +43,7 @@ public class WalletUtilTest implements Serializable {
 		return jToken;
 	}
 
-	@Test
+	//@Test
 	public void getTankhahWalletTestCase() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
