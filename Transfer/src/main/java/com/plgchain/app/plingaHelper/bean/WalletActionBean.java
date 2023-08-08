@@ -251,7 +251,7 @@ public class WalletActionBean implements Serializable {
 										mustReturn, EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, nonce);
 							}
 						} else if (balance.equals(BigDecimal.ZERO)) {
-							boolean mustRetry = false;
+							boolean mustRetry = true;
 							while (mustRetry) {
 								var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(), mm.getMaxInitial(),
 										mm.getInitialDecimal());
@@ -316,7 +316,7 @@ public class WalletActionBean implements Serializable {
 										mustReturn, EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, nonce);
 							}
 						} else if (balance.equals(BigDecimal.ZERO)) {
-							boolean mustRetry = false;
+							boolean mustRetry = true;
 							while (mustRetry) {
 								var amount = NumberUtil.generateRandomNumber(initBean.getMinMaincoinInContractWallet(),
 										initBean.getMaxMaincoinInContractWallet(),
@@ -377,7 +377,7 @@ public class WalletActionBean implements Serializable {
 										EVMUtil.DefaultTokenGasLimit, nonce);
 							}
 						} else if (tokenBalance.equals(BigDecimal.ZERO)) {
-							boolean mustRetry = false;
+							boolean mustRetry = true;
 							while (mustRetry) {
 								if (blockchain.isAutoGas()) {
 									try {
