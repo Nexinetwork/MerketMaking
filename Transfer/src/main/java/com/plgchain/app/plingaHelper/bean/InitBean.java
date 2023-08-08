@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.net.http.HttpClient;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -90,7 +91,7 @@ public class InitBean implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		//writeWalletDataToCache();
+		// writeWalletDataToCache();
 	}
 
 	public boolean doesActionRunning(String action) {
@@ -105,24 +106,26 @@ public class InitBean implements Serializable {
 		lockedMethod.remove(action);
 	}
 
-
 	@Transactional
 	public void writeWalletDataToCache() {
-		marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true)
-		.stream().forEach(mm -> {
-			SmartContract sm = mm.getSmartContract();
-			transferWalletMapCache.put(sm.getContractId(), Set.copyOf(marketMakingWalletService.findNWalletsRandomByContractIdAndWalletTypeNative(sm.getContractId(),WalletType.TRANSFER,cachedContracts)));
-			Coin coin = sm.getCoin();
-			Blockchain blockchain = sm.getBlockchain();
-			logger.info(String.format("Contract %s for coin %s and blockchain %s has been write to cache", sm.getContractsAddress(),coin.getSymbol(),blockchain.getName()));
-		});
+		marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true).stream()
+				.forEach(mm -> {
+					SmartContract sm = mm.getSmartContract();
+					transferWalletMapCache.put(sm.getContractId(),
+							Set.copyOf(marketMakingWalletService.findNWalletsRandomByContractIdAndWalletTypeNative(
+									sm.getContractId(), WalletType.TRANSFER, cachedContracts)));
+					Coin coin = sm.getCoin();
+					Blockchain blockchain = sm.getBlockchain();
+					logger.info(String.format("Contract %s for coin %s and blockchain %s has been write to cache",
+							sm.getContractsAddress(), coin.getSymbol(), blockchain.getName()));
+				});
 	}
 
 	public int getWalletCacheCount(long contractId) {
 		return transferWalletMapCache.get(contractId).size();
 	}
 
-	public void fillWalletCache(long contractId,List<MarketMakingWalletDto> lst) {
+	public void fillWalletCache(long contractId, List<MarketMakingWalletDto> lst) {
 		transferWalletMapCache.get(contractId).addAll(Set.copyOf(lst));
 	}
 
@@ -131,16 +134,16 @@ public class InitBean implements Serializable {
 	}
 
 	public Page<MarketMakingWalletDto> getMMWalletList(long contractId, Pageable pageable) {
-	    List<MarketMakingWalletDto> walletDtos = List.copyOf(transferWalletMapCache.get(contractId));
+		List<MarketMakingWalletDto> walletDtos = List.copyOf(transferWalletMapCache.get(contractId));
 
-	    int start = (int) pageable.getOffset();
-	    int end = Math.min((start + pageable.getPageSize()), walletDtos.size());
-	    List<MarketMakingWalletDto> sublist = walletDtos.subList(start, end);
+		int start = (int) pageable.getOffset();
+		int end = Math.min((start + pageable.getPageSize()), walletDtos.size());
+		List<MarketMakingWalletDto> sublist = walletDtos.subList(start, end);
 
-	    return new PageImpl<>(sublist, pageable, walletDtos.size());
+		return new PageImpl<>(sublist, pageable, walletDtos.size());
 	}
 
-	public List<MarketMakingWalletDto> getNTransferWallet(long contractId,int count) {
+	public List<MarketMakingWalletDto> getNTransferWallet(long contractId, int count) {
 		List<MarketMakingWalletDto> walletDtos = List.copyOf(transferWalletMapCache.get(contractId));
 		if (walletDtos.size() <= count) {
 			transferWalletMapCache.put(contractId, new HashSet<MarketMakingWalletDto>());
@@ -152,6 +155,5 @@ public class InitBean implements Serializable {
 			return newList;
 		}
 	}
-
 
 }

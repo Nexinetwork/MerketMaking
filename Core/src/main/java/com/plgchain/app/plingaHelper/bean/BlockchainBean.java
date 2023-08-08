@@ -6,11 +6,14 @@ package com.plgchain.app.plingaHelper.bean;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +23,7 @@ import com.google.common.net.InetAddresses;
 import com.plgchain.app.plingaHelper.annotation.LogMethod;
 import com.plgchain.app.plingaHelper.annotation.UpdateBlockchainData;
 import com.plgchain.app.plingaHelper.constant.AdminCommandType;
+import com.plgchain.app.plingaHelper.constant.BlockchainNodeType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
 import com.plgchain.app.plingaHelper.dto.EvmWalletDto;
@@ -43,6 +47,7 @@ import com.plgchain.app.plingaHelper.type.request.ContractReq;
 import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
 import com.plgchain.app.plingaHelper.type.response.TankhahWalletRes;
+import com.plgchain.app.plingaHelper.util.ArrayListHelper;
 import com.plgchain.app.plingaHelper.util.ServiceUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 
@@ -85,6 +90,13 @@ public class BlockchainBean implements Serializable {
 
 	@Inject
 	private SystemConfigService systemConfigService;
+
+	@Inject
+	private CommonInitBean commonInitBean;
+
+	@SuppressWarnings("rawtypes")
+	@Inject
+	private RedisTemplate redisTemplate;
 
 	@LogMethod
 	public Blockchain createBlockchain(Blockchain blockchain) throws RestActionError {
@@ -485,6 +497,40 @@ public class BlockchainBean implements Serializable {
 						node.getSshPort(), node.getServiceNeme()));
 			}
 		});
+	}
+
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public void restartBlockchain(Blockchain blockchain) {
+		if (!commonInitBean.doesBlockchainRestarting(blockchain.getName())) {
+			commonInitBean.startBlockchainRestarting(blockchain.getName());
+			logger.info(String.format("start restarting blockchain %s", blockchain.getName()));
+			HashOperations<String, String, String> blockchainDataString = redisTemplate.opsForHash();
+			Map<String, String> entries = blockchainDataString.entries(SysConstant.REDIS_NODE_DATA);
+			entries.forEach((key, value) -> {
+				ArrayListHelper.parseJsonToArrayList(value, BlockchainNode.class).stream()
+						.filter(blchNode -> blchNode != null && blchNode.getBlockchain().getName().equals(blockchain.getName()) && blchNode.getNodeType().equals(BlockchainNodeType.BLOCKCHAINNODE))
+						.forEach(blockchainNode -> {
+							logger.info(String.format(
+									"Try to stop Server %s with service %s.",
+									blockchainNode.getServerIp(), blockchainNode.getServiceNeme()));
+							ServiceUtil.stopService(blockchainNode.getServerIp(),
+									blockchainNode.getSshPort(), commonInitBean.getPrivateKey(),
+									blockchainNode.getServiceNeme());
+							logger.info(String.format(
+									"Try to start Server %s with service %s.",
+									blockchainNode.getServerIp(), blockchainNode.getServiceNeme()));
+							ServiceUtil.startService(blockchainNode.getServerIp(),
+									blockchainNode.getSshPort(), commonInitBean.getPrivateKey(),
+									blockchainNode.getServiceNeme());
+						});
+			});
+
+			commonInitBean.stopBlockchainRestarting(blockchain.getName());
+		} else {
+			logger.error(
+					String.format("Blockchain %s has already be reastarting please be patint", blockchain.getName()));
+		}
 	}
 
 }

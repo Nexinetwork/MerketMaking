@@ -27,6 +27,7 @@ import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 /**
  *
@@ -176,7 +177,7 @@ public class TransferBean implements Serializable {
 							shouldBreak[0] = true;
 						} else if (result.getError().getMessage()
 								.contains("maximum number of enqueued transactions reached")) {
-							Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+							throw new RuntimeException("maximum number of enqueued transactions reached");
 						}
 					}
 				}
@@ -304,7 +305,7 @@ public class TransferBean implements Serializable {
 							shouldBreak[0] = true;
 						} else if (result.getError().getMessage()
 								.contains("maximum number of enqueued transactions reached")) {
-							Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+							throw new RuntimeException("maximum number of enqueued transactions reached");
 						}
 					}
 				}
@@ -439,7 +440,7 @@ public class TransferBean implements Serializable {
 							shouldBreak[0] = true;
 						} else if (result.getError().getMessage()
 								.contains("maximum number of enqueued transactions reached")) {
-							Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+							throw new RuntimeException("maximum number of enqueued transactions reached");
 						}
 					}
 				}
@@ -574,7 +575,7 @@ public class TransferBean implements Serializable {
 							shouldBreak[0] = true;
 						} else if (result.getError().getMessage()
 								.contains("maximum number of enqueued transactions reached")) {
-							Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+							throw new RuntimeException("maximum number of enqueued transactions reached");
 						}
 					}
 				}
@@ -592,6 +593,11 @@ public class TransferBean implements Serializable {
 					shouldBreak[0] = true;
 			}
 		}
+	}
+
+	@Transactional
+	public void restartBlockchain(Blockchain blockchain) {
+
 	}
 
 }
