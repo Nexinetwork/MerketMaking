@@ -6,6 +6,7 @@ package com.plgchain.app.plingaHelper.bean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.ConnectException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -83,16 +84,13 @@ public class TransferBean implements Serializable {
 		if (finalGasPrice[0] == null) {
 			logger.error("Transaction Gasprice is null");
 			throw new RuntimeException("Gas price is Zero");
-		}
-		else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+		} else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
 			logger.error("Transaction Gasprice is zero");
 			throw new RuntimeException("Gas price is Zero");
-		}
-		else if (finalGasLimit[0] == null) {
+		} else if (finalGasLimit[0] == null) {
 			logger.error("Transaction Gaslimit is null");
 			throw new RuntimeException("Gas Limit is Zero");
-		}
-		else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+		} else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
 			logger.error("Transaction Gaslimit is zero");
 			throw new RuntimeException("Gas Limit is Zero");
 		}
@@ -141,16 +139,13 @@ public class TransferBean implements Serializable {
 		if (finalGasPrice[0] == null) {
 			logger.error("Transaction Gasprice is null");
 			throw new RuntimeException("Gas price is Zero");
-		}
-		else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+		} else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
 			logger.error("Transaction Gasprice is zero");
 			throw new RuntimeException("Gas price is Zero");
-		}
-		else if (finalGasLimit[0] == null) {
+		} else if (finalGasLimit[0] == null) {
 			logger.error("Transaction Gaslimit is null");
 			throw new RuntimeException("Gas Limit is Zero");
-		}
-		else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+		} else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
 			logger.error("Transaction Gaslimit is zero");
 			throw new RuntimeException("Gas Limit is Zero");
 		}
@@ -180,6 +175,14 @@ public class TransferBean implements Serializable {
 							throw new RuntimeException("maximum number of enqueued transactions reached");
 						}
 					}
+				}
+			} catch (ConnectException e) {
+				try {
+					Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					logger.error(e1.getMessage());
+					;
 				}
 			} catch (Exception e) {
 				logger.error("Transfer Error is : " + e.getMessage());
@@ -211,16 +214,13 @@ public class TransferBean implements Serializable {
 				if (finalGasPrice[0] == null) {
 					logger.error("Transaction Gasprice is null");
 					throw new RuntimeException("Gas price is Zero");
-				}
-				else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+				} else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
 					logger.error("Transaction Gasprice is zero");
 					throw new RuntimeException("Gas price is Zero");
-				}
-				else if (finalGasLimit[0] == null) {
+				} else if (finalGasLimit[0] == null) {
 					logger.error("Transaction Gaslimit is null");
 					throw new RuntimeException("Gas Limit is Zero");
-				}
-				else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+				} else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
 					logger.error("Transaction Gaslimit is zero");
 					throw new RuntimeException("Gas Limit is Zero");
 				}
@@ -271,16 +271,13 @@ public class TransferBean implements Serializable {
 				if (finalGasPrice[0] == null) {
 					logger.error("Transaction Gasprice is null");
 					throw new RuntimeException("Gas price is Zero");
-				}
-				else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+				} else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
 					logger.error("Transaction Gasprice is zero");
 					throw new RuntimeException("Gas price is Zero");
-				}
-				else if (finalGasLimit[0] == null) {
+				} else if (finalGasLimit[0] == null) {
 					logger.error("Transaction Gaslimit is null");
 					throw new RuntimeException("Gas Limit is Zero");
-				}
-				else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+				} else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
 					logger.error("Transaction Gaslimit is zero");
 					throw new RuntimeException("Gas Limit is Zero");
 				}
@@ -309,6 +306,14 @@ public class TransferBean implements Serializable {
 						}
 					}
 				}
+			} catch (ConnectException e) {
+				try {
+					Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					logger.error(e1.getMessage());
+					;
+				}
 			} catch (Exception e) {
 				// logger.error("Error is : " + e.getMessage());
 				if (e.getMessage().contains("Cannot assign requested address"))
@@ -336,16 +341,13 @@ public class TransferBean implements Serializable {
 		if (finalGasPrice[0] == null) {
 			logger.error("Transaction Gasprice is null");
 			throw new RuntimeException("Gas price is Zero");
-		}
-		else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+		} else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
 			logger.error("Transaction Gasprice is zero");
 			throw new RuntimeException("Gas price is Zero");
-		}
-		else if (finalGasLimit[0] == null) {
+		} else if (finalGasLimit[0] == null) {
 			logger.error("Transaction Gaslimit is null");
 			throw new RuntimeException("Gas Limit is Zero");
-		}
-		else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+		} else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
 			logger.error("Transaction Gaslimit is zero");
 			throw new RuntimeException("Gas Limit is Zero");
 		}
@@ -399,16 +401,13 @@ public class TransferBean implements Serializable {
 		if (finalGasPrice[0] == null) {
 			logger.error("Transaction Gasprice is null");
 			throw new RuntimeException("Gas price is Zero");
-		}
-		else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+		} else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
 			logger.error("Transaction Gasprice is zero");
 			throw new RuntimeException("Gas price is Zero");
-		}
-		else if (finalGasLimit[0] == null) {
+		} else if (finalGasLimit[0] == null) {
 			logger.error("Transaction Gaslimit is null");
 			throw new RuntimeException("Gas Limit is Zero");
-		}
-		else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+		} else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
 			logger.error("Transaction Gaslimit is zero");
 			throw new RuntimeException("Gas Limit is Zero");
 		}
@@ -444,6 +443,14 @@ public class TransferBean implements Serializable {
 						}
 					}
 				}
+			} catch (ConnectException e) {
+				try {
+					Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					logger.error(e1.getMessage());
+					;
+				}
 			} catch (Exception e) {
 				// logger.error("Error is : " + e.getMessage());
 				if (e.getMessage().contains("Cannot assign requested address"))
@@ -474,16 +481,13 @@ public class TransferBean implements Serializable {
 				if (finalGasPrice[0] == null) {
 					logger.error("Transaction Gasprice is null");
 					throw new RuntimeException("Gas price is Zero");
-				}
-				else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+				} else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
 					logger.error("Transaction Gasprice is zero");
 					throw new RuntimeException("Gas price is Zero");
-				}
-				else if (finalGasLimit[0] == null) {
+				} else if (finalGasLimit[0] == null) {
 					logger.error("Transaction Gaslimit is null");
 					throw new RuntimeException("Gas Limit is Zero");
-				}
-				else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+				} else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
 					logger.error("Transaction Gaslimit is zero");
 					throw new RuntimeException("Gas Limit is Zero");
 				}
@@ -536,16 +540,13 @@ public class TransferBean implements Serializable {
 				if (finalGasPrice[0] == null) {
 					logger.error("Transaction Gasprice is null");
 					throw new RuntimeException("Gas price is Zero");
-				}
-				else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
+				} else if (finalGasPrice[0].equals(BigInteger.ZERO)) {
 					logger.error("Transaction Gasprice is zero");
 					throw new RuntimeException("Gas price is Zero");
-				}
-				else if (finalGasLimit[0] == null) {
+				} else if (finalGasLimit[0] == null) {
 					logger.error("Transaction Gaslimit is null");
 					throw new RuntimeException("Gas Limit is Zero");
-				}
-				else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
+				} else if (finalGasLimit[0].equals(BigInteger.ZERO)) {
 					logger.error("Transaction Gaslimit is zero");
 					throw new RuntimeException("Gas Limit is Zero");
 				}
@@ -578,6 +579,14 @@ public class TransferBean implements Serializable {
 							throw new RuntimeException("maximum number of enqueued transactions reached");
 						}
 					}
+				}
+			} catch (ConnectException e) {
+				try {
+					Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					logger.error(e1.getMessage());
+					;
 				}
 			} catch (Exception e) {
 				// logger.error("Error is : " + e.getMessage());

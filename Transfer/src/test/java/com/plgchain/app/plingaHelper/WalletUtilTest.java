@@ -55,7 +55,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	// @Test
+	@Test
 	public void getNonce() {
 		String rpcUrl = "http://185.173.129.243:18545";
 		String privateKey = "665a41f51a3b705c8b6cdc85e2b9cbb7baa636c806b9746a99e99966b304baf2";
@@ -71,7 +71,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("balance : " + balance.toString());
 	}
 
-	@Test
+	//@Test
 	public void correctMetamaskTransWalletsFunding() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();

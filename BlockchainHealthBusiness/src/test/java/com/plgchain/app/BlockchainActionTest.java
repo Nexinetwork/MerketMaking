@@ -250,7 +250,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void startAllNodesOfBlockchain() {
 		var blockchain = "Nexi-DPOS-V1";
 		HttpResponse<String> response = Unirest

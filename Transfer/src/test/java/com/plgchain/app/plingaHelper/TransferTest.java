@@ -16,7 +16,6 @@ import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.gas.DefaultGasProvider;
 
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
-import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 
 /**
  *
