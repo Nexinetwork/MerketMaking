@@ -38,7 +38,7 @@ public class FillWalletCacheSchedule implements Serializable {
 	private MarketMakingWalletService marketMakingWalletService;
 
 	@Transactional
-	@Scheduled(cron = "0 */15 * * * *", zone = "GMT")
+	//@Scheduled(cron = "0 */15 * * * *", zone = "GMT")
 	public void fillWalletCache() {
 		if (!initBean.doesActionRunning("fillWalletCache")) {
 			initBean.startActionRunning("fillWalletCache");

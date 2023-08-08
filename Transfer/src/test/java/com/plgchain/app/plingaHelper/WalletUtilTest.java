@@ -43,7 +43,7 @@ public class WalletUtilTest implements Serializable {
 		return jToken;
 	}
 
-	//@Test
+	@Test
 	public void getTankhahWalletTestCase() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -51,11 +51,11 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/getTankhahWalletByPublicKey")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body("0xda656e7aaca983109a1def82f3df2c31ecd84f34").asString();
+				.body("0x03b4e12ed90ca18c12139c37125ca701f783f972").asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void getNonce() {
 		String rpcUrl = "http://185.173.129.243:18545";
 		String privateKey = "665a41f51a3b705c8b6cdc85e2b9cbb7baa636c806b9746a99e99966b304baf2";
@@ -71,7 +71,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("balance : " + balance.toString());
 	}
 
-	//@Test
+	@Test
 	public void correctMetamaskTransWalletsFunding() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -80,7 +80,7 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFunding")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body("12143").asString();
+				.body("12144").asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
