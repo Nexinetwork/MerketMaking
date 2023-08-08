@@ -299,7 +299,7 @@ public class TransferBean implements Serializable {
 							shouldBreak[0] = true;
 						});
 				if (result.hasError()) {
-					logger.info("Error is " + result.getError().getMessage());
+					logger.error(String.format("has error with nonce %s Error is %s",finalNonce[0].toString(),  result.getError().getMessage()));
 				}
 				if (result != null) {
 					if (EVMUtil.mostIncreaseNonce(result))
