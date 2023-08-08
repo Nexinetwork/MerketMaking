@@ -245,6 +245,9 @@ public class TransferBean implements Serializable {
 							shouldBreak[0] = true;
 						});
 				if (result != null) {
+					if (result.hasError()) {
+						logger.error(String.format("has error with nonce %s Error is %s",finalNonce[0].toString(),  result.getError().getMessage()));
+					}
 					if (EVMUtil.mostIncreaseNonce(result))
 						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
 					else {
@@ -256,9 +259,26 @@ public class TransferBean implements Serializable {
 						}
 					}
 				}
+			} catch (ConnectException e) {
+				try {
+					Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					logger.error(e1.getMessage());
+					;
+				}
 			} catch (Exception e) {
-				logger.error("Error is : " + e.getMessage());
-				shouldBreak[0] = true;
+				// logger.error("Error is : " + e.getMessage());
+				if (e.getMessage().contains("Cannot assign requested address"))
+					try {
+						Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						logger.error(e1.getMessage());
+						;
+					}
+				else
+					shouldBreak[0] = true;
 			}
 		}
 	}
@@ -516,6 +536,9 @@ public class TransferBean implements Serializable {
 							shouldBreak[0] = true;
 						});
 				if (result != null) {
+					if (result.hasError()) {
+						logger.error(String.format("has error with nonce %s Error is %s",finalNonce[0].toString(),  result.getError().getMessage()));
+					}
 					if (EVMUtil.mostIncreaseNonce(result))
 						finalNonce[0] = finalNonce[0].add(BigInteger.ONE);
 					else {
@@ -528,9 +551,26 @@ public class TransferBean implements Serializable {
 						}
 					}
 				}
+			}  catch (ConnectException e) {
+				try {
+					Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					logger.error(e1.getMessage());
+					;
+				}
 			} catch (Exception e) {
-				logger.error("Error is : " + e.getMessage());
-				shouldBreak[0] = true;
+				// logger.error("Error is : " + e.getMessage());
+				if (e.getMessage().contains("Cannot assign requested address"))
+					try {
+						Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						logger.error(e1.getMessage());
+						;
+					}
+				else
+					shouldBreak[0] = true;
 			}
 		}
 	}
