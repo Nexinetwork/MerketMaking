@@ -268,7 +268,7 @@ public class TransferBean implements Serializable {
 					;
 				}
 			} catch (Exception e) {
-				// logger.error("Error is : " + e.getMessage());
+				logger.error("Error is : " + e.getMessage());
 				if (e.getMessage().contains("Cannot assign requested address"))
 					try {
 						Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
@@ -560,7 +560,7 @@ public class TransferBean implements Serializable {
 					;
 				}
 			} catch (Exception e) {
-				// logger.error("Error is : " + e.getMessage());
+				logger.error("Error is : " + e.getMessage());
 				if (e.getMessage().contains("Cannot assign requested address"))
 					try {
 						Thread.sleep(waitOnMaxEnqueIsSeconds * 1000);
