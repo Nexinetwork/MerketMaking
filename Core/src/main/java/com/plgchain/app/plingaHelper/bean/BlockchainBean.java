@@ -509,20 +509,18 @@ public class BlockchainBean implements Serializable {
 			Map<String, String> entries = blockchainDataString.entries(SysConstant.REDIS_NODE_DATA);
 			entries.forEach((key, value) -> {
 				ArrayListHelper.parseJsonToArrayList(value, BlockchainNode.class).stream()
-						.filter(blchNode -> blchNode != null && blchNode.getBlockchain().getName().equals(blockchain.getName()) && blchNode.getNodeType().equals(BlockchainNodeType.BLOCKCHAINNODE))
+						.filter(blchNode -> blchNode != null
+								&& blchNode.getBlockchain().getName().equals(blockchain.getName())
+								&& blchNode.getNodeType().equals(BlockchainNodeType.BLOCKCHAINNODE))
 						.forEach(blockchainNode -> {
-							logger.info(String.format(
-									"Try to stop Server %s with service %s.",
+							logger.info(String.format("Try to stop Server %s with service %s.",
 									blockchainNode.getServerIp(), blockchainNode.getServiceNeme()));
-							ServiceUtil.stopService(blockchainNode.getServerIp(),
-									blockchainNode.getSshPort(), commonInitBean.getPrivateKey(),
-									blockchainNode.getServiceNeme());
-							logger.info(String.format(
-									"Try to start Server %s with service %s.",
+							ServiceUtil.stopService(blockchainNode.getServerIp(), blockchainNode.getSshPort(),
+									commonInitBean.getPrivateKey(), blockchainNode.getServiceNeme());
+							logger.info(String.format("Try to start Server %s with service %s.",
 									blockchainNode.getServerIp(), blockchainNode.getServiceNeme()));
-							ServiceUtil.startService(blockchainNode.getServerIp(),
-									blockchainNode.getSshPort(), commonInitBean.getPrivateKey(),
-									blockchainNode.getServiceNeme());
+							ServiceUtil.startService(blockchainNode.getServerIp(), blockchainNode.getSshPort(),
+									commonInitBean.getPrivateKey(), blockchainNode.getServiceNeme());
 						});
 			});
 
@@ -533,4 +531,23 @@ public class BlockchainBean implements Serializable {
 		}
 	}
 
+	public void restartBlockchainNode(String rpcUrl) throws RuntimeException {
+		if (!commonInitBean.doesNodeRestarting(rpcUrl)) {
+			commonInitBean.startNodeRestarting(rpcUrl);
+			Optional<BlockchainNode> bcn = blockchainNodeService.findByrpcUrl(rpcUrl);
+			if (bcn.isPresent()) {
+				logger.info(String.format("Try to stop Server %s with service %s.",
+						bcn.get().getServerIp(), bcn.get().getServiceNeme()));
+				ServiceUtil.stopService(bcn.get().getServerIp(), bcn.get().getSshPort(),
+						commonInitBean.getPrivateKey(), bcn.get().getServiceNeme());
+				logger.info(String.format("Try to start Server %s with service %s.",
+						bcn.get().getServerIp(), bcn.get().getServiceNeme()));
+				ServiceUtil.startService(bcn.get().getServerIp(), bcn.get().getSshPort(),
+						commonInitBean.getPrivateKey(), bcn.get().getServiceNeme());
+			}
+			commonInitBean.stopNodeRestarting(rpcUrl);
+		} else {
+			logger.error(String.format("Node 5s has bean already restarting skip ir", rpcUrl));
+		}
+	}
 }

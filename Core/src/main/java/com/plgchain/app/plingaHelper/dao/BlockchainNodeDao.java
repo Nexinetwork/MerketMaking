@@ -1,6 +1,7 @@
 package com.plgchain.app.plingaHelper.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,5 +20,7 @@ public interface BlockchainNodeDao extends BaseLongDao<BlockchainNode> {
 	public List<BlockchainNode> deleteByBlockchain(Blockchain blockchain);
 
 	public Long removeByBlockchain(Blockchain blockchain);
+
+	public Optional<BlockchainNode> findByrpcUrl(String rpcUrl);
 
 }

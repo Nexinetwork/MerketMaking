@@ -83,4 +83,8 @@ public class BlockchainNodeService extends BaseService<BlockchainNode> implement
 		return blockchainNodeDao.removeByBlockchain(blockchain);
 	}
 
+	public Optional<BlockchainNode> findByrpcUrl(String rpcUrl) {
+		return blockchainNodeDao.findByrpcUrl(rpcUrl);
+	}
+
 }

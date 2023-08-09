@@ -5,7 +5,10 @@ package com.plgchain.app.plingaHelper.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
 
 import com.plgchain.app.plingaHelper.service.SystemConfigService;
@@ -29,7 +32,11 @@ public class CommonInitBean implements Serializable {
 
 	private static final long serialVersionUID = -3669045796530377728L;
 
-	private List<String> restartingBlockchain = new ArrayList<String>();
+	private Set<String> restartingBlockchain = new HashSet<String>();
+
+	private Set<String> restartingNode = new HashSet<String>();
+
+	private Set<String> shouldRecalcNonce = new HashSet<String>();
 
 	private String privateKey;
 
@@ -52,6 +59,30 @@ public class CommonInitBean implements Serializable {
 
 	public void stopBlockchainRestarting(String blockchain) {
 		restartingBlockchain.remove(blockchain);
+	}
+
+	public boolean doesNodeRestarting(String rpcUrl) {
+		return restartingNode.contains(rpcUrl);
+	}
+
+	public void startNodeRestarting(String rpcUrl) {
+		restartingNode.add(rpcUrl);
+	}
+
+	public void stopNodeRestarting(String rpcUrl) {
+		restartingNode.remove(rpcUrl);
+	}
+
+	public boolean doesShouldRecalcNonce(String address) {
+		return shouldRecalcNonce.contains(address);
+	}
+
+	public void startShouldRecalcNonce(String address) {
+		shouldRecalcNonce.add(address);
+	}
+
+	public void stopShouldRecalcNonce(String address) {
+		shouldRecalcNonce.remove(address);
 	}
 
 }
