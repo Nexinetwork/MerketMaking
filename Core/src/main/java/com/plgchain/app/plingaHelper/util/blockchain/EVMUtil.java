@@ -120,6 +120,21 @@ public class EVMUtil implements Serializable {
 		}
 	}
 
+	public static BigInteger getNonce(String rpcUrl, String publicKey) {
+		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+		EthGetTransactionCount ethGetTransactionCount;
+		while (true) {
+			try {
+				ethGetTransactionCount = web3j
+						.ethGetTransactionCount(publicKey, DefaultBlockParameterName.LATEST).send();
+				return ethGetTransactionCount.getTransactionCount();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public static BigInteger getGasLimit(String rpcUrl) {
 		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
 
