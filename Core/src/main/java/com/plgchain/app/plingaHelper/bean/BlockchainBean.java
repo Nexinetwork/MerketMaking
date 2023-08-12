@@ -452,7 +452,7 @@ public class BlockchainBean implements Serializable {
 	public void stopAllNodesOfBlockchain(String blockchainName) {
 		Optional<Blockchain> bc = blockchainService.findByName(blockchainName);
 		bc.orElseThrow(() -> new RuntimeException("Blockchain not found"));
-		var privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
+		var privateKey = systemConfigService.findByConfigName("ssh-key-path").get().getConfigStringValue();
 		bc.get().getNodeList().forEach(node -> {
 			try {
 				ServiceUtil.stopService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
@@ -469,7 +469,7 @@ public class BlockchainBean implements Serializable {
 	public void startAllNodesOfBlockchain(String blockchainName) {
 		Optional<Blockchain> bc = blockchainService.findByName(blockchainName);
 		bc.orElseThrow(() -> new RuntimeException("Blockchain not found"));
-		var privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
+		var privateKey = systemConfigService.findByConfigName("ssh-key-path").get().getConfigStringValue();
 		bc.get().getNodeList().forEach(node -> {
 			try {
 				ServiceUtil.startService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
@@ -486,7 +486,7 @@ public class BlockchainBean implements Serializable {
 	public void restartAllNodesOfBlockchain(String blockchainName) {
 		Optional<Blockchain> bc = blockchainService.findByName(blockchainName);
 		bc.orElseThrow(() -> new RuntimeException("Blockchain not found"));
-		var privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
+		var privateKey = systemConfigService.findByConfigName("ssh-key-path").get().getConfigStringValue();
 		bc.get().getNodeList().forEach(node -> {
 			try {
 				ServiceUtil.restartService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());

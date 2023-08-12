@@ -5,6 +5,7 @@ package com.plgchain.app.plingaHelper.service;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,8 +38,12 @@ public class SystemConfigService extends BaseService<SystemConfig> implements Se
 		return systemConfigDao.isByConfigNameExist(configName);
 	}
 
-	public SystemConfig findByConfigName(String configName) {
+	public Optional<SystemConfig> findByConfigName(String configName) {
 		return systemConfigDao.findByConfigName(configName);
+	}
+
+	public boolean existsByConfigName(String configName) {
+		return systemConfigDao.existsByConfigName(configName);
 	}
 
 	public SystemConfig save(SystemConfig sc) {

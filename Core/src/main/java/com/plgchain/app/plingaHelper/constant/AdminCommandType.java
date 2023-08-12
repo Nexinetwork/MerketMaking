@@ -16,7 +16,8 @@ public enum AdminCommandType implements BaseEnum {
 	STARTALLNODESOFBLOCKCHAIN("Start All Nodes Of Blockchain"),
 	STARTALLNODESOFALLBLOCKCHAINS("Start All Nodes Of ALL Blockchains"),
 	RESTARTALLNODESOFBLOCKCHAIN("Restart All Nodes Of Blockchain"),
-	RESTARTALLNODESOFALLBLOCKCHAINS("Restart All Nodes Of ALL Blockchains");
+	RESTARTALLNODESOFALLBLOCKCHAINS("Restart All Nodes Of ALL Blockchains"),
+	RELOADCONFIGS("Reload configs");
 
 	@Setter
 	private String englishName;

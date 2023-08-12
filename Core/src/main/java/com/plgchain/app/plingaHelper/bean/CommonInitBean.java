@@ -46,7 +46,7 @@ public class CommonInitBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		if (systemConfigService.isByConfigNameExist("ssh-key-path"))
-			privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
+			privateKey = systemConfigService.findByConfigName("ssh-key-path").get().getConfigStringValue();
 	}
 
 	public boolean doesBlockchainRestarting(String blockchain) {

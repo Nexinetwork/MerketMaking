@@ -28,11 +28,11 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/godaction")
 @RequiredArgsConstructor
-public class CoinControler extends BaseController implements Serializable {
+public class CoinController extends BaseController implements Serializable {
 
 	private static final long serialVersionUID = -4038029722467775718L;
 
-	private final static Logger logger = LoggerFactory.getLogger(CoinControler.class);
+	private final static Logger logger = LoggerFactory.getLogger(CoinController.class);
 
 	@Inject
 	private BlockchainBean blockchainBean;

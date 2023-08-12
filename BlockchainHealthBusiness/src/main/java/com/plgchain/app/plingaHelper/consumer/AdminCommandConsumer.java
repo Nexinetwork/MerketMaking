@@ -53,6 +53,8 @@ public class AdminCommandConsumer implements Serializable {
 					blockchainBean.startAllNodesOfBlockchain(ctr.getStr1());
 				} else if (ctr.getAdminCommandType().equals(AdminCommandType.RESTARTALLNODESOFBLOCKCHAIN)) {
 					blockchainBean.restartAllNodesOfBlockchain(ctr.getStr1());
+				} else if (ctr.getAdminCommandType().equals(AdminCommandType.RELOADCONFIGS)) {
+					initBean.loadConfigs();
 				}
 			}
 		} catch (Exception e) {

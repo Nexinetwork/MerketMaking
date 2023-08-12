@@ -8,6 +8,8 @@ import java.net.http.HttpClient;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import com.alibaba.fastjson2.JSON;
 import com.google.common.base.Strings;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
+import com.plgchain.app.plingaHelper.entity.SystemConfig;
 import com.plgchain.app.plingaHelper.service.BlockchainNodeService;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
@@ -78,12 +81,17 @@ public class InitBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		writeBlockchainToRedis();
-		if (systemConfigService.isByConfigNameExist("ssh-key-path"))
-			privateKey = systemConfigService.findByConfigName("ssh-key-path").getConfigStringValue();
-		if (systemConfigService.isByConfigNameExist("coingeckoBaseFreeApi"))
-			coingeckoBaseApi = systemConfigService.findByConfigName("coingeckoBaseFreeApi").getConfigStringValue();
-		if (systemConfigService.isByConfigNameExist("initCoingecko"))
-			initCoingecko = systemConfigService.findByConfigName("coingeckoBaseFreeApi").getConfigBooleanValue();
+		loadConfigs();
+	}
+
+	public void loadConfigs() {
+		Optional<SystemConfig> coingeckoBaseApiConfig = systemConfigService.findByConfigName("coingeckoBaseFreeApi");
+	    Optional<SystemConfig> initCoingeckoConfig = systemConfigService.findByConfigName("initCoingecko");
+	    Optional<SystemConfig> checkNodeHealthConfig = systemConfigService.findByConfigName("checkNodeHealth");
+
+	    coingeckoBaseApiConfig.ifPresent(config -> coingeckoBaseApi = config.getConfigStringValue());
+	    initCoingeckoConfig.ifPresent(config -> initCoingecko = config.getConfigBooleanValue());
+	    checkNodeHealthConfig.ifPresent(config -> checkNodeHealth = config.getConfigBooleanValue());
 	}
 
 	public boolean doesActionRunning(String action) {

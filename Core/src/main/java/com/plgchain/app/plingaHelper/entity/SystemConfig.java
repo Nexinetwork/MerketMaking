@@ -97,6 +97,10 @@ public class SystemConfig implements Serializable {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	private LocalDateTime lastModifiedDate;
 
+	public SystemConfig(String configName) {
+		this.configName = configName;
+	}
+
 	public void mergeOtherObject(SystemConfig other) throws IllegalAccessException {
 	    Field[] fields = SystemConfig.class.getDeclaredFields();
 
@@ -113,6 +117,7 @@ public class SystemConfig implements Serializable {
 	        }
 	    }
 	}
+
 
 
 }
