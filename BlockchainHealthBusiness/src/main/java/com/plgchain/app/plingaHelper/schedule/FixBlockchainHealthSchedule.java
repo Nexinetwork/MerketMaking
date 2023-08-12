@@ -186,7 +186,7 @@ public class FixBlockchainHealthSchedule implements Serializable {
 								});
 					});
 				} catch (Exception e) {
-					logger.error(e.getMessage());
+					logger.error("An error occurred:", e);
 				}
 			} else {
 				logger.info("fixBlockchainHealth has disabled.");
