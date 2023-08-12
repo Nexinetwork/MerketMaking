@@ -251,7 +251,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void startAllNodesOfBlockchain() {
 		//var blockchain = "Nexi-DPOS-V1";
 		var blockchain = "Plinga-DPOS";
@@ -263,7 +263,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	@Test
 	public void restartAllNodesOfBlockchain() {
 		var blockchain = "Plinga-DPOS";
 		//var blockchain = "Nexi-DPOS-V1";
