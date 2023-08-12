@@ -19,6 +19,8 @@ public interface BlockchainNodeDao extends BaseLongDao<BlockchainNode> {
 
 	public List<BlockchainNode> deleteByBlockchain(Blockchain blockchain);
 
+	public List<BlockchainNode> findByEnabledAndMustCheck(boolean enabled,boolean mustCheck);
+
 	public Long removeByBlockchain(Blockchain blockchain);
 
 	public Optional<BlockchainNode> findByrpcUrl(String rpcUrl);

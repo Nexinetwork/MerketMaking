@@ -87,4 +87,8 @@ public class BlockchainNodeService extends BaseService<BlockchainNode> implement
 		return blockchainNodeDao.findByrpcUrl(rpcUrl);
 	}
 
+	public List<BlockchainNode> findByEnabledAndMustCheck(boolean enabled,boolean mustCheck) {
+		return blockchainNodeDao.findByEnabledAndMustCheck(enabled,mustCheck);
+	}
+
 }
