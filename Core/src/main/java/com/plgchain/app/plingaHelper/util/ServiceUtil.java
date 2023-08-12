@@ -42,7 +42,7 @@ public class ServiceUtil implements Serializable {
 				result = false;
 			}
 		} catch (JSchException e) {
-			logger.error(String.format("Restart error in server %s and port %s and service %s and privateKey %s", ip,port,serviceName,privPath));
+			logger.error(String.format("Restart error in server %s and port %d and service %s and privateKey %s", ip,port,serviceName,privPath));
 			logger.error("Server restart error",e);
 		} finally {
 			if (channel != null) {

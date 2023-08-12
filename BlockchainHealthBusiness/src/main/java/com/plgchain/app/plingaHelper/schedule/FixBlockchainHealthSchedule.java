@@ -23,6 +23,7 @@ import com.plgchain.app.plingaHelper.util.ServiceUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.BlockchainUtil;
 
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 @Component
 public class FixBlockchainHealthSchedule implements Serializable {
@@ -43,6 +44,7 @@ public class FixBlockchainHealthSchedule implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	@Scheduled(cron = "0 */15 * * * *", zone = "GMT")
+	@Transactional
 	public void fixBlockchainHealth() {
 		if (!initBean.doesActionRunning("fixBlockchainHealth")) {
 			if (initBean.isCheckNodeHealth()) {
@@ -54,8 +56,8 @@ public class FixBlockchainHealthSchedule implements Serializable {
 				// BlockchainNode.class);
 				// logger.info(String.format("Blockchain %s has %s node and node lists are %s",
 				// key,blnLst.size(),blnLst));
-				blockchainNodeService.findByEnabledAndMustCheck(true, true).parallelStream()
-						.filter(blchNode -> blchNode != null).forEach(blockchainNode -> {
+				blockchainNodeService.findByEnabledAndMustCheck(true, true).stream()
+						.filter(blchNode -> blchNode != null && blchNode.getBlockchain().isEnabled() && blchNode.getBlockchain().isMustCheck()).forEach(blockchainNode -> {
 							try {
 								if (blockchainNode.getNodeType().equals(BlockchainNodeType.BLOCKCHAINNODE)) {
 									BigInteger currentBlock = BlockchainUtil
