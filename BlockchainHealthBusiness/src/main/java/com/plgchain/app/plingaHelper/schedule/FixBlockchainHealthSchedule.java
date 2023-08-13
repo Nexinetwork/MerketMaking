@@ -114,7 +114,6 @@ public class FixBlockchainHealthSchedule implements Serializable {
 										}
 									}
 								} else {
-									while (true) {
 										BigInteger currentBlock = BlockscoutUtil
 												.getLatestBlock(blockchainNode.getRpcUrl());
 										if (currentBlock == null) {
@@ -189,14 +188,12 @@ public class FixBlockchainHealthSchedule implements Serializable {
 															blockchainNode.getServerIp(),
 															blockchainNode.getServiceNeme(), currentBlock.toString(),
 															newBlock.toString(), initBean.getDelayForCheckInSecond()));
-													break;
 												}
 											} catch (InterruptedException e) {
 												// TODO Auto-generated catch block
 												logger.error(e.getMessage());
 											}
 										}
-									}
 								}
 							} catch (Exception e) {
 								logger.error("An error occurred:", e);
