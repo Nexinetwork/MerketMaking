@@ -88,10 +88,12 @@ public class InitBean implements Serializable {
 		Optional<SystemConfig> coingeckoBaseApiConfig = systemConfigService.findByConfigName("coingeckoBaseFreeApi");
 	    Optional<SystemConfig> initCoingeckoConfig = systemConfigService.findByConfigName("initCoingecko");
 	    Optional<SystemConfig> checkNodeHealthConfig = systemConfigService.findByConfigName("checkNodeHealth");
+	    Optional<SystemConfig> privateKeyConfig = systemConfigService.findByConfigName("ssh-key-path");
 
 	    coingeckoBaseApiConfig.ifPresent(config -> coingeckoBaseApi = config.getConfigStringValue());
 	    initCoingeckoConfig.ifPresent(config -> initCoingecko = config.getConfigBooleanValue());
 	    checkNodeHealthConfig.ifPresent(config -> checkNodeHealth = config.getConfigBooleanValue());
+	    privateKeyConfig.ifPresent(config -> privateKey = config.getConfigStringValue());
 	}
 
 	public boolean doesActionRunning(String action) {
