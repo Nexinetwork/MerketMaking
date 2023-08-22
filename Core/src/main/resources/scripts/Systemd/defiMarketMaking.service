@@ -1,0 +1,16 @@
+[Unit]
+Description=Mrdomain DefiMarketMaking service
+Wants=cloud.service redis.service kafka.service postgresql.service mongod.service
+After=cloud.service redis.service kafka.service postgresql.service mongod.service
+
+[Service]
+#WorkingDirectory=/opt/prod
+Environment="JAVA_HOME=/home/jdk-17.0.8"
+ExecStart=/home/jdk-17.0.8/bin/java -jar -Xms4g -Xmx4g -Xmn1600m -Xss2048k -XX:+ExplicitGCInvokesConcurrent  /root/PlingaHelperApp/DefiMarketMaking-0.0.1.jar
+#User=jvmapps
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
