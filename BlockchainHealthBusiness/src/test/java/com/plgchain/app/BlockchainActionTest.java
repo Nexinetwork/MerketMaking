@@ -265,8 +265,8 @@ public class BlockchainActionTest implements Serializable {
 
 	@Test
 	public void restartAllNodesOfBlockchain() {
-		var blockchain = "Plinga-DPOS";
-		//var blockchain = "Nexi-DPOS-V1";
+		//var blockchain = "Plinga-DPOS";
+		var blockchain = "Nexi-DPOS-V1";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/blockchain/restartAllNodesOfBlockchain")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
