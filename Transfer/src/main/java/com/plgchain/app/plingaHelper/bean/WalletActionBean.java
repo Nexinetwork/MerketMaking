@@ -323,7 +323,7 @@ public class WalletActionBean implements Serializable {
 										initBean.getDecimalMaincoinInContractWallet());
 								if (blockchain.isAutoGas()) {
 									try {
-										transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+										transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 												tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
 												wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
 												tankhahNonce[0]);
@@ -381,7 +381,7 @@ public class WalletActionBean implements Serializable {
 							while (mustRetry) {
 								if (blockchain.isAutoGas()) {
 									try {
-										transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
+										transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 												tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
 												wallet.getPublicKey(), sm.getContractsAddress(), amount,
 												EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);

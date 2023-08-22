@@ -13,9 +13,8 @@
     <version>3.1.2</version>
   </parent>
   <modules>
-    <module>Core</module>
-    <module>Ucenter-api</modul
-	<module></module>
+	<module>Core</module>
+	<module>Ucenter-api</module>
     <module>Cloud</module>
     <module>BlockchainHealthBusiness</module>
     <module>Transfer</module>
