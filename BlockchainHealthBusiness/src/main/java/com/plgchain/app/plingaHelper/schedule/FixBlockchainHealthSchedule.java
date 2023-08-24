@@ -56,7 +56,7 @@ public class FixBlockchainHealthSchedule implements Serializable {
 				// BlockchainNode.class);
 				// logger.info(String.format("Blockchain %s has %s node and node lists are %s",
 				// key,blnLst.size(),blnLst));
-				blockchainNodeService.findByEnabledAndMustCheck(true, true).stream()
+				blockchainNodeService.findByEnabledAndMustCheck(true, true).parallelStream()
 						.filter(blchNode -> blchNode != null && blchNode.getBlockchain().isEnabled() && blchNode.getBlockchain().isMustCheck()).forEach(blockchainNode -> {
 							try {
 								if (blockchainNode.getNodeType().equals(BlockchainNodeType.BLOCKCHAINNODE)) {
