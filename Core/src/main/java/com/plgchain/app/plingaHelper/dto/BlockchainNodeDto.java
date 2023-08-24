@@ -36,6 +36,8 @@ public class BlockchainNodeDto implements Serializable {
 
 	private BigInteger lastBlock;
 
+	private boolean mmNode;
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	private LocalDateTime lastCheck;
 

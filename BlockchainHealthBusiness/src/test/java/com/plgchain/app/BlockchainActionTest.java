@@ -76,10 +76,10 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	@Test
 	public void createNodeTestCase() {
-		var node = BlockchainNodeDto.builder().blockchain("Plinga-DPOS").serverIp("185.173.129.243")
-				.sshPort(22).rpcUrl("http://185.173.129.243:8547").enabled(true)
+		var node = BlockchainNodeDto.builder().blockchain("Plinga-DPOS").serverIp("82.115.26.181")
+				.sshPort(22).rpcUrl("http://82.115.26.181:8545").enabled(true).mmNode(false)
 				.nodeType(BlockchainNodeType.BLOCKCHAINNODE).validator(true).serviceNeme("plgchain3.service")
 				.mustCheck(true).build();
 		HttpResponse<String> response = Unirest

@@ -104,7 +104,7 @@ public class BlockchainNode implements Serializable {
 		var result = BlockchainNodeDto.builder().blockchain(blockchain.getName())
 				.blockchainId(blockchain.getBlockchainId()).creationDate(creationDate).lastCheck(lastCheck)
 				.lastUpdateDate(lastUpdateDate).lastBlock(lastBlock).nodeType(nodeType).rpcUrl(rpcUrl)
-				.serverIp(serverIp).sshPort(sshPort).validator(validator).enabled(enabled).mustCheck(mustCheck).build();
+				.serverIp(serverIp).sshPort(sshPort).validator(validator).enabled(enabled).mustCheck(mustCheck).mmNode(mmNode).build();
 		return result;
 	}
 
