@@ -506,7 +506,7 @@ public class BlockchainBean implements Serializable {
 					commonInitBean.getPrivateKey(), node.getServiceNeme());
 			ServiceUtil.startService(node.getServerIp(), node.getSshPort(),
 					commonInitBean.getPrivateKey(), node.getServiceNeme());
-			logger.info(String.format(Node %s has been restarted, node));
+			logger.info(String.format("Node %s has been restarted", node));
 			} catch (Exception e) {
 				logger.error("Error in restart blockchain",e);
 			}
