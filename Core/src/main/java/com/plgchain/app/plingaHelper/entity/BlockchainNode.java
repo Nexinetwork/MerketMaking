@@ -72,6 +72,9 @@ public class BlockchainNode implements Serializable {
 	@Column(name = "\"mustCheck\"", nullable = false)
 	private boolean mustCheck;
 
+	@Column(name = "\"mmNode\"", nullable = false)
+	private boolean mmNode;
+
 	@CreationTimestamp
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	@Column(name = "\"creationDate\"", nullable = false)

@@ -499,6 +499,20 @@ public class BlockchainBean implements Serializable {
 		});
 	}
 
+	public void stopAndStartMMNode(Blockchain blockchain) {
+		blockchain.getNodeList().stream().filter(node -> node.isMmNode()).forEach(node -> {
+			try {
+			ServiceUtil.stopService(node.getServerIp(), node.getSshPort(),
+					commonInitBean.getPrivateKey(), node.getServiceNeme());
+			ServiceUtil.startService(node.getServerIp(), node.getSshPort(),
+					commonInitBean.getPrivateKey(), node.getServiceNeme());
+			logger.info(String.format(Node %s has been restarted, node));
+			} catch (Exception e) {
+				logger.error("Error in restart blockchain",e);
+			}
+		});
+	}
+
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public void restartBlockchain(Blockchain blockchain) {

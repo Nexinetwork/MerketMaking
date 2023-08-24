@@ -264,7 +264,8 @@ public class WalletActionBean implements Serializable {
 										mustRetry = false;
 									} catch (RuntimeException e) {
 										if (e.getMessage().equals("maximum number of enqueued transactions reached")) {
-											blockchainBean.restartBlockchain(blockchain);
+											blockchainBean.stopAndStartMMNode(blockchain);
+											//logger.info(String.format("Blockchain %s has been restarted for enqueued transactions reached", blockchain.getName()));
 											mustRetry = true;
 										}
 									}
@@ -330,7 +331,7 @@ public class WalletActionBean implements Serializable {
 										mustRetry = false;
 									} catch (RuntimeException e) {
 										if (e.getMessage().equals("maximum number of enqueued transactions reached")) {
-											blockchainBean.restartBlockchain(blockchain);
+											blockchainBean.stopAndStartMMNode(blockchain);
 											mustRetry = true;
 										}
 									}
@@ -388,7 +389,7 @@ public class WalletActionBean implements Serializable {
 										mustRetry = false;
 									} catch (RuntimeException e) {
 										if (e.getMessage().equals("maximum number of enqueued transactions reached")) {
-											blockchainBean.restartBlockchain(blockchain);
+											blockchainBean.stopAndStartMMNode(blockchain);
 											mustRetry = true;
 										}
 									}
