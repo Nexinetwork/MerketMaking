@@ -57,11 +57,20 @@ public class MarketMaking implements Serializable {
 	@Column(name = "\"initialWallet\"", nullable = false)
 	private int initialWallet;
 
+	@Column(name = "\"initialDefiWallet\"", nullable = false)
+	private int initialDefiWallet;
+
 	@Column(name = "\"minInitial\"", nullable = false)
 	private BigDecimal minInitial;
 
 	@Column(name = "\"maxInitial\"", nullable = false)
 	private BigDecimal maxInitial;
+
+	@Column(name = "\"minDefiInitial\"", nullable = false)
+	private BigDecimal minDefiInitial;
+
+	@Column(name = "\"maxDefiInitial\"", nullable = false)
+	private BigDecimal maxDefiInitial;
 
 	@Column(name = "\"initialDecimal\"", nullable = false)
 	private int initialDecimal;
@@ -81,6 +90,12 @@ public class MarketMaking implements Serializable {
 
 	@Column(name = "\"initialWalletFundingDone\"", nullable = false)
 	private boolean initialWalletFundingDone;
+
+	@Column(name = "\"initialDefiWalletCreationDone\"", nullable = false)
+	private boolean initialDefiWalletCreationDone;
+
+	@Column(name = "\"initialDefiWalletFundingDone\"", nullable = false)
+	private boolean initialDefiWalletFundingDone;
 
 	@Column(name = "\"mustUpdateMongo\"", nullable = false)
 	private boolean mustUpdateMongo;
