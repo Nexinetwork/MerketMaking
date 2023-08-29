@@ -76,7 +76,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void createNodeTestCase() {
 		var node = BlockchainNodeDto.builder().blockchain("Plinga-DPOS").serverIp("82.115.26.181")
 				.sshPort(22).rpcUrl("http://82.115.26.181:8545").enabled(true).mmNode(false)
@@ -241,9 +241,9 @@ public class BlockchainActionTest implements Serializable {
 
 	//@Test
 	public void stopAllNodesOfBlockchain() {
-		//var blockchain = "Plinga-DPOS";
+		var blockchain = "Plinga-DPOS";
 		//var blockchain = "Nexi-DPOS-V1";
-		var blockchain = "Nexi-DPOS-V2";
+		//var blockchain = "Nexi-DPOS-V2";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/blockchain/stopAllNodesOfBlockchain")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -252,11 +252,11 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	@Test
 	public void startAllNodesOfBlockchain() {
 		//var blockchain = "Nexi-DPOS-V1";
-		//var blockchain = "Plinga-DPOS";
-		var blockchain = "Nexi-DPOS-V2";
+		var blockchain = "Plinga-DPOS";
+		// var blockchain = "Nexi-DPOS-V2";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/blockchain/startAllNodesOfBlockchain")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -267,8 +267,8 @@ public class BlockchainActionTest implements Serializable {
 
 	//@Test
 	public void restartAllNodesOfBlockchain() {
-		//var blockchain = "Plinga-DPOS";
-		var blockchain = "Nexi-DPOS-V1";
+		var blockchain = "Plinga-DPOS";
+		//var blockchain = "Nexi-DPOS-V1";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/blockchain/restartAllNodesOfBlockchain")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())

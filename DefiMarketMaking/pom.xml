@@ -139,7 +139,7 @@
 							<goal>generate-sources</goal>
 						</goals>
 						<configuration>
-							<packageName>com.flydax.blockchain.app.contracts.generated</packageName>
+							<packageName>com.plgchain.app.plingaHelper.contracts.generated</packageName>
 							<sourceDestination>${basedir}/target/generated-sources/contracts</sourceDestination>
 							<soliditySourceFiles>
 								<directory>${basedir}/src/main/resources</directory>

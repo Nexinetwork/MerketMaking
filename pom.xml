@@ -10,7 +10,7 @@
     <!-- Your own application should inherit from spring-boot-starter-parent -->
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.1.2</version>
+    <version>3.1.3</version>
   </parent>
   <modules>
 	<module>Core</module>
@@ -26,8 +26,8 @@
     <!-- spring -->
     <spring-cloud.version>2022.0.4</spring-cloud.version>
     <spring-cloud-starter-netflix-eureka-version>4.0.3</spring-cloud-starter-netflix-eureka-version>
-    <spring-boot_version>3.1.2</spring-boot_version>
-    <spring-security>6.1.2</spring-security>
+    <spring-boot_version>3.1.3</spring-boot_version>
+    <spring-security>6.1.3</spring-security>
     <!-- Database Connectivity -->
     <druid_version>1.1.9</druid_version>
     <postgresql.version>42.5.0</postgresql.version>
@@ -72,14 +72,14 @@
       <dependency>
         <groupId>net.javacrumbs.shedlock</groupId>
         <artifactId>shedlock-spring</artifactId>
-        <version>5.6.0</version>
+        <version>5.7.0</version>
       </dependency>
       <!--
 			https://mvnrepository.com/artifact/net.javacrumbs.shedlock/shedlock-provider-jdbc-template -->
       <dependency>
         <groupId>net.javacrumbs.shedlock</groupId>
         <artifactId>shedlock-provider-jdbc-template</artifactId>
-        <version>5.6.0</version>
+        <version>5.7.0</version>
       </dependency>
       <!--
 			https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
