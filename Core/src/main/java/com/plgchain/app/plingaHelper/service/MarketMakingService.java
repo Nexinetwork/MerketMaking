@@ -7,8 +7,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.dao.MarketMakingDao;
@@ -109,17 +107,58 @@ public class MarketMakingService extends BaseService<MarketMaking> implements Se
 				initialWalletFundingDone);
 	}
 
-	public Optional<MarketMaking> findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId(boolean initialWalletCreationDone,boolean initialWalletFundingDone){
-		return marketMakingDao.findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId(initialWalletCreationDone,
-				initialWalletFundingDone);
+	public Optional<MarketMaking> findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId(
+			boolean initialWalletCreationDone, boolean initialWalletFundingDone) {
+		return marketMakingDao.findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId(
+				initialWalletCreationDone, initialWalletFundingDone);
 	}
 
-	public List<MarketMaking> findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(boolean initialWalletCreationDone,boolean initialWalletFundingDone) {
-		return marketMakingDao.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(initialWalletCreationDone, initialWalletFundingDone);
+	public List<MarketMaking> findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(
+			boolean initialWalletCreationDone, boolean initialWalletFundingDone) {
+		return marketMakingDao.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(
+				initialWalletCreationDone, initialWalletFundingDone);
 	}
 
-	public List<MarketMaking> findByInitialWalletCreationDoneOrInitialWalletFundingDoneOrderByRandom(boolean initialWalletCreationDone,boolean initialWalletFundingDone) {
-		return marketMakingDao.findByInitialWalletCreationDoneOrInitialWalletFundingDoneOrderByRandom(initialWalletCreationDone, initialWalletFundingDone);
+	public List<MarketMaking> findByInitialWalletCreationDoneOrInitialWalletFundingDoneOrderByRandom(
+			boolean initialWalletCreationDone, boolean initialWalletFundingDone) {
+		return marketMakingDao.findByInitialWalletCreationDoneOrInitialWalletFundingDoneOrderByRandom(
+				initialWalletCreationDone, initialWalletFundingDone);
+	}
+
+	public List<MarketMaking> findByInitialDefiWalletCreationDone(boolean initialDefiWalletCreationDone) {
+		return marketMakingDao.findByInitialDefiWalletCreationDone(initialDefiWalletCreationDone);
+	}
+
+	public boolean existsByInitialDefiWalletCreationDone(boolean initialDefiWalletCreationDone) {
+		return marketMakingDao.existsByInitialDefiWalletCreationDone(initialDefiWalletCreationDone);
+	}
+
+	public long countByInitialDefiWalletCreationDone(boolean initialDefiWalletCreationDone) {
+		return marketMakingDao.countByInitialDefiWalletCreationDone(initialDefiWalletCreationDone);
+	}
+
+	public List<MarketMaking> findByInitialDefiWalletFundingDone(boolean initialDefiWalletFundingDone) {
+		return marketMakingDao.findByInitialDefiWalletFundingDone(initialDefiWalletFundingDone);
+	}
+
+	public boolean existsByInitialDefiWalletFundingDone(boolean initialDefiWalletFundingDone) {
+		return marketMakingDao.existsByInitialDefiWalletFundingDone(initialDefiWalletFundingDone);
+	}
+
+	public long countByInitialDefiWalletFundingDone(boolean initialDefiWalletFundingDone) {
+		return marketMakingDao.countByInitialDefiWalletFundingDone(initialDefiWalletFundingDone);
+	}
+
+	public List<MarketMaking> findByInitialDefiWalletCreationDoneAndInitialDefiWalletFundingDone(
+			boolean initialDefiWalletCreationDone, boolean initialDefiWalletFundingDone) {
+		return marketMakingDao.findByInitialDefiWalletCreationDoneAndInitialDefiWalletFundingDone(
+				initialDefiWalletCreationDone, initialDefiWalletFundingDone);
+	}
+
+	public List<MarketMaking> findByInitialDefiWalletCreationDoneOrInitialDefiWalletFundingDone(
+			boolean initialDefiWalletCreationDone, boolean initialDefiWalletFundingDone) {
+		return marketMakingDao.findByInitialDefiWalletCreationDoneOrInitialDefiWalletFundingDone(
+				initialDefiWalletCreationDone, initialDefiWalletFundingDone);
 	}
 
 }
