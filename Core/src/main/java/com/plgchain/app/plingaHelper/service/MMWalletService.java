@@ -4,6 +4,8 @@
 package com.plgchain.app.plingaHelper.service;
 
 import java.io.Serializable;
+import java.lang.StackWalker.Option;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,6 +42,7 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 		if (!mmwdLst.contains(mmwd)) {
 			mmwdLst.add(mmwd);
 			mmw.setTransferWalletList(mmwdLst);
+			save(mmw);
 		}
 		return mmwdLst;
 	}
@@ -50,6 +53,7 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 		mmwdlLst.addAll(mmwdNewLst.stream().map(mmwd -> fixMMWallet(mmwd, secretKey))
 				.filter(fixedMmwd -> !mmwdlLst.contains(fixedMmwd)).collect(Collectors.toList()));
 		mmw.setTransferWalletList(mmwdlLst);
+		save(mmw);
 		return mmwdlLst;
 	}
 
@@ -59,6 +63,7 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 		if (!mmwdLst.contains(mmwd)) {
 			mmwdLst.add(mmwd);
 			mmw.setDefiWalletList(mmwdLst);
+			save(mmw);
 		}
 		return mmwdLst;
 	}
@@ -69,11 +74,38 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 		mmwdlLst.addAll(mmwdNewLst.stream().map(mmwd -> fixMMWallet(mmwd, secretKey))
 				.filter(fixedMmwd -> !mmwdlLst.contains(fixedMmwd)).collect(Collectors.toList()));
 		mmw.setDefiWalletList(mmwdlLst);
+		save(mmw);
 		return mmwdlLst;
+	}
+
+	public List<MarketMakingWalletDto> getTransferWalletList(MMWallet mmw, String secretKey) {
+		return mmw.getTransferWalletList().stream().peek(mmwd -> {
+			mmwd.setPrivateKeyHex(SecurityUtil.decryptString(mmwd.getEncryptedPrivateKey(), secretKey));
+		}).collect(Collectors.toList());
+	}
+
+	public List<MarketMakingWalletDto> getTransferWalletListByMarketMakingId(long marketMakingId, String secretKey) {
+		return findById(marketMakingId).map(mmw -> mmw.getTransferWalletList().stream().peek(
+				mmwd -> mmwd.setPrivateKeyHex(SecurityUtil.decryptString(mmwd.getEncryptedPrivateKey(), secretKey)))
+				.collect(Collectors.toList())).orElseGet(ArrayList::new);
+	}
+
+	public List<MarketMakingWalletDto> getDefiWalletListByMarketMakingId(long marketMakingId, String secretKey) {
+		return findById(marketMakingId).map(mmw -> mmw.getDefiWalletList().stream().peek(
+				mmwd -> mmwd.setPrivateKeyHex(SecurityUtil.decryptString(mmwd.getEncryptedPrivateKey(), secretKey)))
+				.collect(Collectors.toList())).orElseGet(ArrayList::new);
+	}
+
+	public List<MarketMakingWalletDto> getDefiWalletList(MMWallet mmw, String secretKey) {
+		return mmw.getDefiWalletList().stream().peek(mmwd -> {
+			mmwd.setPrivateKeyHex(SecurityUtil.decryptString(mmwd.getEncryptedPrivateKey(), secretKey));
+		}).collect(Collectors.toList());
 	}
 
 	public MarketMakingWalletDto fixMMWallet(MarketMakingWalletDto mmwd, String secretKey) {
 		mmwd.setEncryptedPrivateKey(SecurityUtil.encryptString(mmwd.getPrivateKeyHex(), secretKey));
+		mmwd.setPrivateKey(null);
+		mmwd.setPrivateKeyHex(null);
 		return mmwd;
 	}
 
