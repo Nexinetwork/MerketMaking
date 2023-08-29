@@ -37,7 +37,7 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"smartContract"})
+@ToString(exclude = { "smartContract" })
 @Data
 @Table(name = "\"tblMarketMaking\"", schema = "\"schCoingecko\"")
 public class MarketMaking implements Serializable {
@@ -47,40 +47,43 @@ public class MarketMaking implements Serializable {
 	@Id
 	@SequenceGenerator(name = "TBLMARKETMAKING_MARKETMAKINGID_GENERATOR", sequenceName = "\"seqMarketMakingMarketMakingId\"", schema = "\"schCoingecko\"", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TBLMARKETMAKING_MARKETMAKINGID_GENERATOR")
-	@Column(name = "\"marketMakingId\"",nullable = false,unique = true)
+	@Column(name = "\"marketMakingId\"", nullable = false, unique = true)
 	private long marketMakingId;
 
 	@OneToOne
-	@JoinColumn(name = "\"contractId\"",nullable = false)
+	@JoinColumn(name = "\"contractId\"", nullable = false)
 	private SmartContract smartContract;
 
-	@Column(name = "\"initialWallet\"",nullable = false)
+	@Column(name = "\"initialWallet\"", nullable = false)
 	private int initialWallet;
 
-	@Column(name = "\"minInitial\"",nullable = false)
+	@Column(name = "\"minInitial\"", nullable = false)
 	private BigDecimal minInitial;
 
-	@Column(name = "\"maxInitial\"",nullable = false)
+	@Column(name = "\"maxInitial\"", nullable = false)
 	private BigDecimal maxInitial;
 
-	@Column(name = "\"initialDecimal\"",nullable = false)
+	@Column(name = "\"initialDecimal\"", nullable = false)
 	private int initialDecimal;
 
-	@Column(name = "\"dailyAddWallet\"",nullable = false)
+	@Column(name = "\"dailyAddWallet\"", nullable = false)
 	private int dailyAddWallet;
 
-	@Column(name = "\"currentTransferWalletCount\"",nullable = false)
+	@Column(name = "\"currentTransferWalletCount\"", nullable = false)
 	private long currentTransferWalletCount;
 
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "\"transactionParallelType\"")
 	private TransactionParallelType transactionParallelType;
 
-	@Column(name = "\"initialWalletCreationDone\"",nullable = false)
+	@Column(name = "\"initialWalletCreationDone\"", nullable = false)
 	private boolean initialWalletCreationDone;
 
-	@Column(name = "\"initialWalletFundingDone\"",nullable = false)
+	@Column(name = "\"initialWalletFundingDone\"", nullable = false)
 	private boolean initialWalletFundingDone;
+
+	@Column(name = "\"mustUpdateMongo\"", nullable = false)
+	private boolean mustUpdateMongo;
 
 	@CreationTimestamp
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
