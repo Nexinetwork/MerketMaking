@@ -97,8 +97,11 @@ public class MarketMaking implements Serializable {
 	@Column(name = "\"initialDefiWalletFundingDone\"", nullable = false)
 	private boolean initialDefiWalletFundingDone;
 
-	@Column(name = "\"mustUpdateMongo\"", nullable = false)
-	private boolean mustUpdateMongo;
+	@Column(name = "\"mustUpdateMongoTransfer\"", nullable = false)
+	private boolean mustUpdateMongoTransfer;
+
+	@Column(name = "\"mustUpdateMongoDefi\"", nullable = false)
+	private boolean mustUpdateMongoDefi;
 
 	@CreationTimestamp
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")

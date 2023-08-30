@@ -161,4 +161,12 @@ public class MarketMakingService extends BaseService<MarketMaking> implements Se
 				initialDefiWalletCreationDone, initialDefiWalletFundingDone);
 	}
 
+	public boolean findByMustUpdateMongoTransfer(boolean mustUpdateMongoTransfer) {
+		return marketMakingDao.findByMustUpdateMongoTransfer(mustUpdateMongoTransfer);
+	}
+
+	public boolean findByMustUpdateMongoDefi(boolean mustUpdateMongoDefi) {
+		return marketMakingDao.findByMustUpdateMongoDefi(mustUpdateMongoDefi);
+	}
+
 }
