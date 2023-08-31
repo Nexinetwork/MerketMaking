@@ -48,7 +48,7 @@ public class SyncTransferWalletToMongoSchedule implements Serializable {
 	public void syncTransferWalletToMongo() {
 		if (!initBean.doesActionRunning("syncTransferWalletToMongo")) {
 			initBean.startActionRunning("syncTransferWalletToMongo");
-			logger.info("fillWalletCache started.");
+			logger.info("syncTransferWalletToMongo started.");
 			marketMakingService.findByMustUpdateMongoTransfer(true).stream()
 					.filter(mm -> mm.isInitialWalletCreationDone() && !Strings.isNullOrEmpty(mm.getTrPid()))
 					.forEach(mm -> {
@@ -85,7 +85,8 @@ public class SyncTransferWalletToMongoSchedule implements Serializable {
 											mm.getSmartContract().getBlockchain().getName()));
 						});
 					});
-
+			initBean.stopActionRunning("syncTransferWalletToMongo");
+			logger.info("syncTransferWalletToMongo finished.");
 		} else {
 			logger.warn("Schedule method syncTransferWalletToMongo already running, skipping it.");
 		}
