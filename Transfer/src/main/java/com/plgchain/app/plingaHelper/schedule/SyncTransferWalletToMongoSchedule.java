@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import com.google.common.base.Strings;
 import com.plgchain.app.plingaHelper.bean.InitBean;
@@ -24,6 +25,7 @@ import jakarta.transaction.Transactional;
 /**
  *
  */
+@Component
 public class SyncTransferWalletToMongoSchedule implements Serializable {
 
 	private static final long serialVersionUID = -682176671308893371L;
