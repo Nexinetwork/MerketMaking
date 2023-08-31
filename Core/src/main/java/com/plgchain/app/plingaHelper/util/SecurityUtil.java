@@ -40,16 +40,18 @@ public class SecurityUtil implements Serializable {
     }
 
 	private static IntFunction<CharSequence> createRandomCharacter(Random random) {
-        return i -> CHARACTERS.subSequence(random.nextInt(CHARACTERS.length()), random.nextInt(CHARACTERS.length()) + 1);
-    }
+	    return i -> CHARACTERS.substring(random.nextInt(CHARACTERS.length()), random.nextInt(CHARACTERS.length()) + 1);
+	}
 
 	public static String generateRandomString(int length) {
-        Random random = new SecureRandom();
+	    Random random = new SecureRandom();
 
-        return IntStream.range(0, length)
-                .mapToObj(createRandomCharacter(random))
-                .collect(Collectors.joining());
-    }
+	    return IntStream.range(0, length)
+	            .mapToObj(i -> CHARACTERS.charAt(random.nextInt(CHARACTERS.length())))
+	            .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
+	            .toString();
+	}
+
 
 	public static String encryptString(String str,String encryptionKeyString) {
 		try {
