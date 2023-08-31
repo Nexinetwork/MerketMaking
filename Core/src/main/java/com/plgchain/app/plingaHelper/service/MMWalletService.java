@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+
 import com.plgchain.app.plingaHelper.dao.MMWalletDao;
 import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.MMWallet;
@@ -20,6 +22,7 @@ import jakarta.inject.Inject;
 /**
  *
  */
+@Service
 public class MMWalletService extends BaseService<MMWallet> implements Serializable {
 
 	private static final long serialVersionUID = 1834752888558756630L;
