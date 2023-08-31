@@ -161,12 +161,28 @@ public class MarketMakingService extends BaseService<MarketMaking> implements Se
 				initialDefiWalletCreationDone, initialDefiWalletFundingDone);
 	}
 
-	public boolean findByMustUpdateMongoTransfer(boolean mustUpdateMongoTransfer) {
+	public List<MarketMaking> findByMustUpdateMongoTransfer(boolean mustUpdateMongoTransfer) {
 		return marketMakingDao.findByMustUpdateMongoTransfer(mustUpdateMongoTransfer);
 	}
 
-	public boolean findByMustUpdateMongoDefi(boolean mustUpdateMongoDefi) {
+	public List<MarketMaking> findByMustUpdateMongoDefi(boolean mustUpdateMongoDefi) {
 		return marketMakingDao.findByMustUpdateMongoDefi(mustUpdateMongoDefi);
+	}
+
+	public List<MarketMaking> findByTrPidIsNull() {
+		return marketMakingDao.findByTrPidIsNull();
+	}
+
+	public List<MarketMaking> findByDfPidIsNull() {
+		return marketMakingDao.findByDfPidIsNull();
+	}
+
+	public List<MarketMaking> findByTrPidIsNotNull() {
+		return marketMakingDao.findByTrPidIsNotNull();
+	}
+
+	public List<MarketMaking> findByDfPidIsNotNull() {
+		return marketMakingDao.findByDfPidIsNotNull();
 	}
 
 }

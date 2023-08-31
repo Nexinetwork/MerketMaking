@@ -103,6 +103,12 @@ public class MarketMaking implements Serializable {
 	@Column(name = "\"mustUpdateMongoDefi\"", nullable = false)
 	private boolean mustUpdateMongoDefi;
 
+	@Column(name = "\"trPid\"")
+	private String trPid;
+
+	@Column(name = "\"dfPid\"")
+	private String dfPid;
+
 	@CreationTimestamp
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	@Column(name = "\"creationDate\"", nullable = false)

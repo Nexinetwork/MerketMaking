@@ -40,12 +40,26 @@ public class MarketMakingReq implements Serializable {
 
 	private int dailyAddWallet;
 
+	private int initialDefiWallet;
+
+	private BigDecimal minDefiInitial;
+
+	private BigDecimal maxDefiInitial;
+
 	private long currentTransferWalletCount;
 
 	private boolean initialWalletCreationDone;
 
 	private boolean initialWalletFundingDone;
 
+	private boolean initialDefiWalletFundingDone;
+
+	private boolean initialDefiWalletCreationDone;
+
 	private TransactionParallelType transactionParallelType;
+
+	private boolean mustUpdateMongoTransfer;
+
+	private boolean mustUpdateMongoDefi;
 
 }

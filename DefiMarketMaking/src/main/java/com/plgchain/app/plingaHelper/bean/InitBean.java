@@ -4,21 +4,12 @@
 package com.plgchain.app.plingaHelper.bean;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.net.http.HttpClient;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
-import com.plgchain.app.plingaHelper.service.BlockchainService;
-import com.plgchain.app.plingaHelper.service.CoinService;
-import com.plgchain.app.plingaHelper.service.MarketMakingService;
-import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

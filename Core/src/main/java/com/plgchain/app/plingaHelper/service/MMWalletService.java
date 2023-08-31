@@ -4,7 +4,6 @@
 package com.plgchain.app.plingaHelper.service;
 
 import java.io.Serializable;
-import java.lang.StackWalker.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,6 +52,24 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 		mmwdlLst.addAll(mmwdNewLst.stream().map(mmwd -> fixMMWallet(mmwd, secretKey))
 				.filter(fixedMmwd -> !mmwdlLst.contains(fixedMmwd)).collect(Collectors.toList()));
 		mmw.setTransferWalletList(mmwdlLst);
+		save(mmw);
+		return mmwdlLst;
+	}
+
+	public List<MarketMakingWalletDto> setTransferWallet(MMWallet mmw, List<MarketMakingWalletDto> mmwdNewLst,
+			String secretKey) {
+		List<MarketMakingWalletDto> mmwdlLst = new ArrayList<MarketMakingWalletDto>();
+		mmwdlLst.addAll(mmwdNewLst.stream().map(mmwd -> fixMMWallet(mmwd, secretKey)).collect(Collectors.toList()));
+		mmw.setTransferWalletList(mmwdlLst);
+		save(mmw);
+		return mmwdlLst;
+	}
+
+	public List<MarketMakingWalletDto> setDefiWallet(MMWallet mmw, List<MarketMakingWalletDto> mmwdNewLst,
+			String secretKey) {
+		List<MarketMakingWalletDto> mmwdlLst = new ArrayList<MarketMakingWalletDto>();
+		mmwdlLst.addAll(mmwdNewLst.stream().map(mmwd -> fixMMWallet(mmwd, secretKey)).collect(Collectors.toList()));
+		mmw.setDefiWalletList(mmwdlLst);
 		save(mmw);
 		return mmwdlLst;
 	}

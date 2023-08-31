@@ -48,8 +48,13 @@ public interface MarketMakingDao extends BaseLongDao<MarketMaking> {
 	public List<MarketMaking> findByInitialDefiWalletCreationDoneAndInitialDefiWalletFundingDone(boolean initialDefiWalletCreationDone,boolean initialDefiWalletFundingDone);
 	public List<MarketMaking> findByInitialDefiWalletCreationDoneOrInitialDefiWalletFundingDone(boolean initialDefiWalletCreationDone,boolean initialDefiWalletFundingDone);
 
-	public boolean findByMustUpdateMongoTransfer(boolean mustUpdateMongoTransfer);
+	public List<MarketMaking> findByMustUpdateMongoTransfer(boolean mustUpdateMongoTransfer);
 
-	public boolean findByMustUpdateMongoDefi(boolean mustUpdateMongoDefi);
+	public List<MarketMaking> findByMustUpdateMongoDefi(boolean mustUpdateMongoDefi);
+
+	public List<MarketMaking> findByTrPidIsNull();
+	public List<MarketMaking> findByDfPidIsNull();
+	public List<MarketMaking> findByTrPidIsNotNull();
+	public List<MarketMaking> findByDfPidIsNotNull();
 
 }

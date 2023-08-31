@@ -48,6 +48,7 @@ import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
 import com.plgchain.app.plingaHelper.type.response.TankhahWalletRes;
 import com.plgchain.app.plingaHelper.util.ArrayListHelper;
+import com.plgchain.app.plingaHelper.util.SecurityUtil;
 import com.plgchain.app.plingaHelper.util.ServiceUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 
@@ -346,7 +347,10 @@ public class BlockchainBean implements Serializable {
 		MarketMaking mm = smartContract.getMarketMakingObject();
 		if (mm == null) {
 			mm = MarketMaking.builder().smartContract(smartContract).currentTransferWalletCount(0)
-					.initialWalletCreationDone(false).initialWalletFundingDone(false).build();
+					.initialWalletCreationDone(false).initialWalletFundingDone(false)
+					.trPid(SecurityUtil.generateRandomString(128))
+					.dfPid(SecurityUtil.generateRandomString(128))
+					.build();
 		}
 
 		mm.setDailyAddWallet(mmReq.getDailyAddWallet());
@@ -354,8 +358,12 @@ public class BlockchainBean implements Serializable {
 		mm.setInitialWallet(mmReq.getInitialWallet());
 		mm.setMaxInitial(mmReq.getMaxInitial());
 		mm.setMinInitial(mmReq.getMinInitial());
+		mm.setInitialDefiWallet(mmReq.getInitialDefiWallet());
+		mm.setMaxDefiInitial(mmReq.getMaxDefiInitial());
+		mm.setMinDefiInitial(mmReq.getMinDefiInitial());
 		mm.setTransactionParallelType(mmReq.getTransactionParallelType());
-
+		mm.setMustUpdateMongoTransfer(mmReq.isMustUpdateMongoTransfer());
+		mm.setMustUpdateMongoDefi(mmReq.isMustUpdateMongoDefi());
 		mm = marketMakingService.save(mm);
 		return mm;
 	}
@@ -502,13 +510,13 @@ public class BlockchainBean implements Serializable {
 	public void stopAndStartMMNode(Blockchain blockchain) {
 		blockchain.getNodeList().stream().filter(node -> node.isMmNode()).forEach(node -> {
 			try {
-			ServiceUtil.stopService(node.getServerIp(), node.getSshPort(),
-					commonInitBean.getPrivateKey(), node.getServiceNeme());
-			ServiceUtil.startService(node.getServerIp(), node.getSshPort(),
-					commonInitBean.getPrivateKey(), node.getServiceNeme());
-			logger.info(String.format("Node %s has been restarted", node));
+				ServiceUtil.stopService(node.getServerIp(), node.getSshPort(), commonInitBean.getPrivateKey(),
+						node.getServiceNeme());
+				ServiceUtil.startService(node.getServerIp(), node.getSshPort(), commonInitBean.getPrivateKey(),
+						node.getServiceNeme());
+				logger.info(String.format("Node %s has been restarted", node));
 			} catch (Exception e) {
-				logger.error("Error in restart blockchain",e);
+				logger.error("Error in restart blockchain", e);
 			}
 		});
 	}
@@ -550,12 +558,12 @@ public class BlockchainBean implements Serializable {
 			commonInitBean.startNodeRestarting(rpcUrl);
 			Optional<BlockchainNode> bcn = blockchainNodeService.findByrpcUrl(rpcUrl);
 			if (bcn.isPresent()) {
-				logger.info(String.format("Try to stop Server %s with service %s.",
-						bcn.get().getServerIp(), bcn.get().getServiceNeme()));
-				ServiceUtil.stopService(bcn.get().getServerIp(), bcn.get().getSshPort(),
-						commonInitBean.getPrivateKey(), bcn.get().getServiceNeme());
-				logger.info(String.format("Try to start Server %s with service %s.",
-						bcn.get().getServerIp(), bcn.get().getServiceNeme()));
+				logger.info(String.format("Try to stop Server %s with service %s.", bcn.get().getServerIp(),
+						bcn.get().getServiceNeme()));
+				ServiceUtil.stopService(bcn.get().getServerIp(), bcn.get().getSshPort(), commonInitBean.getPrivateKey(),
+						bcn.get().getServiceNeme());
+				logger.info(String.format("Try to start Server %s with service %s.", bcn.get().getServerIp(),
+						bcn.get().getServiceNeme()));
 				ServiceUtil.startService(bcn.get().getServerIp(), bcn.get().getSshPort(),
 						commonInitBean.getPrivateKey(), bcn.get().getServiceNeme());
 			}

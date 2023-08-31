@@ -13,13 +13,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Document(collection = "marketmaking_wallet")
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class MMWallet {
 
     @Id
@@ -36,15 +39,17 @@ public class MMWallet {
 
     private String coin;
 
+    private String coinSymbol;
+
     private String contractAddress;
 
-    private List<MarketMakingWalletDto> transferWalletList = new ArrayList<MarketMakingWalletDto>();
+    private List<MarketMakingWalletDto> transferWalletList;
 
-    private List<MarketMakingWalletDto> defiWalletList = new ArrayList<MarketMakingWalletDto>();
+    private List<MarketMakingWalletDto> defiWalletList;
 
-    private List<MarketMakingWalletDto> tankhahTransferWalletList = new ArrayList<MarketMakingWalletDto>();
+    private List<MarketMakingWalletDto> tankhahTransferWalletList;
 
-    private List<MarketMakingWalletDto> tankhahDefiWalletList = new ArrayList<MarketMakingWalletDto>();
+    private List<MarketMakingWalletDto> tankhahDefiWalletList;
 
     @CreatedDate
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
