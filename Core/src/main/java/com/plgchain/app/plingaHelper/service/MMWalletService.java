@@ -3,6 +3,7 @@
  */
 package com.plgchain.app.plingaHelper.service;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 		return mmWalletDao.findById(marketMakingId);
 	}
 
-	public List<MarketMakingWalletDto> addTransferWallet(MMWallet mmw, MarketMakingWalletDto mmwd, String secretKey) {
+	public List<MarketMakingWalletDto> addTransferWallet(MMWallet mmw, MarketMakingWalletDto mmwd, String secretKey) throws IOException {
 		List<MarketMakingWalletDto> mmwdLst = mmw.getTransferWalletList();
 		mmwd = fixMMWallet(mmwd, secretKey);
 		if (!mmwdLst.contains(mmwd)) {
@@ -50,7 +51,7 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 	}
 
 	public List<MarketMakingWalletDto> addTransferWallet(MMWallet mmw, List<MarketMakingWalletDto> mmwdNewLst,
-			String secretKey) {
+			String secretKey) throws IOException {
 		List<MarketMakingWalletDto> mmwdlLst = mmw.getTransferWalletList();
 		mmwdlLst.addAll(mmwdNewLst.stream().map(mmwd -> fixMMWallet(mmwd, secretKey))
 				.filter(fixedMmwd -> !mmwdlLst.contains(fixedMmwd)).collect(Collectors.toList()));
@@ -60,7 +61,7 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 	}
 
 	public List<MarketMakingWalletDto> setTransferWallet(MMWallet mmw, List<MarketMakingWalletDto> mmwdNewLst,
-			String secretKey) {
+			String secretKey) throws IOException {
 		List<MarketMakingWalletDto> mmwdlLst = new ArrayList<MarketMakingWalletDto>();
 		mmwdlLst.addAll(mmwdNewLst.stream().map(mmwd -> fixMMWallet(mmwd, secretKey)).collect(Collectors.toList()));
 		mmw.setTransferWalletList(mmwdlLst);
@@ -69,7 +70,7 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 	}
 
 	public List<MarketMakingWalletDto> setDefiWallet(MMWallet mmw, List<MarketMakingWalletDto> mmwdNewLst,
-			String secretKey) {
+			String secretKey) throws IOException {
 		List<MarketMakingWalletDto> mmwdlLst = new ArrayList<MarketMakingWalletDto>();
 		mmwdlLst.addAll(mmwdNewLst.stream().map(mmwd -> fixMMWallet(mmwd, secretKey)).collect(Collectors.toList()));
 		mmw.setDefiWalletList(mmwdlLst);
@@ -77,7 +78,7 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 		return mmwdlLst;
 	}
 
-	public List<MarketMakingWalletDto> addDefiWallet(MMWallet mmw, MarketMakingWalletDto mmwd, String secretKey) {
+	public List<MarketMakingWalletDto> addDefiWallet(MMWallet mmw, MarketMakingWalletDto mmwd, String secretKey) throws IOException {
 		List<MarketMakingWalletDto> mmwdLst = mmw.getDefiWalletList();
 		mmwd = fixMMWallet(mmwd, secretKey);
 		if (!mmwdLst.contains(mmwd)) {
@@ -116,7 +117,7 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 				.collect(Collectors.toList())).orElseGet(ArrayList::new);
 	}
 
-	public List<MarketMakingWalletDto> getDefiWalletList(MMWallet mmw, String secretKey) {
+	public List<MarketMakingWalletDto> getDefiWalletList(MMWallet mmw, String secretKey) throws IOException {
 		return mmw.getDefiWalletList().stream().peek(mmwd -> {
 			mmwd.setPrivateKeyHex(SecurityUtil.decryptString(mmwd.getEncryptedPrivateKey(), secretKey));
 		}).collect(Collectors.toList());

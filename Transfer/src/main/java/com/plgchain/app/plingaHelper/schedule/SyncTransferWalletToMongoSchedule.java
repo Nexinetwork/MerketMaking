@@ -74,8 +74,8 @@ public class SyncTransferWalletToMongoSchedule implements Serializable {
 									.contractAddress(mm.getSmartContract().getContractsAddress())
 									.contractId(mm.getSmartContract().getContractId())
 									.tankhahDefiWalletList(new ArrayList<>())
-									.tankhahTransferWalletList(new ArrayList<>()).defiWalletList(new ArrayList<>())
-									.transferWalletList(new ArrayList<>()).build();
+									.tankhahTransferWalletList(new ArrayList<>())
+									.build();
 
 							mmv = mmWalletService.save(mmv);
 							logger.info(
