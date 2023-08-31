@@ -64,6 +64,7 @@ public class SyncTransferWalletToMongoSchedule implements Serializable {
 											mm.getSmartContract().getContractsAddress(),
 											mm.getSmartContract().getCoin().getSymbol(),
 											mm.getSmartContract().getBlockchain().getName()));
+							www = null;
 						}, () -> {
 							var mmv = MMWallet.builder().marketMakingId(mm.getMarketMakingId())
 									.blockchain(mm.getSmartContract().getBlockchain().getName())
