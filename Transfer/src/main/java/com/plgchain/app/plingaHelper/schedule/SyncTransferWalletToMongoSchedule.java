@@ -5,6 +5,7 @@ package com.plgchain.app.plingaHelper.schedule;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import com.google.common.base.Strings;
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.entity.MMWallet;
+import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
 import com.plgchain.app.plingaHelper.service.MarketMakingService;
 import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
 import com.plgchain.app.plingaHelper.service.MMWalletService;
@@ -49,16 +51,17 @@ public class SyncTransferWalletToMongoSchedule implements Serializable {
 		if (!initBean.doesActionRunning("syncTransferWalletToMongo")) {
 			initBean.startActionRunning("syncTransferWalletToMongo");
 			logger.info("syncTransferWalletToMongo started.");
-			marketMakingService.findByMustUpdateMongoTransfer(true).stream()
-					.filter(mm -> mm.isInitialWalletCreationDone() && !Strings.isNullOrEmpty(mm.getTrPid()))
-					.forEach(mm -> {
+			Optional<MarketMaking> optionalMarketMaking = marketMakingService.findByMustUpdateMongoTransfer(true).stream()
+			        .filter(mm -> mm.isInitialWalletCreationDone() && !Strings.isNullOrEmpty(mm.getTrPid()))
+			        .findFirst();
+					optionalMarketMaking.ifPresent(mm -> {
 						mmWalletService.findById(mm.getMarketMakingId()).ifPresentOrElse(www -> {
 							www.setTransferWalletList(
 									marketMakingWalletService.findAllWalletsByContractIdAndWalletTypeNative(
 											mm.getSmartContract().getContractId(), WalletType.TRANSFER));
 							www = mmWalletService.save(www);
 							mm.setMustUpdateMongoTransfer(false);
-							marketMakingService.saveAndFlush(mm);
+							marketMakingService.save(mm);
 							logger.info(
 									String.format("Contract %s of coin %s of blockchain %s has been updated in mongodb",
 											mm.getSmartContract().getContractsAddress(),
