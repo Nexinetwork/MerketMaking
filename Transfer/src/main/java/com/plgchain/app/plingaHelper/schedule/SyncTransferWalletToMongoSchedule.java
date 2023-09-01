@@ -58,7 +58,7 @@ public class SyncTransferWalletToMongoSchedule implements Serializable {
 											mm.getSmartContract().getContractId(), WalletType.TRANSFER));
 							www = mmWalletService.save(www);
 							mm.setMustUpdateMongoTransfer(false);
-							marketMakingService.save(mm);
+							marketMakingService.saveAndFlush(mm);
 							logger.info(
 									String.format("Contract %s of coin %s of blockchain %s has been updated in mongodb",
 											mm.getSmartContract().getContractsAddress(),
