@@ -189,14 +189,14 @@ public class BlockchainActionTest implements Serializable {
 	}
 
 	@Test
-	public void findContractsByContractAddress() {
+	public void findMarketmakingByBlockchainAndContractAddress() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
 		var req = SmartContractReq.builder().blockchain("Nexi-DPOS-V2").coinId(10142)
 				.contractsAddress("0xb0E37b5DE9195A753be77745712fd08fF298d50f").decimal(18).isMain(true)
 				.marketMaking(true).mustAdd(true).mustCheck(true).build();
 		HttpResponse<String> response = Unirest
-				.post("http://185.173.129.83:7001/api/v1/contract/findContractsByContractAddress")
+				.post("http://185.173.129.83:7001/api/v1/marketMaking/findMarketmakingByBlockchainAndContractAddress")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(req)).asString();
