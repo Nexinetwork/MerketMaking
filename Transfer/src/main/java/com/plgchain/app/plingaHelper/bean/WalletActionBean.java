@@ -449,7 +449,9 @@ public class WalletActionBean implements Serializable {
 		logger.info(String.format("Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
 				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
 				tankhahNonce[0]));
-		mmWalletService.findByContractId(contractId).ifPresent(mmw -> mmw.getTransferWalletList().forEach(wallet -> {
+		marketMakingWalletService
+		.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
+		.stream().forEach(wallet -> {
 			BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
 
 			BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
@@ -466,7 +468,7 @@ public class WalletActionBean implements Serializable {
 							EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
 				}
 			}
-		}));
+		});
 
 	}
 

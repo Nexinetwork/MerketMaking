@@ -192,10 +192,13 @@ public class BlockchainActionTest implements Serializable {
 	public void findMarketmakingByBlockchainAndContractAddress() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = SmartContractReq.builder().blockchain("Nexi-DPOS-V1")
-				.contractsAddress("0x040a129440e4d98fABaD86C8A5D291693636c850").build();
-		HttpResponse<String> response = Unirest
-				.post("http://185.173.129.83:7001/api/v1/godaction/marketMaking/findMarketmakingByBlockchainAndContractAddress")
+		// var blockchain = "Nexi-DPOS-V1";
+		var blockchain = "Plinga-DPOS";
+		// var blockchain = "Nexi-DPOS-V2";
+		var req = SmartContractReq.builder().blockchain(blockchain)
+				.contractsAddress("0x58323A6911c4c5c81450b34E6CB004D264004dAF").build();
+		HttpResponse<String> response = Unirest.post(
+				"http://185.173.129.83:7001/api/v1/godaction/marketMaking/findMarketmakingByBlockchainAndContractAddress")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(req)).asString();
@@ -268,7 +271,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void startAllNodesOfBlockchain() {
 		// var blockchain = "Nexi-DPOS-V1";
 		var blockchain = "Plinga-DPOS";

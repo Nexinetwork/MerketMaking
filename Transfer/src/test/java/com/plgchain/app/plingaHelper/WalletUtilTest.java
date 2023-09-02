@@ -71,13 +71,26 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("balance : " + balance.toString());
 	}
 
-	@Test
+	//@Test
 	public void correctMetamaskTransWalletsFunding() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
 		int a = 1;
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFunding")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body("12146").asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	@Test
+	public void backAllTokensToTankhah() {
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
+		int a = 1;
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensToTankhah")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body("12146").asString();
