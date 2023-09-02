@@ -37,6 +37,9 @@ public interface MarketMakingDao extends BaseLongDao<MarketMaking> {
 
 	public Optional<MarketMaking> findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId(boolean initialWalletCreationDone,boolean initialWalletFundingDone);
 
+	@Query("SELECT mm FROM MarketMaking mm WHERE mm.smartContract.blockchain.name = :blockchain AND mm.smartContract.contractsAddress = :contractAddress")
+	public Optional<MarketMaking> findByBlockchainAndContractAddress(String blockchain,String contractAddress);
+
 	public List<MarketMaking> findByInitialDefiWalletCreationDone(boolean initialDefiWalletCreationDone);
 	public boolean existsByInitialDefiWalletCreationDone(boolean initialDefiWalletCreationDone);
 	public long countByInitialDefiWalletCreationDone(boolean initialDefiWalletCreationDone);
@@ -49,6 +52,8 @@ public interface MarketMakingDao extends BaseLongDao<MarketMaking> {
 	public List<MarketMaking> findByInitialDefiWalletCreationDoneOrInitialDefiWalletFundingDone(boolean initialDefiWalletCreationDone,boolean initialDefiWalletFundingDone);
 
 	public List<MarketMaking> findByMustUpdateMongoTransfer(boolean mustUpdateMongoTransfer);
+
+
 
 	public List<MarketMaking> findByMustUpdateMongoDefi(boolean mustUpdateMongoDefi);
 

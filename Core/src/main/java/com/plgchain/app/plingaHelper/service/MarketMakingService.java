@@ -185,4 +185,8 @@ public class MarketMakingService extends BaseService<MarketMaking> implements Se
 		return marketMakingDao.findByDfPidIsNotNull();
 	}
 
+	public Optional<MarketMaking> findByBlockchainAndContractAddress(String blockchain,String contractAddress) {
+		return marketMakingDao.findByBlockchainAndContractAddress(blockchain, contractAddress);
+	}
+
 }
