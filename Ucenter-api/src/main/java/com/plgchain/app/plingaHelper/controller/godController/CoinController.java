@@ -108,7 +108,7 @@ public class CoinController extends BaseController implements Serializable {
 	}
 
 	@PostMapping("/marketMaking/findMarketmakingByBlockchainAndContractAddress")
-	public MessageResult findByBlockchainAndContractAddress(@RequestBody ContractReq cReq) {
+	public MessageResult findMarketmakingByBlockchainAndContractAddress(@RequestBody ContractReq cReq) {
 		if (cReq == null)
 			return error("Input is null");
 		if (Strings.isNullOrEmpty(cReq.getBlockchainName()))
