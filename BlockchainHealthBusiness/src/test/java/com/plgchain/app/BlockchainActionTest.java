@@ -195,7 +195,7 @@ public class BlockchainActionTest implements Serializable {
 		var req = SmartContractReq.builder().blockchain("Nexi-DPOS-V1")
 				.contractsAddress("0x30199Be78D0A2A885b3E03f7D5B08DE2ad251648").build();
 		HttpResponse<String> response = Unirest
-				.post("http://185.173.129.83:7001/api/v1/marketMaking/findMarketmakingByBlockchainAndContractAddress")
+				.post("http://185.173.129.83:7001/api/v1/godaction/marketMaking/findMarketmakingByBlockchainAndContractAddress")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(req)).asString();

@@ -15,12 +15,12 @@ import com.google.common.base.Strings;
 import com.plgchain.app.plingaHelper.bean.BlockchainBean;
 import com.plgchain.app.plingaHelper.controller.BaseController;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
+import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
 import com.plgchain.app.plingaHelper.exception.RestActionError;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.MarketMakingService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.type.request.CoinReq;
-import com.plgchain.app.plingaHelper.type.request.ContractReq;
 import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
 import com.plgchain.app.plingaHelper.util.MessageResult;
@@ -115,8 +115,10 @@ public class CoinController extends BaseController implements Serializable {
 			return error("Blockchain is null");
 		if (Strings.isNullOrEmpty(cReq.getContractsAddress()))
 			return error("Contract is null");
-		return success(
-				marketMakingService.findByBlockchainAndContractAddress(cReq.getBlockchain(), cReq.getContractsAddress()));
+		return marketMakingService.findByBlockchainAndContractAddress(cReq.getBlockchain(), cReq.getContractsAddress())
+	            .map(MarketMaking::getAsMarketMakingResponse)
+	            .map(this::success)
+	            .orElseGet(() -> error("Contract not found"));
 	}
 
 	@RequestMapping("/contract/findContractsByContractAddress")

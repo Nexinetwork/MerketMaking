@@ -6,12 +6,15 @@ package com.plgchain.app.plingaHelper.entity.marketMaking;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Optional;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.constant.TransactionParallelType;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
+import com.plgchain.app.plingaHelper.type.response.MarketMakingResponse;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -118,5 +121,25 @@ public class MarketMaking implements Serializable {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	@Column(name = "\"lastUpdateDate\"")
 	private LocalDateTime lastUpdateDate;
+
+	public MarketMakingResponse getAsMarketMakingResponse() {
+		return Optional.ofNullable(smartContract).map(sc -> MarketMakingResponse.builder().trPid(trPid).dfPid(dfPid)
+				.transactionParallelType(transactionParallelType).mustUpdateMongoTransfer(mustUpdateMongoTransfer)
+				.creationDate(creationDate).dailyAddWallet(dailyAddWallet)
+				.currentTransferWalletCount(currentTransferWalletCount).lastUpdateDate(lastUpdateDate)
+				.initialDefiWalletFundingDone(initialDefiWalletFundingDone).initialWallet(initialWallet)
+				.initialWalletCreationDone(initialWalletCreationDone).initialWalletFundingDone(initialWalletFundingDone)
+				.marketMakingId(marketMakingId).initialDefiWalletCreationDone(initialDefiWalletCreationDone)
+				.minDefiInitial(minDefiInitial).minInitial(minInitial).maxInitial(maxInitial)
+				.mustUpdateMongoDefi(mustUpdateMongoDefi).mustUpdateMongoTransfer(mustUpdateMongoTransfer)
+				.maxDefiInitial(maxDefiInitial).initialDefiWallet(initialDefiWallet).initialDecimal(initialDecimal)
+				.contractId(sc.getContractId()).contractsAddress(sc.getContractsAddress())
+				.coin(sc.getCoin() != null ? sc.getCoin().getName() : null)
+				.coinSymbol(sc.getCoin() != null ? sc.getCoin().getSymbol() : null)
+				.coinId(sc.getCoin() != null ? sc.getCoin().getCoinId() : null)
+				.coingeckoId(sc.getCoin() != null ? sc.getCoin().getCoingeckoId() : null)
+				.blockchainId(sc.getBlockchain() != null ? sc.getBlockchain().getBlockchainId() : null)
+				.blockchain(sc.getBlockchain() != null ? sc.getBlockchain().getName() : null).build()).orElse(null);
+	}
 
 }
