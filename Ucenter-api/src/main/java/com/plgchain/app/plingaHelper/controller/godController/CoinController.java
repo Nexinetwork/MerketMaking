@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.base.Strings;
 import com.plgchain.app.plingaHelper.bean.BlockchainBean;
 import com.plgchain.app.plingaHelper.controller.BaseController;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
@@ -19,6 +20,7 @@ import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.MarketMakingService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.type.request.CoinReq;
+import com.plgchain.app.plingaHelper.type.request.ContractReq;
 import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
 import com.plgchain.app.plingaHelper.util.MessageResult;
