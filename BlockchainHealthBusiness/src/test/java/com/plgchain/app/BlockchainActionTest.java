@@ -52,7 +52,7 @@ public class BlockchainActionTest implements Serializable {
 		return jToken;
 	}
 
-	//@Test
+	// @Test
 	public void createBlockchaintestCase() {
 		Blockchain blockchain = new Blockchain();
 		blockchain.setName("Nexi-DPOS-V2");
@@ -76,10 +76,10 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void createNodeTestCase() {
-		var node = BlockchainNodeDto.builder().blockchain("Plinga-DPOS").serverIp("82.115.26.181")
-				.sshPort(22).rpcUrl("http://82.115.26.181:8545").enabled(true).mmNode(false)
+		var node = BlockchainNodeDto.builder().blockchain("Plinga-DPOS").serverIp("82.115.26.181").sshPort(22)
+				.rpcUrl("http://82.115.26.181:8545").enabled(true).mmNode(false)
 				.nodeType(BlockchainNodeType.BLOCKCHAINNODE).validator(true).serviceNeme("plgchain3.service")
 				.mustCheck(true).build();
 		HttpResponse<String> response = Unirest
@@ -90,7 +90,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void deleteAllBlockchainNodesTestCase() {
 		var blockchain = "Nexilix-Pos-V1";
 		HttpResponse<String> response = Unirest
@@ -123,7 +123,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void createNewCoinTestCase() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -160,7 +160,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println(lst);
 	}
 
-	//@Test
+	// @Test
 	public void generateSmartContract() {
 		var contract = ContractReq.builder().blockchainCoingeckoId("Nexi-DPOS-V2").coinCoingeckoId("orbitex")
 				.contract("0xA60e7e82560165a150F05e75F59bb8499D76AE12").decimal(18).mustAdd(true).mustCheck(true)
@@ -173,7 +173,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void createNewSmartContract() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -192,9 +192,8 @@ public class BlockchainActionTest implements Serializable {
 	public void findMarketmakingByBlockchainAndContractAddress() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = SmartContractReq.builder().blockchain("Nexi-DPOS-V2").coinId(10142)
-				.contractsAddress("0xb0E37b5DE9195A753be77745712fd08fF298d50f").decimal(18).isMain(true)
-				.marketMaking(true).mustAdd(true).mustCheck(true).build();
+		var req = SmartContractReq.builder().blockchain("Nexi-DPOS-V1")
+				.contractsAddress("0x30199Be78D0A2A885b3E03f7D5B08DE2ad251648").build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/marketMaking/findMarketmakingByBlockchainAndContractAddress")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -203,7 +202,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void getTankhahWallets() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -215,12 +214,14 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void createMarketMaking() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = MarketMakingReq.builder().currentTransferWalletCount(0).dailyAddWallet(1000).initialDecimal(2).initialWallet(75312).initialWalletCreationDone(false)
-				.initialWalletFundingDone(false).minInitial(new BigDecimal(3)).maxInitial(new BigDecimal(10)).smartContractId(12149).transactionParallelType(TransactionParallelType.SYNC).build();
+		var req = MarketMakingReq.builder().currentTransferWalletCount(0).dailyAddWallet(1000).initialDecimal(2)
+				.initialWallet(75312).initialWalletCreationDone(false).initialWalletFundingDone(false)
+				.minInitial(new BigDecimal(3)).maxInitial(new BigDecimal(10)).smartContractId(12149)
+				.transactionParallelType(TransactionParallelType.SYNC).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/marketMaking/createOrUpdateMarketMaking")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -229,7 +230,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void findContractsByContractAddress() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -242,7 +243,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void correctWalletTestCase() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -254,11 +255,11 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void stopAllNodesOfBlockchain() {
 		var blockchain = "Plinga-DPOS";
-		//var blockchain = "Nexi-DPOS-V1";
-		//var blockchain = "Nexi-DPOS-V2";
+		// var blockchain = "Nexi-DPOS-V1";
+		// var blockchain = "Nexi-DPOS-V2";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/blockchain/stopAllNodesOfBlockchain")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -267,9 +268,9 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void startAllNodesOfBlockchain() {
-		//var blockchain = "Nexi-DPOS-V1";
+		// var blockchain = "Nexi-DPOS-V1";
 		var blockchain = "Plinga-DPOS";
 		// var blockchain = "Nexi-DPOS-V2";
 		HttpResponse<String> response = Unirest
@@ -280,10 +281,10 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void restartAllNodesOfBlockchain() {
 		var blockchain = "Plinga-DPOS";
-		//var blockchain = "Nexi-DPOS-V1";
+		// var blockchain = "Nexi-DPOS-V1";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/blockchain/restartAllNodesOfBlockchain")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
