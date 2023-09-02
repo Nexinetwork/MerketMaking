@@ -39,6 +39,10 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 		return mmWalletDao.findById(marketMakingId);
 	}
 
+	public Optional<MMWallet> findByContractId(long contractId) {
+		return mmWalletDao.findByContractId(contractId);
+	}
+
 	public List<MarketMakingWalletDto> addTransferWallet(MMWallet mmw, MarketMakingWalletDto mmwd, String secretKey) throws IOException {
 		List<MarketMakingWalletDto> mmwdLst = mmw.getTransferWalletList();
 		mmwd = fixMMWallet(mmwd, secretKey);

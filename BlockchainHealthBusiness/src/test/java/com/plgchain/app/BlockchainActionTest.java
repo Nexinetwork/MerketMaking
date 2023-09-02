@@ -188,12 +188,12 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void findMarketmakingByBlockchainAndContractAddress() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
 		var req = SmartContractReq.builder().blockchain("Nexi-DPOS-V1")
-				.contractsAddress("0x30199Be78D0A2A885b3E03f7D5B08DE2ad251648").build();
+				.contractsAddress("0x040a129440e4d98fABaD86C8A5D291693636c850").build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/marketMaking/findMarketmakingByBlockchainAndContractAddress")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())

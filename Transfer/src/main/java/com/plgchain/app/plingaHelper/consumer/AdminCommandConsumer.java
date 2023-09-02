@@ -47,6 +47,8 @@ public class AdminCommandConsumer implements Serializable {
 				CommandToRun ctr = JSON.parseObject(record.value(), CommandToRun.class);
 				if (ctr.getAdminCommandType().equals(AdminCommandType.FIXTRANSFERWALLETFUNDING)) {
 					walletActionBean.fixAllTransferWalletsByContractIdInOneAction(ctr.getLong1());
+				} else if (ctr.getAdminCommandType().equals(AdminCommandType.BACKALLTOKENTOTANKHAH)) {
+					walletActionBean.backAllTokenToTankhah(ctr.getLong1());
 				}
 			}
 		} catch (Exception e) {

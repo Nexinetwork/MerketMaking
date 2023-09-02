@@ -15,6 +15,7 @@ import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.exception.InvalidMarketMaking;
+import com.plgchain.app.plingaHelper.service.MMWalletService;
 import com.plgchain.app.plingaHelper.service.MarketMakingService;
 import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
@@ -36,21 +37,23 @@ public class WalletActionBean implements Serializable {
 	private final MarketMakingService marketMakingService;
 	private final TransferBean transferBean;
 	private final TankhahWalletService tankhahWalletService;
-	private final MarketMakingWalletService mmWalletService;
+	private final MarketMakingWalletService marketMakingWalletService;
 	private final SmartContractService smartContractService;
 	private final BlockchainBean blockchainBean;
+	private final MMWalletService mmWalletService;
 
 	@Inject
 	public WalletActionBean(InitBean initBean, MarketMakingService marketMakingService, TransferBean transferBean,
-			TankhahWalletService tankhahWalletService, MarketMakingWalletService mmWalletService,
-			SmartContractService smartContractService, BlockchainBean blockchainBean) {
+			TankhahWalletService tankhahWalletService, MarketMakingWalletService marketMakingWalletService,
+			SmartContractService smartContractService, BlockchainBean blockchainBean, MMWalletService mmWalletService) {
 		this.initBean = initBean;
 		this.marketMakingService = marketMakingService;
 		this.transferBean = transferBean;
 		this.tankhahWalletService = tankhahWalletService;
-		this.mmWalletService = mmWalletService;
+		this.marketMakingWalletService = marketMakingWalletService;
 		this.smartContractService = smartContractService;
 		this.blockchainBean = blockchainBean;
+		this.mmWalletService = mmWalletService;
 	}
 
 	@Async
@@ -73,7 +76,7 @@ public class WalletActionBean implements Serializable {
 		Page<MarketMakingWalletDto> mmWalletPageDto = null;
 		do {
 			PageRequest pageable = PageRequest.of(page, initBean.getFixTransferWalletBalancePerRound());
-			mmWalletService
+			marketMakingWalletService
 					.findAllWalletsByContractIdAndWalletTypeNativePaged(contractId, WalletType.TRANSFER, pageable)
 					.stream().forEach(wallet -> {
 						if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
@@ -83,7 +86,8 @@ public class WalletActionBean implements Serializable {
 								var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(), mm.getMaxInitial(),
 										mm.getInitialDecimal());
 								var mustReturn = balance.subtract(amount);
-								BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKeyHex());
+								BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+										wallet.getPrivateKeyHex());
 								if (blockchain.isAutoGas()) {
 									transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
 											wallet.getPrivateKeyHex(), wallet.getPublicKey(),
@@ -131,7 +135,8 @@ public class WalletActionBean implements Serializable {
 										initBean.getMaxMaincoinInContractWallet(),
 										initBean.getDecimalMaincoinInContractWallet());
 								var mustReturn = balance.subtract(amount);
-								BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKeyHex());
+								BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+										wallet.getPrivateKeyHex());
 								if (blockchain.isAutoGas()) {
 									transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
 											wallet.getPrivateKeyHex(), wallet.getPublicKey(),
@@ -172,7 +177,8 @@ public class WalletActionBean implements Serializable {
 									mm.getInitialDecimal());
 							if (tokenBalance.compareTo(mm.getMaxInitial()) > 0) {
 								var mustReturn = tokenBalance.subtract(amount);
-								BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKeyHex());
+								BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+										wallet.getPrivateKeyHex());
 								if (blockchain.isAutoGas()) {
 									transferBean.transferBetweenToAccount(blockchain.getRpcUrl(),
 											wallet.getPrivateKeyHex(), wallet.getPublicKey(),
@@ -232,15 +238,16 @@ public class WalletActionBean implements Serializable {
 		logger.info(String.format("Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
 				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
 				tankhahNonce[0]));
-		mmWalletService.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER).stream()
-				.forEach(wallet -> {
+		marketMakingWalletService.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
+				.stream().forEach(wallet -> {
 					if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
 						BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
 						if (balance.compareTo(mm.getMaxInitial()) > 0) {
 							var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(), mm.getMaxInitial(),
 									mm.getInitialDecimal());
 							var mustReturn = balance.subtract(amount);
-							BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKeyHex());
+							BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+									wallet.getPrivateKeyHex());
 							if (blockchain.isAutoGas()) {
 								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
@@ -265,7 +272,8 @@ public class WalletActionBean implements Serializable {
 									} catch (RuntimeException e) {
 										if (e.getMessage().equals("maximum number of enqueued transactions reached")) {
 											blockchainBean.stopAndStartMMNode(blockchain);
-											//logger.info(String.format("Blockchain %s has been restarted for enqueued transactions reached", blockchain.getName()));
+											// logger.info(String.format("Blockchain %s has been restarted for enqueued
+											// transactions reached", blockchain.getName()));
 											mustRetry = true;
 										}
 									}
@@ -306,7 +314,8 @@ public class WalletActionBean implements Serializable {
 									initBean.getMaxMaincoinInContractWallet(),
 									initBean.getDecimalMaincoinInContractWallet());
 							var mustReturn = balance.subtract(amount);
-							BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKeyHex());
+							BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+									wallet.getPrivateKeyHex());
 							if (blockchain.isAutoGas()) {
 								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
@@ -366,7 +375,8 @@ public class WalletActionBean implements Serializable {
 								mm.getInitialDecimal());
 						if (tokenBalance.compareTo(mm.getMaxInitial()) > 0) {
 							var mustReturn = tokenBalance.subtract(amount);
-							BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKeyHex());
+							BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+									wallet.getPrivateKeyHex());
 							if (blockchain.isAutoGas()) {
 								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
@@ -422,6 +432,41 @@ public class WalletActionBean implements Serializable {
 						}
 					}
 				});
+
+	}
+
+	@Async
+	@Transactional
+	public void backAllTokenToTankhah(long contractId) {
+		logger.info(String.format("Try to back all tokens to tankhah for contract %s", contractId));
+		var sm = smartContractService.findById(contractId).get();
+		Blockchain blockchain = sm.getBlockchain();
+		Coin coin = sm.getCoin();
+		var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
+		// var mm = marketMakingService.findBySmartContract(sm).get();
+		final BigInteger[] tankhahNonce = {
+				EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex()) };
+		logger.info(String.format("Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
+				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
+				tankhahNonce[0]));
+		mmWalletService.findByContractId(contractId).ifPresent(mmw -> mmw.getTransferWalletList().forEach(wallet -> {
+			BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
+
+			BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+					sm.getContractsAddress());
+			if (tokenBalance.compareTo(BigDecimal.ZERO) > 0) {
+				BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKeyHex());
+				if (blockchain.isAutoGas()) {
+					transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+							wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+							EVMUtil.DefaultTokenGasLimit, nonce);
+				} else {
+					transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+							wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+							EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
+				}
+			}
+		}));
 
 	}
 
