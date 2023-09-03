@@ -138,8 +138,8 @@ public class InitBean implements Serializable {
 					ttw.setSmartContract(smartContract);
 					ttw.setWalletType(WalletType.TRANSFER);
 					try {
-						ttw = tempTankhahWalletService.save(ttw);
-						logger.info("TempTankhahWallet has been saved to database : " + ttw);
+						ttw = tempTankhahWalletService.saveAndFlush(ttw);
+						//logger.info("TempTankhahWallet has been saved to database : " + ttw);
 					} catch (Exception e) {
 						logger.error("Error occurred while saving TempTankhahWallet:", e);
 						e.printStackTrace();
