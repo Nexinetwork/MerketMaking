@@ -121,7 +121,7 @@ public class InitBean implements Serializable {
 		lockedMethod.remove(action);
 	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	//@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public EvmWalletDto getRandomTmpTankhahWallet(SmartContract smartContract) {
 		long contractId = smartContract.getContractId();
 
