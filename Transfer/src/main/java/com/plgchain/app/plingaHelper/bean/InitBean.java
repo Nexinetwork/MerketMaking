@@ -121,7 +121,7 @@ public class InitBean implements Serializable {
 		lockedMethod.remove(action);
 	}
 
-	//@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public EvmWalletDto getRandomTmpTankhahWallet(SmartContract smartContract) {
 		long contractId = smartContract.getContractId();
 
@@ -139,7 +139,7 @@ public class InitBean implements Serializable {
 					ttw.setWalletType(WalletType.TRANSFER);
 				}).collect(Collectors.toList());
 
-				tempTankhahWalletService.saveAllAndFlush(ttwLst);
+				tempTankhahWalletService.saveAll(ttwLst);
 				logger.info(String.format("Temp tankhah for contract %s has been generated and saved to database.",
 						smartContract.getContractsAddress()));
 			}
