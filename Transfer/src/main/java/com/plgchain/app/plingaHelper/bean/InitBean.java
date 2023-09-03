@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.http.HttpClient;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -122,28 +121,34 @@ public class InitBean implements Serializable {
 	}
 
 	public EvmWalletDto getRandomTmpTankhahWallet(SmartContract smartContract) {
-	    int randomIndex = NumberUtil.generateRandomNumber(0, tmpTankhahWalletCount - 1, 0);
 	    long contractId = smartContract.getContractId();
 
-	    if (!tmpTankhahWallet.containsKey(contractId)) {
-	        List<EvmWalletDto> lst = EvmWalletUtil.generateRandomWallet(tmpTankhahWalletCount);
-	        List<TempTankhahWallet> ttwLst = lst.stream()
-	            .map(ewDto -> {
-	                TempTankhahWallet ttw = new TempTankhahWallet(ewDto);
-	                ttw.setSmartContract(smartContract);
-	                return ttw;
-	            })
-	            .collect(Collectors.toList());
+	    return tmpTankhahWallet.computeIfAbsent(contractId, id -> {
+	        List<EvmWalletDto> lst;
+	        if (tempTankhahWalletService.existBySmartContractAndWalletType(smartContract, WalletType.TRANSFER)) {
+	            lst = tempTankhahWalletService.findBySmartContractAndWalletType(smartContract, WalletType.TRANSFER)
+	                    .stream()
+	                    .map(TempTankhahWallet::getAsEvmWalletDto)
+	                    .collect(Collectors.toList());
+	        } else {
+	            lst = EvmWalletUtil.generateRandomWallet(tmpTankhahWalletCount);
+	            List<TempTankhahWallet> ttwLst = lst.stream()
+	                    .map(ewDto -> new TempTankhahWallet(ewDto))
+	                    .peek(ttw -> {
+	                        ttw.setSmartContract(smartContract);
+	                        ttw.setWalletType(WalletType.TRANSFER);
+	                    })
+	                    .collect(Collectors.toList());
 
-	        tempTankhahWalletService.saveAll(ttwLst);
-	        tmpTankhahWallet.put(contractId, lst);
-	    }
-
-	    return tmpTankhahWallet.get(contractId).get(randomIndex);
+	            tempTankhahWalletService.saveAll(ttwLst);
+	        }
+	        return lst;
+	    }).get(NumberUtil.generateRandomNumber(0, tmpTankhahWalletCount - 1, 0));
 	}
 
+
 	public List<EvmWalletDto> getTmpTankhahWallet(SmartContract smartContract) {
-	    return tmpTankhahWallet.get(smartContract.getContractId());
+		return tmpTankhahWallet.get(smartContract.getContractId());
 	}
 
 	public void setNonceOfTmpTankhahWallet(SmartContract smartContract, EvmWalletDto ewd, BigInteger nonce) {

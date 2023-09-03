@@ -84,6 +84,10 @@ public class TempTankhahWallet implements Serializable {
 		this.publicKey = evmw.getPublicKey();
 	}
 
+	public EvmWalletDto getAsEvmWalletDto() {
+		return EvmWalletDto.builder().hexKey(privateKey).privateKey(privateKey).publicKey(publicKey).build();
+	}
+
 
 
 }
