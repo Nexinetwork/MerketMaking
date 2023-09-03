@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.http.HttpService;
+
+import com.plgchain.app.plingaHelper.util.NumberUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 
 /**
@@ -41,7 +43,7 @@ public class TransactionTest implements Serializable {
 		}
 	}
 
-	@Test
+	//@Test
 	public void getNonceTestCase() {
 		try {
 			System.out.println(EVMUtil.calculateTransferGasLimit("http://185.173.129.242:18545","0x9032ba5aa0d59888E582E8aa5893b53b07DEceC1","0xacc7EbAd8102442c9EeE774de0E056A8dEF0550E","0x183A3dFadd2D9c702C71b021Db87fe6C34F2b387",new BigInteger("1000000000000000000000")));
@@ -49,6 +51,12 @@ public class TransactionTest implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void generateRandomTestCase() {
+		for (int i=0;i<1000;i++)
+			System.out.println(NumberUtil.generateRandomNumber(0, 2, 0));
 	}
 
 	//@Test

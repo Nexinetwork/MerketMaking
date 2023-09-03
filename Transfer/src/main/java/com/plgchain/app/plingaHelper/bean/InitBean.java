@@ -5,6 +5,7 @@ package com.plgchain.app.plingaHelper.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.http.HttpClient;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +24,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.plgchain.app.plingaHelper.constant.WalletType;
+import com.plgchain.app.plingaHelper.dto.EvmWalletDto;
 import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
+import com.plgchain.app.plingaHelper.entity.TempTankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.service.BlockchainService;
 import com.plgchain.app.plingaHelper.service.CoinService;
 import com.plgchain.app.plingaHelper.service.MarketMakingService;
 import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
+import com.plgchain.app.plingaHelper.service.TempTankhahWalletService;
+import com.plgchain.app.plingaHelper.util.NumberUtil;
+import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
@@ -71,11 +78,15 @@ public class InitBean implements Serializable {
 
 	private final int sleepInSeconds = 5;
 
+	private final int tmpTankhahWalletCount = 100;
+
 	private int selectPageSize = 20000;
 
 	public final int cachedContracts = 20000;
 
 	private Map<Long, Set<MarketMakingWalletDto>> transferWalletMapCache = new HashMap<Long, Set<MarketMakingWalletDto>>();
+
+	private Map<Long, List<EvmWalletDto>> tmpTankhahWallet;
 
 	@Inject
 	private MarketMakingWalletService marketMakingWalletService;
@@ -89,8 +100,12 @@ public class InitBean implements Serializable {
 	@Inject
 	private CoinService coinService;
 
+	@Inject
+	private TempTankhahWalletService tempTankhahWalletService;
+
 	@PostConstruct
 	public void init() {
+		this.tmpTankhahWallet = new HashMap<Long, List<EvmWalletDto>>();
 		// writeWalletDataToCache();
 	}
 
@@ -104,6 +119,44 @@ public class InitBean implements Serializable {
 
 	public void stopActionRunning(String action) {
 		lockedMethod.remove(action);
+	}
+
+	public EvmWalletDto getRandomTmpTankhahWallet(SmartContract smartContract) {
+	    int randomIndex = NumberUtil.generateRandomNumber(0, tmpTankhahWalletCount - 1, 0);
+	    long contractId = smartContract.getContractId();
+
+	    if (!tmpTankhahWallet.containsKey(contractId)) {
+	        List<EvmWalletDto> lst = EvmWalletUtil.generateRandomWallet(tmpTankhahWalletCount);
+	        List<TempTankhahWallet> ttwLst = lst.stream()
+	            .map(ewDto -> {
+	                TempTankhahWallet ttw = new TempTankhahWallet(ewDto);
+	                ttw.setSmartContract(smartContract);
+	                return ttw;
+	            })
+	            .collect(Collectors.toList());
+
+	        tempTankhahWalletService.saveAll(ttwLst);
+	        tmpTankhahWallet.put(contractId, lst);
+	    }
+
+	    return tmpTankhahWallet.get(contractId).get(randomIndex);
+	}
+
+	public List<EvmWalletDto> getTmpTankhahWallet(SmartContract smartContract) {
+	    return tmpTankhahWallet.get(smartContract.getContractId());
+	}
+
+	public void setNonceOfTmpTankhahWallet(SmartContract smartContract, EvmWalletDto ewd, BigInteger nonce) {
+		tmpTankhahWallet.computeIfPresent(smartContract.getContractId(), (id, wallets) -> {
+			for (int i = 0; i < wallets.size(); i++) {
+				if (wallets.get(i).equals(ewd)) {
+					ewd.setNonce(nonce);
+					wallets.set(i, ewd);
+					return wallets;
+				}
+			}
+			return wallets;
+		});
 	}
 
 	@Transactional

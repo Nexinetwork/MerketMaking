@@ -24,7 +24,6 @@ import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
 import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
-import com.plgchain.app.plingaHelper.util.ServiceUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 

@@ -96,7 +96,7 @@ public class EvmWalletUtil implements Serializable {
 		String privateKey = correctLengthOfPrivateKey(bigInt);
 		String publicKey = Credentials.create(ECKeyPair.create(bigInt)).getAddress().trim();
 		String hexKey = getHexOfBigInteger(bigInt);
-		return EvmWalletDto.builder().bigInt(bigInt).publicKey(publicKey).privateKey(privateKey).hexKey(hexKey)
+		return EvmWalletDto.builder().bigInt(bigInt).publicKey(publicKey).privateKey(privateKey).hexKey(hexKey).nonce(BigInteger.ZERO)
 				.balance(BigDecimal.ZERO).build();
 	}
 

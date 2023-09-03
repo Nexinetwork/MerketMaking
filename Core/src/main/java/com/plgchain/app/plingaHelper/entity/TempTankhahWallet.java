@@ -12,6 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.plgchain.app.plingaHelper.constant.WalletType;
+import com.plgchain.app.plingaHelper.dto.EvmWalletDto;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 
 import jakarta.persistence.Column;
@@ -76,6 +77,12 @@ public class TempTankhahWallet implements Serializable {
 	@Column(name = "\"lastModifiedDate\"")
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	private LocalDateTime lastModifiedDate;
+
+	public TempTankhahWallet(EvmWalletDto evmw) {
+		this.nonce = evmw.getNonce();
+		this.privateKey = evmw.getHexKey();
+		this.publicKey = evmw.getPublicKey();
+	}
 
 
 

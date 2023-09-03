@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.constant.WalletType;
+import com.plgchain.app.plingaHelper.dto.EvmWalletDto;
 import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
@@ -40,8 +41,6 @@ public class WalletActionBean implements Serializable {
 	private final MarketMakingWalletService marketMakingWalletService;
 	private final SmartContractService smartContractService;
 	private final BlockchainBean blockchainBean;
-	private final MMWalletService mmWalletService;
-
 	@Inject
 	public WalletActionBean(InitBean initBean, MarketMakingService marketMakingService, TransferBean transferBean,
 			TankhahWalletService tankhahWalletService, MarketMakingWalletService marketMakingWalletService,
@@ -53,7 +52,6 @@ public class WalletActionBean implements Serializable {
 		this.marketMakingWalletService = marketMakingWalletService;
 		this.smartContractService = smartContractService;
 		this.blockchainBean = blockchainBean;
-		this.mmWalletService = mmWalletService;
 	}
 
 	@Async
@@ -437,6 +435,327 @@ public class WalletActionBean implements Serializable {
 
 	@Async
 	@Transactional
+	public void fixAllTransferWalletsByContractIdInOneActionWithTempTankhah(long contractId) {
+		logger.info(String.format("Try to fill contract %s", contractId));
+		var sm = smartContractService.findById(contractId).get();
+		Blockchain blockchain = sm.getBlockchain();
+		Coin coin = sm.getCoin();
+		var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
+		var mm = marketMakingService.findBySmartContract(sm).get();
+		if (!mm.isInitialWalletCreationDone())
+			throw new InvalidMarketMaking();
+		final int[] enqueued = { 0 };
+		final BigInteger[] tankhahNonce = {
+				EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex()) };
+		logger.info(String.format("Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
+				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
+				tankhahNonce[0]));
+		marketMakingWalletService.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
+				.stream().forEach(wallet -> {
+					if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
+						BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
+						if (balance.compareTo(mm.getMaxInitial()) > 0) {
+							var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(), mm.getMaxInitial(),
+									mm.getInitialDecimal());
+							var mustReturn = balance.subtract(amount);
+							BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+									wallet.getPrivateKeyHex());
+							if (blockchain.isAutoGas()) {
+								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
+										mustReturn, EVMUtil.DefaultGasLimit, nonce);
+							} else {
+								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
+										mustReturn, EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, nonce);
+							}
+						} else if (balance.equals(BigDecimal.ZERO)) {
+							boolean mustRetry = true;
+							while (mustRetry) {
+								var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(), mm.getMaxInitial(),
+										mm.getInitialDecimal());
+								EvmWalletDto tmpTankhah = initBean.getRandomTmpTankhahWallet(sm);
+								BigDecimal tmpTankhahBalance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
+										tmpTankhah.getPublicKey());
+								if (tmpTankhahBalance.compareTo(amount) < 0) {
+									if (blockchain.isAutoGas()) {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+													tmpTankhah.getPublicKey(),
+													amount.multiply(
+															new BigDecimal(initBean.getTmpTankhahWalletCount())),
+													EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.stopAndStartMMNode(blockchain);
+												// logger.info(String.format("Blockchain %s has been restarted for
+												// enqueued
+												// transactions reached", blockchain.getName()));
+												mustRetry = true;
+											}
+										}
+									} else {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+													tmpTankhah.getPublicKey(),
+													amount.multiply(
+															new BigDecimal(initBean.getTmpTankhahWalletCount())),
+													EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.restartBlockchain(blockchain);
+												mustRetry = true;
+											}
+										}
+									}
+									tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+									enqueued[0]++;
+								} else {
+									if (blockchain.isAutoGas()) {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
+													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
+													tmpTankhah.getNonce());
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.stopAndStartMMNode(blockchain);
+												// logger.info(String.format("Blockchain %s has been restarted for
+												// enqueued
+												// transactions reached", blockchain.getName()));
+												mustRetry = true;
+											}
+										}
+									} else {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
+													wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
+													EVMUtil.DefaultGasLimit, tmpTankhah.getNonce());
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.restartBlockchain(blockchain);
+												mustRetry = true;
+											}
+										}
+									}
+									initBean.setNonceOfTmpTankhahWallet(sm, tmpTankhah,
+											tmpTankhah.getNonce().add(BigInteger.ONE));
+								}
+							}
+						}
+					} else {
+						BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
+
+						BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
+								wallet.getPrivateKeyHex(), sm.getContractsAddress());
+						if (balance.compareTo(initBean.getMaxMaincoinInContractWallet()) > 0) {
+							var amount = NumberUtil.generateRandomNumber(initBean.getMinMaincoinInContractWallet(),
+									initBean.getMaxMaincoinInContractWallet(),
+									initBean.getDecimalMaincoinInContractWallet());
+							var mustReturn = balance.subtract(amount);
+							BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+									wallet.getPrivateKeyHex());
+							if (blockchain.isAutoGas()) {
+								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
+										mustReturn, EVMUtil.DefaultGasLimit, nonce);
+							} else {
+								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
+										mustReturn, EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, nonce);
+							}
+						} else if (balance.equals(BigDecimal.ZERO)) {
+							boolean mustRetry = true;
+							while (mustRetry) {
+								EvmWalletDto tmpTankhah = initBean.getRandomTmpTankhahWallet(sm);
+								var amount = NumberUtil.generateRandomNumber(initBean.getMinMaincoinInContractWallet(),
+										initBean.getMaxMaincoinInContractWallet(),
+										initBean.getDecimalMaincoinInContractWallet());
+								BigDecimal tmpTankhahBalance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
+										tmpTankhah.getPublicKey());
+								if (tmpTankhahBalance.compareTo(amount) < 0) {
+									if (blockchain.isAutoGas()) {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+													tmpTankhah.getPublicKey(),
+													amount.multiply(
+															new BigDecimal(initBean.getTmpTankhahWalletCount())),
+													EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.stopAndStartMMNode(blockchain);
+												mustRetry = true;
+											}
+										}
+									} else {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+													tmpTankhah.getPublicKey(),
+													amount.multiply(
+															new BigDecimal(initBean.getTmpTankhahWalletCount())),
+													EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.restartBlockchain(blockchain);
+												mustRetry = true;
+											}
+										}
+									}
+									tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+									enqueued[0]++;
+								} else {
+									if (blockchain.isAutoGas()) {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
+													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
+													tmpTankhah.getNonce());
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.stopAndStartMMNode(blockchain);
+												mustRetry = true;
+											}
+										}
+									} else {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
+													wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
+													EVMUtil.DefaultGasLimit, tmpTankhah.getNonce());
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.restartBlockchain(blockchain);
+												mustRetry = true;
+											}
+										}
+									}
+									initBean.setNonceOfTmpTankhahWallet(sm, tmpTankhah,
+											tmpTankhah.getNonce().add(BigInteger.ONE));
+								}
+							}
+						}
+						var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(), mm.getMaxInitial(),
+								mm.getInitialDecimal());
+						if (tokenBalance.compareTo(mm.getMaxInitial()) > 0) {
+							var mustReturn = tokenBalance.subtract(amount);
+							BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+									wallet.getPrivateKeyHex());
+							if (blockchain.isAutoGas()) {
+								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
+										sm.getContractsAddress(), mustReturn, EVMUtil.DefaultTokenGasLimit, nonce);
+							} else {
+								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
+										sm.getContractsAddress(), mustReturn, EVMUtil.DefaultGasPrice,
+										EVMUtil.DefaultTokenGasLimit, nonce);
+							}
+						} else if (tokenBalance.equals(BigDecimal.ZERO)) {
+							boolean mustRetry = true;
+							while (mustRetry) {
+								EvmWalletDto tmpTankhah = initBean.getRandomTmpTankhahWallet(sm);
+								BigDecimal tmpTankhahTokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
+										wallet.getPrivateKeyHex(), sm.getContractsAddress());
+								if (tmpTankhahTokenBalance.compareTo(amount) < 0) {
+									if (blockchain.isAutoGas()) {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+													tmpTankhah.getPublicKey(), sm.getContractsAddress(),
+													amount.multiply(
+															new BigDecimal(initBean.getTmpTankhahWalletCount())),
+													EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.stopAndStartMMNode(blockchain);
+												mustRetry = true;
+											}
+										}
+									} else {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+													tmpTankhah.getPublicKey(), sm.getContractsAddress(),
+													amount.multiply(
+															new BigDecimal(initBean.getTmpTankhahWalletCount())),
+													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
+													tankhahNonce[0]);
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.restartBlockchain(blockchain);
+												mustRetry = true;
+											}
+										}
+									}
+									tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+									enqueued[0]++;
+								} else {
+									if (blockchain.isAutoGas()) {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
+													wallet.getPublicKey(), sm.getContractsAddress(), amount,
+													EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.stopAndStartMMNode(blockchain);
+												mustRetry = true;
+											}
+										}
+									} else {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
+													wallet.getPublicKey(), sm.getContractsAddress(), amount,
+													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
+													tankhahNonce[0]);
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.restartBlockchain(blockchain);
+												mustRetry = true;
+											}
+										}
+									}
+									initBean.setNonceOfTmpTankhahWallet(sm, tmpTankhah,
+											tmpTankhah.getNonce().add(BigInteger.ONE));
+								}
+							}
+						}
+					}
+				});
+	}
+
+	@Async
+	@Transactional
 	public void backAllTokenToTankhah(long contractId) {
 		logger.info(String.format("Try to back all tokens to tankhah for contract %s", contractId));
 		var sm = smartContractService.findById(contractId).get();
@@ -449,26 +768,26 @@ public class WalletActionBean implements Serializable {
 		logger.info(String.format("Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
 				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
 				tankhahNonce[0]));
-		marketMakingWalletService
-		.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
-		.stream().forEach(wallet -> {
-			BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
+		marketMakingWalletService.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
+				.stream().forEach(wallet -> {
+					EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
 
-			BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
-					sm.getContractsAddress());
-			if (tokenBalance.compareTo(BigDecimal.ZERO) > 0) {
-				BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKeyHex());
-				if (blockchain.isAutoGas()) {
-					transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
-							wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
-							EVMUtil.DefaultTokenGasLimit, nonce);
-				} else {
-					transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
-							wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
-							EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
-				}
-			}
-		});
+					BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
+							wallet.getPrivateKeyHex(), sm.getContractsAddress());
+					if (tokenBalance.compareTo(BigDecimal.ZERO) > 0) {
+						BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+								wallet.getPrivateKeyHex());
+						if (blockchain.isAutoGas()) {
+							transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+									wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(),
+									tokenBalance, EVMUtil.DefaultTokenGasLimit, nonce);
+						} else {
+							transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+									wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(),
+									tokenBalance, EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
+						}
+					}
+				});
 
 	}
 

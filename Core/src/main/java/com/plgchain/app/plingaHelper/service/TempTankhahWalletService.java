@@ -8,7 +8,6 @@ import com.plgchain.app.plingaHelper.annotation.LogMethod;
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.dao.TempTankhahWalletDao;
 import com.plgchain.app.plingaHelper.entity.TempTankhahWallet;
-import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.service.Base.BaseService;
 
@@ -44,6 +43,18 @@ public class TempTankhahWalletService extends BaseService<TempTankhahWallet> imp
 
 	public TempTankhahWallet saveAndFlush(TempTankhahWallet ttw) {
 		return tempTankhahWalletDao.saveAndFlush(ttw);
+	}
+
+    public void delete(TempTankhahWallet ttw) {
+    	tempTankhahWalletDao.delete(ttw);
+	}
+
+	public void deleteAll() {
+		tempTankhahWalletDao.deleteAll();
+	}
+
+	public List<TempTankhahWallet> saveAll(List<TempTankhahWallet> oList) {
+		return tempTankhahWalletDao.saveAll(oList);
 	}
 
 }
