@@ -49,34 +49,34 @@ public class TempTankhahWallet implements Serializable {
 	@Id
 	@SequenceGenerator(name = "TBLTMPTANKHAHWALLET_TMPTANKHAHWALLETID_GENERATOR", sequenceName = "\"seqTempTankhahTempTankhahId\"", schema = "\"schMarketMaking\"", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "TBLTMPTANKHAHWALLET_TMPTANKHAHWALLETID_GENERATOR")
-	@Column(name = "\"tempTankhahId\"")
+	@Column(name = "\"tempTankhahId\"",nullable = false)
 	private long tempTankhahId;
 
 	@ManyToOne
-	@JoinColumn(name = "\"smartContractId\"")
+	@JoinColumn(name = "\"smartContractId\"",nullable = false)
 	private SmartContract smartContract;
 
-	@Column(name = "\"privateKey\"")
+	@Column(name = "\"privateKey\"",nullable = false)
 	private String privateKey;
 
-	@Column(name = "\"publicKey\"")
+	@Column(name = "\"publicKey\"",nullable = false)
 	private String publicKey;
 
 	@Enumerated(EnumType.ORDINAL)
-	@Column(name = "\"walletType\"")
+	@Column(name = "\"walletType\"",nullable = false)
 	private WalletType walletType;
 
 	private BigInteger nonce;
 
 	@CreationTimestamp
-	@Column(name = "\"creationDate\"")
+	@Column(name = "\"creationDate\"",nullable = false)
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
 	private LocalDateTime creationDate;
 
 	@UpdateTimestamp
-	@Column(name = "\"lastModifiedDate\"")
+	@Column(name = "\"lastUpdateDate\"")
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
-	private LocalDateTime lastModifiedDate;
+	private LocalDateTime lastUpdateDate;
 
 	public TempTankhahWallet(EvmWalletDto evmw) {
 		this.nonce = evmw.getNonce();

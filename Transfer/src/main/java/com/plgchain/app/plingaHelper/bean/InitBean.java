@@ -130,17 +130,20 @@ public class InitBean implements Serializable {
 	                    .stream()
 	                    .map(TempTankhahWallet::getAsEvmWalletDto)
 	                    .collect(Collectors.toList());
+	            logger.info(String.format("Temp tankhah for contract %s has been read from Database", smartContract.getContractsAddress()));
 	        } else {
 	            lst = EvmWalletUtil.generateRandomWallet(tmpTankhahWalletCount);
-	            List<TempTankhahWallet> ttwLst = lst.stream()
+	            lst.stream()
 	                    .map(ewDto -> new TempTankhahWallet(ewDto))
 	                    .peek(ttw -> {
 	                        ttw.setSmartContract(smartContract);
 	                        ttw.setWalletType(WalletType.TRANSFER);
+	                        tempTankhahWalletService.save(ttw);
 	                    })
 	                    .collect(Collectors.toList());
 
-	            tempTankhahWalletService.saveAll(ttwLst);
+	            //tempTankhahWalletService.saveAll(ttwLst);
+	            logger.info(String.format("Temp tankhah for contract %s has been generated and saved to database.", smartContract.getContractsAddress()));
 	        }
 	        return lst;
 	    }).get(NumberUtil.generateRandomNumber(0, tmpTankhahWalletCount - 1, 0));
