@@ -121,34 +121,36 @@ public class InitBean implements Serializable {
 	}
 
 	public EvmWalletDto getRandomTmpTankhahWallet(SmartContract smartContract) {
-	    long contractId = smartContract.getContractId();
+		long contractId = smartContract.getContractId();
 
-	    return tmpTankhahWallet.computeIfAbsent(contractId, id -> {
-	        List<EvmWalletDto> lst;
-	        if (tempTankhahWalletService.existsBySmartContractAndWalletType(smartContract, WalletType.TRANSFER)) {
-	            lst = tempTankhahWalletService.findBySmartContractAndWalletType(smartContract, WalletType.TRANSFER)
-	                    .stream()
-	                    .map(TempTankhahWallet::getAsEvmWalletDto)
-	                    .collect(Collectors.toList());
-	            logger.info(String.format("Temp tankhah for contract %s has been read from Database", smartContract.getContractsAddress()));
-	        } else {
-	            lst = EvmWalletUtil.generateRandomWallet(tmpTankhahWalletCount);
-	            lst.stream()
-	                    .map(ewDto -> new TempTankhahWallet(ewDto))
-	                    .peek(ttw -> {
-	                        ttw.setSmartContract(smartContract);
-	                        ttw.setWalletType(WalletType.TRANSFER);
-	                        tempTankhahWalletService.save(ttw);
-	                    })
-	                    .collect(Collectors.toList());
+		return tmpTankhahWallet.computeIfAbsent(contractId, id -> {
+			List<EvmWalletDto> lst;
+			if (tempTankhahWalletService.existsBySmartContractAndWalletType(smartContract, WalletType.TRANSFER)) {
+				lst = tempTankhahWalletService.findBySmartContractAndWalletType(smartContract, WalletType.TRANSFER)
+						.stream().map(TempTankhahWallet::getAsEvmWalletDto).collect(Collectors.toList());
+				logger.info(String.format("Temp tankhah for contract %s has been read from Database",
+						smartContract.getContractsAddress()));
+			} else {
+				lst = EvmWalletUtil.generateRandomWallet(tmpTankhahWalletCount);
+				lst.stream().map(ewDto -> new TempTankhahWallet(ewDto)).peek(ttw -> {
+					ttw.setSmartContract(smartContract);
+					ttw.setWalletType(WalletType.TRANSFER);
+					try {
+						ttw = tempTankhahWalletService.save(ttw);
+						logger.info("TempTankhahWallet has been saved to database : " + ttw);
+					} catch (Exception e) {
+						logger.error("Error occurred while saving TempTankhahWallet:", e);
+						e.printStackTrace();
+					}
+				}).collect(Collectors.toList());
 
-	            //tempTankhahWalletService.saveAll(ttwLst);
-	            logger.info(String.format("Temp tankhah for contract %s has been generated and saved to database.", smartContract.getContractsAddress()));
-	        }
-	        return lst;
-	    }).get(NumberUtil.generateRandomNumber(0, tmpTankhahWalletCount - 1, 0));
+				// tempTankhahWalletService.saveAll(ttwLst);
+				logger.info(String.format("Temp tankhah for contract %s has been generated and saved to database.",
+						smartContract.getContractsAddress()));
+			}
+			return lst;
+		}).get(NumberUtil.generateRandomNumber(0, tmpTankhahWalletCount - 1, 0));
 	}
-
 
 	public List<EvmWalletDto> getTmpTankhahWallet(SmartContract smartContract) {
 		return tmpTankhahWallet.get(smartContract.getContractId());
