@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.annotation.LogMethod;
@@ -14,11 +16,15 @@ import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.service.Base.BaseService;
 
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class TempTankhahWalletService extends BaseService<TempTankhahWallet> implements Serializable {
 
 	private static final long serialVersionUID = -984115045697781591L;
+
+	private final static Logger logger = LoggerFactory.getLogger(TempTankhahWalletService.class);
 
 	@Inject
 	private TempTankhahWalletDao tempTankhahWalletDao;
@@ -41,6 +47,11 @@ public class TempTankhahWalletService extends BaseService<TempTankhahWallet> imp
 
 	@LogMethod
 	public TempTankhahWallet save(TempTankhahWallet ttw) {
+		try {
+		} catch (Exception e) {
+			logger.error("Error occurred while saving TempTankhahWallet:", e);
+			e.printStackTrace();
+		}
 		return tempTankhahWalletDao.save(ttw);
 	}
 
