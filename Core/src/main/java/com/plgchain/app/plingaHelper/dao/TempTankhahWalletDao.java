@@ -12,6 +12,6 @@ public interface TempTankhahWalletDao extends BaseLongDao<TempTankhahWallet> {
 
 	public long countBySmartContractAndWalletType(SmartContract smartContract, WalletType walletType);
 
-	public boolean existBySmartContractAndWalletType(SmartContract smartContract, WalletType walletType);
+	public boolean existsBySmartContractAndWalletType(SmartContract smartContract, WalletType walletType);
 
 }

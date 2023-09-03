@@ -125,7 +125,7 @@ public class InitBean implements Serializable {
 
 	    return tmpTankhahWallet.computeIfAbsent(contractId, id -> {
 	        List<EvmWalletDto> lst;
-	        if (tempTankhahWalletService.existBySmartContractAndWalletType(smartContract, WalletType.TRANSFER)) {
+	        if (tempTankhahWalletService.existsBySmartContractAndWalletType(smartContract, WalletType.TRANSFER)) {
 	            lst = tempTankhahWalletService.findBySmartContractAndWalletType(smartContract, WalletType.TRANSFER)
 	                    .stream()
 	                    .map(TempTankhahWallet::getAsEvmWalletDto)

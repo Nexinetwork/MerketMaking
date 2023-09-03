@@ -60,8 +60,8 @@ public class TempTankhahWalletService extends BaseService<TempTankhahWallet> imp
 		return tempTankhahWalletDao.saveAll(oList);
 	}
 
-	public boolean existBySmartContractAndWalletType(SmartContract smartContract, WalletType walletType) {
-		return tempTankhahWalletDao.existBySmartContractAndWalletType(smartContract, walletType);
+	public boolean existsBySmartContractAndWalletType(SmartContract smartContract, WalletType walletType) {
+		return tempTankhahWalletDao.existsBySmartContractAndWalletType(smartContract, walletType);
 	}
 
 }
