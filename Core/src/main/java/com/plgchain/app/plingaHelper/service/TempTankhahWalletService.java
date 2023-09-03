@@ -60,6 +60,10 @@ public class TempTankhahWalletService extends BaseService<TempTankhahWallet> imp
 		return tempTankhahWalletDao.saveAll(oList);
 	}
 
+	public List<TempTankhahWallet> saveAllAndFlush(List<TempTankhahWallet> oList) {
+		return tempTankhahWalletDao.saveAllAndFlush(oList);
+	}
+
 	public boolean existsBySmartContractAndWalletType(SmartContract smartContract, WalletType walletType) {
 		return tempTankhahWalletDao.existsBySmartContractAndWalletType(smartContract, walletType);
 	}

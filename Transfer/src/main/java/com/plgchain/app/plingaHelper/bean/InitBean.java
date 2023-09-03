@@ -134,19 +134,12 @@ public class InitBean implements Serializable {
 						smartContract.getContractsAddress()));
 			} else {
 				lst = EvmWalletUtil.generateRandomWallet(tmpTankhahWalletCount);
-				lst.stream().map(ewDto -> new TempTankhahWallet(ewDto)).peek(ttw -> {
+				var ttwLst = lst.stream().map(ewDto -> new TempTankhahWallet(ewDto)).peek(ttw -> {
 					ttw.setSmartContract(smartContract);
 					ttw.setWalletType(WalletType.TRANSFER);
-					try {
-						ttw = tempTankhahWalletService.saveAndFlush(ttw);
-						//logger.info("TempTankhahWallet has been saved to database : " + ttw);
-					} catch (Exception e) {
-						logger.error("Error occurred while saving TempTankhahWallet:", e);
-						e.printStackTrace();
-					}
 				}).collect(Collectors.toList());
 
-				// tempTankhahWalletService.saveAll(ttwLst);
+				tempTankhahWalletService.saveAllAndFlush(ttwLst);
 				logger.info(String.format("Temp tankhah for contract %s has been generated and saved to database.",
 						smartContract.getContractsAddress()));
 			}
