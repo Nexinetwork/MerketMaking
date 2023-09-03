@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import com.plgchain.app.plingaHelper.annotation.LogMethod;
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.dao.TempTankhahWalletDao;
@@ -13,6 +15,7 @@ import com.plgchain.app.plingaHelper.service.Base.BaseService;
 
 import jakarta.inject.Inject;
 
+@Service
 public class TempTankhahWalletService extends BaseService<TempTankhahWallet> implements Serializable {
 
 	private static final long serialVersionUID = -984115045697781591L;
