@@ -3,6 +3,8 @@ package com.plgchain.app.plingaHelper.bean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.dto.EvmWalletDto;
 import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
+import com.plgchain.app.plingaHelper.entity.TempTankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.exception.InvalidMarketMaking;
 import com.plgchain.app.plingaHelper.service.MMWalletService;
@@ -21,8 +24,10 @@ import com.plgchain.app.plingaHelper.service.MarketMakingService;
 import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
 import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.service.TankhahWalletService;
+import com.plgchain.app.plingaHelper.service.TempTankhahWalletService;
 import com.plgchain.app.plingaHelper.util.NumberUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
+import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -41,10 +46,11 @@ public class WalletActionBean implements Serializable {
 	private final MarketMakingWalletService marketMakingWalletService;
 	private final SmartContractService smartContractService;
 	private final BlockchainBean blockchainBean;
+	private final TempTankhahWalletService tempTankhahWalletService;
 	@Inject
 	public WalletActionBean(InitBean initBean, MarketMakingService marketMakingService, TransferBean transferBean,
 			TankhahWalletService tankhahWalletService, MarketMakingWalletService marketMakingWalletService,
-			SmartContractService smartContractService, BlockchainBean blockchainBean, MMWalletService mmWalletService) {
+			SmartContractService smartContractService, BlockchainBean blockchainBean, MMWalletService mmWalletService,TempTankhahWalletService tempTankhahWalletService) {
 		this.initBean = initBean;
 		this.marketMakingService = marketMakingService;
 		this.transferBean = transferBean;
@@ -52,6 +58,7 @@ public class WalletActionBean implements Serializable {
 		this.marketMakingWalletService = marketMakingWalletService;
 		this.smartContractService = smartContractService;
 		this.blockchainBean = blockchainBean;
+		this.tempTankhahWalletService = tempTankhahWalletService;
 	}
 
 	@Async
@@ -789,6 +796,28 @@ public class WalletActionBean implements Serializable {
 					}
 				});
 
+	}
+
+	@Transactional
+	public void generateTempTankhahWallet(long contractId) {
+		smartContractService.findById(contractId).ifPresent(sm -> {
+			if (!tempTankhahWalletService.existsBySmartContractAndWalletType(sm, WalletType.TRANSFER)) {
+				var lst = EvmWalletUtil.generateRandomWallet(initBean.getTmpTankhahWalletCount());
+				lst.stream().map(ewDto -> new TempTankhahWallet(ewDto)).peek(ttw -> {
+					ttw.setSmartContract(sm);
+					ttw.setWalletType(WalletType.TRANSFER);
+					try {
+						ttw = tempTankhahWalletService.saveAndFlush(ttw);
+						//logger.info("TempTankhahWallet has been saved to database : " + ttw);
+					} catch (Exception e) {
+						logger.error("Error occurred while saving TempTankhahWallet:", e);
+						e.printStackTrace();
+					}
+				}).collect(Collectors.toList());
+
+				// tempTankhahWalletService.saveAll(ttwLst);
+			}
+		});
 	}
 
 }

@@ -21,6 +21,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.dto.EvmWalletDto;
@@ -39,7 +41,6 @@ import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -120,6 +121,7 @@ public class InitBean implements Serializable {
 		lockedMethod.remove(action);
 	}
 
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public EvmWalletDto getRandomTmpTankhahWallet(SmartContract smartContract) {
 		long contractId = smartContract.getContractId();
 
@@ -136,7 +138,7 @@ public class InitBean implements Serializable {
 					ttw.setSmartContract(smartContract);
 					ttw.setWalletType(WalletType.TRANSFER);
 					try {
-						ttw = tempTankhahWalletService.saveAndFlush(ttw);
+						ttw = tempTankhahWalletService.save(ttw);
 						logger.info("TempTankhahWallet has been saved to database : " + ttw);
 					} catch (Exception e) {
 						logger.error("Error occurred while saving TempTankhahWallet:", e);
