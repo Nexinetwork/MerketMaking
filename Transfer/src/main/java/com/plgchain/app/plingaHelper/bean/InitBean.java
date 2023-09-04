@@ -155,6 +155,8 @@ public class InitBean implements Serializable {
 		tmpTankhahWallet.computeIfPresent(smartContract.getContractId(), (id, wallets) -> {
 			for (int i = 0; i < wallets.size(); i++) {
 				if (wallets.get(i).equals(ewd)) {
+					if (ewd.getNonce() == null)
+						ewd.setNonce(BigInteger.ZERO);
 					ewd.setNonce(nonce);
 					wallets.set(i, ewd);
 					return wallets;

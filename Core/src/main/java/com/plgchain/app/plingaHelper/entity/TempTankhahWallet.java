@@ -80,6 +80,8 @@ public class TempTankhahWallet implements Serializable {
 
 	public TempTankhahWallet(EvmWalletDto evmw) {
 		this.nonce = evmw.getNonce();
+		if (this.nonce == null)
+			this.nonce = BigInteger.ZERO;
 		this.privateKey = evmw.getHexKey();
 		this.publicKey = evmw.getPublicKey();
 	}
