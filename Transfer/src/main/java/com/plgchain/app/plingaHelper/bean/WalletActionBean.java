@@ -835,4 +835,50 @@ public class WalletActionBean implements Serializable {
 		});
 	}
 
+	@Async
+	@Transactional
+	public void backAllTokenFromTempTankhahToTankhah(long contractId) {
+		logger.info(String.format("Try to back all tokens from temp tankhah to tankhah for contract %s", contractId));
+		var sm = smartContractService.findById(contractId).get();
+		Blockchain blockchain = sm.getBlockchain();
+		Coin coin = sm.getCoin();
+		var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
+		tempTankhahWalletService.findBySmartContractAndWalletType(sm, WalletType.TRANSFER)
+				.stream().forEach(wallet -> {
+					BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
+							wallet.getPrivateKey(), sm.getContractsAddress());
+					if (tokenBalance.compareTo(BigDecimal.ZERO) > 0) {
+						BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+								wallet.getPrivateKey());
+						if (blockchain.isAutoGas()) {
+							transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKey(),
+									wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(),
+									tokenBalance, EVMUtil.DefaultTokenGasLimit, nonce);
+						} else {
+							transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKey(),
+									wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(),
+									tokenBalance, EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
+						}
+					}
+					BigDecimal mainCoinBalance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
+					if (mainCoinBalance.compareTo(initBean.getMinimumBalanceForTransfer()) > 0) {
+						BigDecimal amount = mainCoinBalance.subtract(initBean.getMinimumBalanceForTransfer());
+						BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+								wallet.getPrivateKey());
+						if (blockchain.isAutoGas()) {
+								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+										wallet.getPrivateKey(), wallet.getPublicKey(),
+										tankhahWallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
+										nonce);
+						} else {
+								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+										wallet.getPrivateKey(), wallet.getPublicKey(),
+										tankhahWallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
+										EVMUtil.DefaultGasLimit, nonce);
+						}
+					}
+				});
+
+	}
+
 }

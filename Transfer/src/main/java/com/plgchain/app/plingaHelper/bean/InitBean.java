@@ -78,6 +78,8 @@ public class InitBean implements Serializable {
 
 	private final int sleepInSeconds = 5;
 
+	private final BigDecimal minimumBalanceForTransfer = new BigDecimal("0.0001");
+
 	private final int tmpTankhahWalletCount = 100;
 
 	private int selectPageSize = 20000;
