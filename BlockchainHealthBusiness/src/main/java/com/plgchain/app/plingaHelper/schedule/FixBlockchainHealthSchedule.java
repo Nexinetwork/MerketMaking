@@ -25,7 +25,7 @@ import com.plgchain.app.plingaHelper.util.blockchain.BlockchainUtil;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-@Component
+// @Component
 public class FixBlockchainHealthSchedule implements Serializable {
 
 	private static final long serialVersionUID = 7504602259969637312L;
@@ -43,7 +43,7 @@ public class FixBlockchainHealthSchedule implements Serializable {
 	private BlockchainNodeService blockchainNodeService;
 
 	@SuppressWarnings("unchecked")
-	@Scheduled(cron = "0 */15 * * * *", zone = "GMT")
+	// @Scheduled(cron = "0 */15 * * * *", zone = "GMT")
 	@Transactional
 	public void fixBlockchainHealth() {
 		if (!initBean.doesActionRunning("fixBlockchainHealth")) {
