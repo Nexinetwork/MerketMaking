@@ -742,7 +742,7 @@ public class WalletActionBean implements Serializable {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), sm.getContractsAddress(), amount,
-													EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
+													EVMUtil.DefaultTokenGasLimit, tmpTankhah.getNonce());
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -757,7 +757,7 @@ public class WalletActionBean implements Serializable {
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), sm.getContractsAddress(), amount,
 													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
-													tankhahNonce[0]);
+													tmpTankhah.getNonce());
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
