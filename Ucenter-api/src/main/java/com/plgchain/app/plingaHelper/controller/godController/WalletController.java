@@ -140,5 +140,21 @@ public class WalletController extends BaseController implements Serializable {
 	    return success("Actions Successfully put in queue please be paitent.");
 	}
 
+	@RequestMapping("/wallet/deleteTempTankhahWallet")
+	public MessageResult deleteTempTankhahWallet(@RequestBody Long contractId) {
+	    if (contractId == null)
+	    	error("ContractId is null");
+	    if (contractId < 0)
+	    	error("ContractId is null");
+	    Optional<SmartContract> sm = smartContractService.findById(contractId);
+	    if (sm.isEmpty())
+	    	error("Invalid contractId.");
+	    CommandToRun ctr = new CommandToRun();
+		ctr.setAdminCommandType(AdminCommandType.DELETETEMPTANKHAHWALLET);
+		ctr.setLong1(contractId);
+		kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+	    return success("Actions Successfully put in queue please be paitent.");
+	}
+
 
 }

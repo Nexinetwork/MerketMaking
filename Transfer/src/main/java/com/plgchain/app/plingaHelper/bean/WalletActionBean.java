@@ -881,4 +881,16 @@ public class WalletActionBean implements Serializable {
 
 	}
 
+	@Async
+	@Transactional
+	public void deleteTempTankhahWallet(long contractId) {
+		logger.info(String.format("Try to delete temp tankhah wallets for contract %s", contractId));
+		var sm = smartContractService.findById(contractId).get();
+		tempTankhahWalletService.findBySmartContractAndWalletType(sm, WalletType.TRANSFER)
+		.forEach(wallet -> {
+			tempTankhahWalletService.delete(wallet);
+		});
+		logger.info(String.format("All temp tankhah wallets for contract %s has been deleted.", contractId));
+	}
+
 }

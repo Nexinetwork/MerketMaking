@@ -51,7 +51,7 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/getTankhahWalletByPublicKey")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body("0x57277e39b0bf24a2bc3dd7aae78c2be45fc6dab8").asString();
+				.body("0xA60e7e82560165a150F05e75F59bb8499D76AE12").asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
@@ -71,7 +71,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("balance : " + balance.toString());
 	}
 
-	@Test
+	//@Test
 	public void correctMetamaskTransWalletsFunding() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -80,7 +80,7 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFunding")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body("12150").asString();
+				.body("12139").asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
@@ -93,7 +93,33 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensToTankhah")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body("12146").asString();
+				.body("12139").asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	//@Test
+	public void backAllTokensFromTempTankhahToTankhah() {
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
+		int a = 1;
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensFromTempTankhahToTankhah")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body("12151").asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	@Test
+	public void deleteTempTankhahWallet() {
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
+		int a = 1;
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/deleteTempTankhahWallet")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body("12151").asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
