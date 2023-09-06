@@ -453,7 +453,6 @@ public class WalletActionBean implements Serializable {
 		var mm = marketMakingService.findBySmartContract(sm).get();
 		if (!mm.isInitialWalletCreationDone())
 			throw new InvalidMarketMaking();
-		final int[] enqueued = { 0 };
 		final BigInteger[] tankhahNonce = {
 				EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex()) };
 		logger.info(String.format("Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
@@ -524,7 +523,6 @@ public class WalletActionBean implements Serializable {
 										}
 									}
 									tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
-									enqueued[0]++;
 								} else {
 									if (blockchain.isAutoGas()) {
 										try {
@@ -633,7 +631,6 @@ public class WalletActionBean implements Serializable {
 											}
 										}
 										tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
-										enqueued[0]++;
 									} else {
 										logger.info("Tankhah does not enough balance skip it.");
 									}
@@ -734,7 +731,6 @@ public class WalletActionBean implements Serializable {
 											}
 										}
 										tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
-										enqueued[0]++;
 									}
 								} else {
 									if (blockchain.isAutoGas()) {
