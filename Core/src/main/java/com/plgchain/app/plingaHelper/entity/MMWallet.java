@@ -46,14 +46,18 @@ public class MMWallet {
 
 	private int chunk;
 
+	@Indexed
 	private long coinId;
 
+	@Indexed
 	private long blockchainId;
 
+	@Indexed
 	private String blockchain;
 
 	private String coin;
 
+	@Indexed
 	private String coinSymbol;
 
 	private String contractAddress;
