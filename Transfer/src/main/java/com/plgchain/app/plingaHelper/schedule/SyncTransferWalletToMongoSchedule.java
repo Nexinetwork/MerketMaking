@@ -41,7 +41,7 @@ public class SyncTransferWalletToMongoSchedule implements Serializable {
 	private InitBean initBean;
 
 	@Transactional
-	@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
+	@Scheduled(cron = "0 */5 * * * *", zone = "GMT")
 	public void syncTransferWalletToMongo() {
 	    if (!initBean.doesActionRunning("syncTransferWalletToMongo")) {
 	        initBean.startActionRunning("syncTransferWalletToMongo");
