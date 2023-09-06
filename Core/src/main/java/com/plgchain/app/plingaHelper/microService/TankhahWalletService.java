@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.plgchain.app.plingaHelper.service;
+package com.plgchain.app.plingaHelper.microService;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.plgchain.app.plingaHelper.dao.TankhahWalletDao;
 import com.plgchain.app.plingaHelper.entity.TankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
-import com.plgchain.app.plingaHelper.service.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseService;
 
 import jakarta.inject.Inject;
 

@@ -1,4 +1,4 @@
-package com.plgchain.app.plingaHelper.service;
+package com.plgchain.app.plingaHelper.microService;
 
 import java.io.Serializable;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.dao.UserDao;
 import com.plgchain.app.plingaHelper.entity.User;
-import com.plgchain.app.plingaHelper.service.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseService;
 
 @Service
 public class UserService extends BaseService<User> implements Serializable {

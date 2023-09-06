@@ -5,7 +5,7 @@ import com.plgchain.app.plingaHelper.constant.TankhahWalletType;
 import com.plgchain.app.plingaHelper.dto.EvmWalletDto;
 import com.plgchain.app.plingaHelper.entity.TankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
-import com.plgchain.app.plingaHelper.service.TankhahWalletService;
+import com.plgchain.app.plingaHelper.microService.TankhahWalletService;
 import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;

@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 import org.slf4j.LoggerFactory;
 
-import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingWalletService;
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 
 import jakarta.inject.Inject;

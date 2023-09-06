@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.plgchain.app.plingaHelper.service;
+package com.plgchain.app.plingaHelper.microService;
 
 import java.io.Serializable;
 import org.springframework.beans.factory.annotation.Autowired;

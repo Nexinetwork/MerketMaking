@@ -19,7 +19,7 @@ import com.plgchain.app.plingaHelper.controller.BaseController;
 import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.exception.RestActionError;
-import com.plgchain.app.plingaHelper.service.CoinService;
+import com.plgchain.app.plingaHelper.microService.CoinService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 

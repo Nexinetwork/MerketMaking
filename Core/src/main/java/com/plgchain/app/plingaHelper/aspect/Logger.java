@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import com.plgchain.app.plingaHelper.constant.LogAction;
 import com.plgchain.app.plingaHelper.constant.LogType;
 import com.plgchain.app.plingaHelper.entity.Log;
-import com.plgchain.app.plingaHelper.service.LogService;
+import com.plgchain.app.plingaHelper.microService.LogService;
 
 @Aspect
 @Component

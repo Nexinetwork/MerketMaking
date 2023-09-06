@@ -14,7 +14,7 @@ import com.plgchain.app.plingaHelper.constant.AdminCommandType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.controller.BaseController;
 import com.plgchain.app.plingaHelper.entity.SystemConfig;
-import com.plgchain.app.plingaHelper.service.SystemConfigService;
+import com.plgchain.app.plingaHelper.microService.SystemConfigService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 

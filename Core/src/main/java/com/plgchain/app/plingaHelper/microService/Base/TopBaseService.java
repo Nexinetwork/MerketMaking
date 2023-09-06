@@ -1,4 +1,4 @@
-package com.plgchain.app.plingaHelper.service.Base;
+package com.plgchain.app.plingaHelper.microService.Base;
 
 import com.plgchain.app.plingaHelper.ability.CreateAbility;
 import com.plgchain.app.plingaHelper.ability.ScreenAbility;

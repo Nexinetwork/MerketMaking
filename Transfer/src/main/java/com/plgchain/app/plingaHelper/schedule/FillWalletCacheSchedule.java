@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
-import com.plgchain.app.plingaHelper.service.MarketMakingService;
-import com.plgchain.app.plingaHelper.service.MarketMakingWalletService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingWalletService;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;

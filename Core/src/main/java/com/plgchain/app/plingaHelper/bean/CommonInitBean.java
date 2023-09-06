@@ -4,14 +4,12 @@
 package com.plgchain.app.plingaHelper.bean;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.plgchain.app.plingaHelper.service.SystemConfigService;
+import com.plgchain.app.plingaHelper.microService.SystemConfigService;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;

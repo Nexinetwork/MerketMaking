@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.bean.coingecko.CoingeckoBean;
-import com.plgchain.app.plingaHelper.service.CoinService;
+import com.plgchain.app.plingaHelper.microService.CoinService;
 import jakarta.inject.Inject;
 
 @Component

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.plgchain.app.plingaHelper.constant.UserStatus;
 import com.plgchain.app.plingaHelper.controller.BaseController;
 import com.plgchain.app.plingaHelper.entity.User;
-import com.plgchain.app.plingaHelper.service.UserService;
+import com.plgchain.app.plingaHelper.microService.UserService;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 
 //@CrossOrigin(origins = "*", maxAge = 3600)

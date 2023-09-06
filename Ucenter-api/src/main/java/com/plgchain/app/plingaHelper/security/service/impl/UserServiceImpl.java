@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.plgchain.app.plingaHelper.service.UserService;
+import com.plgchain.app.plingaHelper.microService.UserService;
 
 import lombok.RequiredArgsConstructor;
 

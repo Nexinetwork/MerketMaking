@@ -12,7 +12,7 @@ import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
 import com.plgchain.app.plingaHelper.security.dao.response.JwtAuthenticationResponse;
 import com.plgchain.app.plingaHelper.security.service.AuthenticationService;
 import com.plgchain.app.plingaHelper.security.service.JwtService;
-import com.plgchain.app.plingaHelper.service.UserService;
+import com.plgchain.app.plingaHelper.microService.UserService;
 
 @Service
 @RequiredArgsConstructor

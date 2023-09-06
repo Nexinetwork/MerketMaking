@@ -23,7 +23,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @CompoundIndexes({
-    @CompoundIndex(name = "marketmaking_wallet_idx1", def = "{'contractId' : 1, 'chunk' : 1}")
+    @CompoundIndex(name = "marketmaking_wallet_idx1", def = "{'contractId' : 1, 'chunk' : 1}"),
+    @CompoundIndex(name = "marketmaking_wallet_idx2", def = "{'contractId' : 1, 'chunk' : -1}")
 })
 public class MMWallet {
 

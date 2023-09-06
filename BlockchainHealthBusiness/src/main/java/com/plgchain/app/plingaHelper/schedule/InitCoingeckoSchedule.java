@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.bean.coingecko.CoingeckoBean;
 import com.plgchain.app.plingaHelper.entity.SystemConfig;
-import com.plgchain.app.plingaHelper.service.SystemConfigService;
+import com.plgchain.app.plingaHelper.microService.SystemConfigService;
 
 @Component
 public class InitCoingeckoSchedule implements Serializable {
