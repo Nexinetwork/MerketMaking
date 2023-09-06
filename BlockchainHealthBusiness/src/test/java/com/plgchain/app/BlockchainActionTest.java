@@ -244,7 +244,7 @@ public class BlockchainActionTest implements Serializable {
 	public void findContractsByContractAddress() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		String contract = "0xC8be0e4CE4d6315001Cc8dC21737e1f8583acd47";
+		String contract = "0x30199Be78D0A2A885b3E03f7D5B08DE2ad251648";
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/contract/findContractsByContractAddress")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -253,7 +253,7 @@ public class BlockchainActionTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	// @Test
+	//@Test
 	public void correctWalletTestCase() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
