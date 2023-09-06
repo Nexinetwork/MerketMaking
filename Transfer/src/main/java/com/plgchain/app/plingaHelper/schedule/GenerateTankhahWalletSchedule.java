@@ -5,7 +5,7 @@ import com.plgchain.app.plingaHelper.constant.TankhahWalletType;
 import com.plgchain.app.plingaHelper.dto.EvmWalletDto;
 import com.plgchain.app.plingaHelper.entity.TankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
-import com.plgchain.app.plingaHelper.microService.TankhahWalletService;
+import com.plgchain.app.plingaHelper.microService.TankhahWalletMicroService;
 import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
@@ -24,12 +24,12 @@ public class GenerateTankhahWalletSchedule implements Serializable {
 	private static final Logger logger = LoggerFactory.getLogger(GenerateTankhahWalletSchedule.class);
 
 	private final InitBean initBean;
-	private final TankhahWalletService tankhahWalletService;
+	private final TankhahWalletMicroService tankhahWalletMicroService;
 
 	@Inject
-	public GenerateTankhahWalletSchedule(InitBean initBean, TankhahWalletService tankhahWalletService) {
+	public GenerateTankhahWalletSchedule(InitBean initBean, TankhahWalletMicroService tankhahWalletMicroService) {
 		this.initBean = initBean;
-		this.tankhahWalletService = tankhahWalletService;
+		this.tankhahWalletMicroService = tankhahWalletMicroService;
 	}
 
 	@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
@@ -37,14 +37,14 @@ public class GenerateTankhahWalletSchedule implements Serializable {
 		if (!initBean.doesActionRunning("generateTankhahWallet")) {
 			initBean.startActionRunning("generateTankhahWallet");
 
-			List<SmartContract> smartContracts = tankhahWalletService.findAllSmartContractsNotHaveTankhahWallet();
+			List<SmartContract> smartContracts = tankhahWalletMicroService.findAllSmartContractsNotHaveTankhahWallet();
 			smartContracts.forEach(smartContract -> {
 				try {
 					EvmWalletDto w = EvmWalletUtil.generateRandomWallet();
 					TankhahWallet tankhahWallet = TankhahWallet.builder().balance(BigDecimal.ZERO).mainCoinBalance(BigDecimal.ZERO)
 							.contract(smartContract).privateKey(w.getPrivateKey()).privateKeyHex(w.getHexKey())
 							.tankhahWalletType(TankhahWalletType.TRANSFER).publicKey(w.getPublicKey()).build();
-					tankhahWallet = tankhahWalletService.save(tankhahWallet);
+					tankhahWallet = tankhahWalletMicroService.save(tankhahWallet);
 					logger.info(String.format("Tankhah wallet %s for transfer has been created.", tankhahWallet));
 				} catch (Exception e) {
 					logger.error(e.getMessage());

@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-import com.plgchain.app.plingaHelper.microService.SystemConfigService;
+import com.plgchain.app.plingaHelper.microService.SystemConfigMicroService;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
@@ -39,12 +39,12 @@ public class CommonInitBean implements Serializable {
 	private String privateKey;
 
 	@Inject
-	private SystemConfigService systemConfigService;
+	private SystemConfigMicroService systemConfigMicroService;
 
 	@PostConstruct
 	public void init() {
-		if (systemConfigService.isByConfigNameExist("ssh-key-path"))
-			privateKey = systemConfigService.findByConfigName("ssh-key-path").get().getConfigStringValue();
+		if (systemConfigMicroService.isByConfigNameExist("ssh-key-path"))
+			privateKey = systemConfigMicroService.findByConfigName("ssh-key-path").get().getConfigStringValue();
 	}
 
 	public boolean doesBlockchainRestarting(String blockchain) {

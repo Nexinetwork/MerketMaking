@@ -33,14 +33,14 @@ import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
 import com.plgchain.app.plingaHelper.exception.RestActionError;
-import com.plgchain.app.plingaHelper.microService.BlockchainNodeService;
-import com.plgchain.app.plingaHelper.microService.BlockchainService;
-import com.plgchain.app.plingaHelper.microService.CoinService;
-import com.plgchain.app.plingaHelper.microService.MarketMakingService;
-import com.plgchain.app.plingaHelper.microService.MarketMakingWalletService;
-import com.plgchain.app.plingaHelper.microService.SmartContractService;
-import com.plgchain.app.plingaHelper.microService.SystemConfigService;
-import com.plgchain.app.plingaHelper.microService.TankhahWalletService;
+import com.plgchain.app.plingaHelper.microService.BlockchainNodeMicroService;
+import com.plgchain.app.plingaHelper.microService.BlockchainMicroService;
+import com.plgchain.app.plingaHelper.microService.CoinMicroService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingMicroService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingWalletMicroService;
+import com.plgchain.app.plingaHelper.microService.SmartContractMicroService;
+import com.plgchain.app.plingaHelper.microService.SystemConfigMicroService;
+import com.plgchain.app.plingaHelper.microService.TankhahWalletMicroService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.type.request.CoinReq;
 import com.plgchain.app.plingaHelper.type.request.ContractReq;
@@ -66,31 +66,31 @@ public class BlockchainBean implements Serializable {
 	private static final Logger logger = LoggerFactory.getLogger(BlockchainBean.class);
 
 	@Inject
-	private BlockchainService blockchainService;
+	private BlockchainMicroService blockchainMicroService;
 
 	@Inject
-	private CoinService coinService;
+	private CoinMicroService coinMicroService;
 
 	@Inject
-	private SmartContractService smartContractService;
+	private SmartContractMicroService smartContractMicroService;
 
 	@Inject
-	private BlockchainNodeService blockchainNodeService;
+	private BlockchainNodeMicroService blockchainNodeMicroService;
 
 	@Inject
 	private KafkaTemplate<String, String> kafkaTemplate;
 
 	@Inject
-	private MarketMakingService marketMakingService;
+	private MarketMakingMicroService marketMakingMicroService;
 
 	@Inject
-	private TankhahWalletService tankhahWalletService;
+	private TankhahWalletMicroService tankhahWalletMicroService;
 
 	@Inject
-	private MarketMakingWalletService marketMakingWalletService;
+	private MarketMakingWalletMicroService marketMakingWalletMicroService;
 
 	@Inject
-	private SystemConfigService systemConfigService;
+	private SystemConfigMicroService systemConfigMicroService;
 
 	@Inject
 	private CommonInitBean commonInitBean;
@@ -116,14 +116,14 @@ public class BlockchainBean implements Serializable {
 				throw new RestActionError("ChainId for evm blockchain should not be empty");
 			if (blockchain.getChainId().compareTo(BigInteger.ZERO) <= 0)
 				throw new RestActionError("ChainId for evm blockchain should be bigger than 0");
-			if (blockchainService.existsBlockchainByChainId(blockchain.getChainId())) {
+			if (blockchainMicroService.existsBlockchainByChainId(blockchain.getChainId())) {
 				throw new RestActionError("ChainId for evm blockchain Already exist");
 			}
 		}
-		if (blockchainService.existsBlockchainByName(blockchain.getName().trim())) {
+		if (blockchainMicroService.existsBlockchainByName(blockchain.getName().trim())) {
 			throw new RestActionError("Blockchain name already exist");
 		}
-		if (blockchainService.existsBlockchainByMainCoin(blockchain.getMainCoin().trim())) {
+		if (blockchainMicroService.existsBlockchainByMainCoin(blockchain.getMainCoin().trim())) {
 			throw new RestActionError("Blockchain main coin already exist");
 		}
 		blockchain.setName(blockchain.getName().trim());
@@ -133,7 +133,7 @@ public class BlockchainBean implements Serializable {
 		blockchain.setHealthy(true);
 		blockchain.setNodeCount(0);
 		blockchain.setHeight(BigInteger.ZERO);
-		blockchain = blockchainService.save(blockchain);
+		blockchain = blockchainMicroService.save(blockchain);
 		CommandToRun ctr = new CommandToRun();
 		ctr.setAdminCommandType(AdminCommandType.UPDATEBLOCKCHAIN);
 		kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
@@ -159,15 +159,15 @@ public class BlockchainBean implements Serializable {
 			throw new RestActionError("ServerIp is Null");
 		if (!InetAddresses.isInetAddress(blockchainNode.getServerIp()))
 			throw new RestActionError("Invalid ServerIp");
-		if (!blockchainService.existById(blockchainNode.getBlockchainId()))
+		if (!blockchainMicroService.existById(blockchainNode.getBlockchainId()))
 			throw new RestActionError("Blockchain does not exist");
-		blockchainNode.setBlockchain(blockchainService.findById(blockchainNode.getBlockchainId()).get());
+		blockchainNode.setBlockchain(blockchainMicroService.findById(blockchainNode.getBlockchainId()).get());
 		if (blockchainNode.getSshPort() == null)
 			blockchainNode.setSshPort(22);
 		if (blockchainNode.getSshPort() <= 0)
 			blockchainNode.setSshPort(22);
 		blockchainNode.setLastBlock(BigInteger.ZERO);
-		blockchainNode = blockchainNodeService.save(blockchainNode);
+		blockchainNode = blockchainNodeMicroService.save(blockchainNode);
 		return blockchainNode;
 	}
 
@@ -202,23 +202,23 @@ public class BlockchainBean implements Serializable {
 				.sshPort(blockchainNode.getSshPort()).validator(blockchainNode.isValidator())
 				.enabled(blockchainNode.isEnabled()).mustCheck(blockchainNode.isMustCheck()).lastBlock(BigInteger.ZERO)
 				.build();
-		node = blockchainNodeService.save(node);
+		node = blockchainNodeMicroService.save(node);
 		return node;
 	}
 
 	public boolean existBlockchain(Long blockchainId, String blockchainName) {
 		if (blockchainId != null && blockchainId > 0)
-			return blockchainService.existById(blockchainId);
+			return blockchainMicroService.existById(blockchainId);
 		if (!Strings.isNullOrEmpty(blockchainName))
-			return blockchainService.existsBlockchainByName(blockchainName);
+			return blockchainMicroService.existsBlockchainByName(blockchainName);
 		return false;
 	}
 
 	public Optional<Blockchain> findBlockchain(Long blockchainId, String blockchainName) {
 		if (blockchainId != null && blockchainId > 0)
-			return blockchainService.findById(blockchainId);
+			return blockchainMicroService.findById(blockchainId);
 		if (!Strings.isNullOrEmpty(blockchainName))
-			return blockchainService.findByName(blockchainName);
+			return blockchainMicroService.findByName(blockchainName);
 		return null;
 	}
 
@@ -235,19 +235,19 @@ public class BlockchainBean implements Serializable {
 			throw new RestActionError("Coin is blank");
 		if (Strings.isNullOrEmpty(contractReq.getContract()))
 			throw new RestActionError("Contract is blank");
-		if (!blockchainService.existsBlockchainByCoingeckoId(contractReq.getBlockchainCoingeckoId()))
+		if (!blockchainMicroService.existsBlockchainByCoingeckoId(contractReq.getBlockchainCoingeckoId()))
 			throw new RestActionError("Blockchain does not exist");
-		if (!coinService.existsCoinByCoingeckoId(contractReq.getCoinCoingeckoId()))
+		if (!coinMicroService.existsCoinByCoingeckoId(contractReq.getCoinCoingeckoId()))
 			throw new RestActionError("Coin does not exist");
-		Blockchain blockchain = blockchainService.findByCoingeckoId(contractReq.getBlockchainCoingeckoId()).get();
-		Coin coin = coinService.findByCoingeckoId(contractReq.getCoinCoingeckoId()).get();
-		if (smartContractService.existsSmartContractByBlockchainAndCoin(blockchain, coin))
+		Blockchain blockchain = blockchainMicroService.findByCoingeckoId(contractReq.getBlockchainCoingeckoId()).get();
+		Coin coin = coinMicroService.findByCoingeckoId(contractReq.getCoinCoingeckoId()).get();
+		if (smartContractMicroService.existsSmartContractByBlockchainAndCoin(blockchain, coin))
 			throw new RestActionError("Coin exist on blockchain");
 		var sm = SmartContract.builder().coin(coin).blockchain(blockchain).contractsAddress(contractReq.getContract())
 				.decimal(contractReq.getDecimal() != null ? contractReq.getDecimal() : 18)
 				.mustCheck(contractReq.isMustCheck()).isMain(contractReq.isMustCheck()).mustAdd(contractReq.isMustAdd())
 				.build();
-		sm = smartContractService.save(sm);
+		sm = smartContractMicroService.save(sm);
 		return sm;
 	}
 
@@ -263,7 +263,7 @@ public class BlockchainBean implements Serializable {
 		var coinRes = Coin.builder().coingeckoId(coin.getCoingeckoId()).mustCheck(coin.isMustCheck())
 				.symbol(coin.getSymbol()).priceInUsd(coin.getPriceInUsd()).listed(coin.isListed()).name(coin.getName())
 				.build();
-		coinRes = coinService.save(coinRes);
+		coinRes = coinMicroService.save(coinRes);
 		return coinRes;
 	}
 
@@ -278,10 +278,10 @@ public class BlockchainBean implements Serializable {
 		if (sc.getContractId() <= 0 && Strings.isNullOrEmpty(sc.getCoin()) && sc.getCoinId() <= 0)
 			throw new RestActionError("Coin is null");
 		if (sc.getContractId() > 0) {
-			if (!smartContractService.existById(sc.getContractId()))
+			if (!smartContractMicroService.existById(sc.getContractId()))
 				throw new RestActionError("Invalid Smart Contract");
 			else
-				smartContract = smartContractService.findById(sc.getContractId()).get();
+				smartContract = smartContractMicroService.findById(sc.getContractId()).get();
 		}
 		if (Strings.isNullOrEmpty(sc.getContractsAddress()))
 			if (Strings.isNullOrEmpty(smartContract.getContractsAddress()))
@@ -290,27 +290,27 @@ public class BlockchainBean implements Serializable {
 			smartContract.setContractsAddress(sc.getContractsAddress());
 		if (smartContract.getBlockchain() == null) {
 			if (sc.getBlockchainId() > 0) {
-				if (!blockchainService.existById(sc.getBlockchainId()))
+				if (!blockchainMicroService.existById(sc.getBlockchainId()))
 					throw new RestActionError("Invalid blockchain");
-				Blockchain blockchain = blockchainService.findById(sc.getBlockchainId()).get();
+				Blockchain blockchain = blockchainMicroService.findById(sc.getBlockchainId()).get();
 				smartContract.setBlockchain(blockchain);
 			} else {
-				if (!blockchainService.existsBlockchainByName(sc.getBlockchain()))
+				if (!blockchainMicroService.existsBlockchainByName(sc.getBlockchain()))
 					throw new RestActionError("Invalid blockchain");
-				Blockchain blockchain = blockchainService.findByName(sc.getBlockchain()).get();
+				Blockchain blockchain = blockchainMicroService.findByName(sc.getBlockchain()).get();
 				smartContract.setBlockchain(blockchain);
 			}
 		}
 		if (smartContract.getCoin() == null) {
 			if (sc.getCoinId() > 0) {
-				if (!coinService.existById(sc.getCoinId()))
+				if (!coinMicroService.existById(sc.getCoinId()))
 					throw new RestActionError("Invalid Coin");
-				Coin coin = coinService.findById(sc.getCoinId()).get();
+				Coin coin = coinMicroService.findById(sc.getCoinId()).get();
 				smartContract.setCoin(coin);
 			} else {
-				if (!coinService.existsCoinByCoingeckoId(sc.getCoin()))
+				if (!coinMicroService.existsCoinByCoingeckoId(sc.getCoin()))
 					throw new RestActionError("Invalid Coin");
-				Coin coin = coinService.findByCoingeckoId(sc.getCoin()).get();
+				Coin coin = coinMicroService.findByCoingeckoId(sc.getCoin()).get();
 				smartContract.setCoin(coin);
 			}
 		}
@@ -325,7 +325,7 @@ public class BlockchainBean implements Serializable {
 		smartContract.setMarketMaking(sc.isMarketMaking());
 		smartContract.setMustAdd(sc.isMustAdd());
 		smartContract.setMustCheck(sc.isMustCheck());
-		smartContract = smartContractService.save(smartContract);
+		smartContract = smartContractMicroService.save(smartContract);
 		return smartContract;
 	}
 
@@ -341,7 +341,7 @@ public class BlockchainBean implements Serializable {
 			throw new RestActionError("Smartcontract is null");
 		}
 
-		SmartContract smartContract = smartContractService.findById(smartContractId)
+		SmartContract smartContract = smartContractMicroService.findById(smartContractId)
 				.orElseThrow(() -> new RestActionError("Invalid smartcontract"));
 
 		MarketMaking mm = smartContract.getMarketMakingObject();
@@ -364,7 +364,7 @@ public class BlockchainBean implements Serializable {
 		mm.setTransactionParallelType(mmReq.getTransactionParallelType());
 		mm.setMustUpdateMongoTransfer(mmReq.isMustUpdateMongoTransfer());
 		mm.setMustUpdateMongoDefi(mmReq.isMustUpdateMongoDefi());
-		mm = marketMakingService.save(mm);
+		mm = marketMakingMicroService.save(mm);
 		return mm;
 	}
 
@@ -377,7 +377,7 @@ public class BlockchainBean implements Serializable {
 		}
 
 		if (smReq.getContractId() > 0) {
-			return smartContractService.findById(smReq.getContractId())
+			return smartContractMicroService.findById(smReq.getContractId())
 					.orElseThrow(() -> new RestActionError("Invalid SmartContract"));
 		}
 
@@ -386,15 +386,15 @@ public class BlockchainBean implements Serializable {
 		}
 
 		if (smReq.getBlockchainId() > 0) {
-			return blockchainService.findById(smReq.getBlockchainId())
-					.flatMap(blockchain -> smartContractService.findByBlockchainAndContractsAddress(blockchain,
+			return blockchainMicroService.findById(smReq.getBlockchainId())
+					.flatMap(blockchain -> smartContractMicroService.findByBlockchainAndContractsAddress(blockchain,
 							smReq.getContractsAddress()))
 					.orElseThrow(() -> new RestActionError("Invalid Contract address in blockchain"));
 		}
 
 		if (!Strings.isNullOrEmpty(smReq.getBlockchain())) {
-			return blockchainService.findByName(smReq.getBlockchain())
-					.flatMap(blockchain -> smartContractService.findByBlockchainAndContractsAddress(blockchain,
+			return blockchainMicroService.findByName(smReq.getBlockchain())
+					.flatMap(blockchain -> smartContractMicroService.findByBlockchainAndContractsAddress(blockchain,
 							smReq.getContractsAddress()))
 					.orElseThrow(() -> new RestActionError("Invalid Contract address in blockchain"));
 		}
@@ -404,7 +404,7 @@ public class BlockchainBean implements Serializable {
 
 	@Transactional
 	public List<TankhahWalletRes> getTankhahWalletListAsResult() {
-		return tankhahWalletService.findAll().stream().map(th -> TankhahWalletRes.builder().balance(th.getBalance())
+		return tankhahWalletMicroService.findAll().stream().map(th -> TankhahWalletRes.builder().balance(th.getBalance())
 				.blockchain(th.getContract().getBlockchain().getName())
 				.blockchainId(th.getContract().getBlockchain().getBlockchainId())
 				.coinId(th.getContract().getCoin().getCoinId()).coinName(th.getContract().getCoin().getName())
@@ -415,8 +415,8 @@ public class BlockchainBean implements Serializable {
 	}
 
 	public void fixWalletPrivatekeys() {
-		var tankhahWallets = tankhahWalletService.findAll();
-		var marketMakingWallets = marketMakingWalletService.findAll();
+		var tankhahWallets = tankhahWalletMicroService.findAll();
+		var marketMakingWallets = marketMakingWalletMicroService.findAll();
 
 		var tankhahWalletsToUpdate = tankhahWallets.stream()
 				.filter(wallet -> Strings.isNullOrEmpty(wallet.getPrivateKeyHex())).peek(wallet -> {
@@ -435,11 +435,11 @@ public class BlockchainBean implements Serializable {
 				}).collect(Collectors.toList());
 
 		if (!tankhahWalletsToUpdate.isEmpty()) {
-			tankhahWalletService.saveAll(tankhahWalletsToUpdate);
+			tankhahWalletMicroService.saveAll(tankhahWalletsToUpdate);
 		}
 
 		if (!marketMakingWalletsToUpdate.isEmpty()) {
-			marketMakingWalletService.saveAll(marketMakingWalletsToUpdate);
+			marketMakingWalletMicroService.saveAll(marketMakingWalletsToUpdate);
 		}
 
 		logger.info("Fixing wallet has been done");
@@ -449,18 +449,18 @@ public class BlockchainBean implements Serializable {
 		if (Strings.isNullOrEmpty(blockchainName)) {
 			throw new RestActionError("Blockchain is null.");
 		}
-		if (!blockchainService.existsBlockchainByName(blockchainName)) {
+		if (!blockchainMicroService.existsBlockchainByName(blockchainName)) {
 			throw new RestActionError("Invalid Blockchain.");
 		}
-		Optional<Blockchain> bc = blockchainService.findByName(blockchainName);
-		return blockchainNodeService.removeByBlockchain(bc.get());
+		Optional<Blockchain> bc = blockchainMicroService.findByName(blockchainName);
+		return blockchainNodeMicroService.removeByBlockchain(bc.get());
 	}
 
 	@Transactional
 	public void stopAllNodesOfBlockchain(String blockchainName) {
-		Optional<Blockchain> bc = blockchainService.findByName(blockchainName);
+		Optional<Blockchain> bc = blockchainMicroService.findByName(blockchainName);
 		bc.orElseThrow(() -> new RuntimeException("Blockchain not found"));
-		var privateKey = systemConfigService.findByConfigName("ssh-key-path").get().getConfigStringValue();
+		var privateKey = systemConfigMicroService.findByConfigName("ssh-key-path").get().getConfigStringValue();
 		bc.get().getNodeList().parallelStream().forEach(node -> {
 			try {
 				ServiceUtil.stopService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
@@ -475,9 +475,9 @@ public class BlockchainBean implements Serializable {
 
 	@Transactional
 	public void startAllNodesOfBlockchain(String blockchainName) {
-		Optional<Blockchain> bc = blockchainService.findByName(blockchainName);
+		Optional<Blockchain> bc = blockchainMicroService.findByName(blockchainName);
 		bc.orElseThrow(() -> new RuntimeException("Blockchain not found"));
-		var privateKey = systemConfigService.findByConfigName("ssh-key-path").get().getConfigStringValue();
+		var privateKey = systemConfigMicroService.findByConfigName("ssh-key-path").get().getConfigStringValue();
 		bc.get().getNodeList().parallelStream().forEach(node -> {
 			try {
 				ServiceUtil.startService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
@@ -492,9 +492,9 @@ public class BlockchainBean implements Serializable {
 
 	@Transactional
 	public void restartAllNodesOfBlockchain(String blockchainName) {
-		Optional<Blockchain> bc = blockchainService.findByName(blockchainName);
+		Optional<Blockchain> bc = blockchainMicroService.findByName(blockchainName);
 		bc.orElseThrow(() -> new RuntimeException("Blockchain not found"));
-		var privateKey = systemConfigService.findByConfigName("ssh-key-path").get().getConfigStringValue();
+		var privateKey = systemConfigMicroService.findByConfigName("ssh-key-path").get().getConfigStringValue();
 		bc.get().getNodeList().parallelStream().forEach(node -> {
 			try {
 				ServiceUtil.restartService(node.getServerIp(), node.getSshPort(), privateKey, node.getServiceNeme());
@@ -556,7 +556,7 @@ public class BlockchainBean implements Serializable {
 	public void restartBlockchainNode(String rpcUrl) throws RuntimeException {
 		if (!commonInitBean.doesNodeRestarting(rpcUrl)) {
 			commonInitBean.startNodeRestarting(rpcUrl);
-			Optional<BlockchainNode> bcn = blockchainNodeService.findByrpcUrl(rpcUrl);
+			Optional<BlockchainNode> bcn = blockchainNodeMicroService.findByrpcUrl(rpcUrl);
 			if (bcn.isPresent()) {
 				logger.info(String.format("Try to stop Server %s with service %s.", bcn.get().getServerIp(),
 						bcn.get().getServiceNeme()));

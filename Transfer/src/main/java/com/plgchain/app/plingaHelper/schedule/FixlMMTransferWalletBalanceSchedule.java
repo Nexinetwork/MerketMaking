@@ -3,9 +3,9 @@ package com.plgchain.app.plingaHelper.schedule;
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.bean.TransferBean;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
-import com.plgchain.app.plingaHelper.microService.MarketMakingService;
-import com.plgchain.app.plingaHelper.microService.MarketMakingWalletService;
-import com.plgchain.app.plingaHelper.microService.TankhahWalletService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingMicroService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingWalletMicroService;
+import com.plgchain.app.plingaHelper.microService.TankhahWalletMicroService;
 import com.plgchain.app.plingaHelper.util.NumberUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 
@@ -25,20 +25,20 @@ public class FixlMMTransferWalletBalanceSchedule {
 	private static final Logger logger = LoggerFactory.getLogger(FixlMMTransferWalletBalanceSchedule.class);
 
 	private final InitBean initBean;
-	private final MarketMakingService marketMakingService;
+	private final MarketMakingMicroService marketMakingMicroService;
 	private final TransferBean transferBean;
-	private final TankhahWalletService tankhahWalletService;
-	private final MarketMakingWalletService mmWalletService;
+	private final TankhahWalletMicroService tankhahWalletMicroService;
+	private final MarketMakingWalletMicroService mmWalletMicroService;
 
 	@Inject
-	public FixlMMTransferWalletBalanceSchedule(InitBean initBean, MarketMakingService marketMakingService,
-			TransferBean transferBean, TankhahWalletService tankhahWalletService,
-			MarketMakingWalletService mmWalletService) {
+	public FixlMMTransferWalletBalanceSchedule(InitBean initBean, MarketMakingMicroService marketMakingMicroService,
+			TransferBean transferBean, TankhahWalletMicroService tankhahWalletMicroService,
+			MarketMakingWalletMicroService mmWalletMicroService) {
 		this.initBean = initBean;
-		this.marketMakingService = marketMakingService;
+		this.marketMakingMicroService = marketMakingMicroService;
 		this.transferBean = transferBean;
-		this.tankhahWalletService = tankhahWalletService;
-		this.mmWalletService = mmWalletService;
+		this.tankhahWalletMicroService = tankhahWalletMicroService;
+		this.mmWalletMicroService = mmWalletMicroService;
 	}
 
 	//@Scheduled(cron = "0 */15 * * * *", zone = "GMT")
@@ -48,14 +48,14 @@ public class FixlMMTransferWalletBalanceSchedule {
 			initBean.startActionRunning("fixMMTransferWalletBalance");
 			logger.info("fixMMTransferWalletBalance started.");
 			try {
-				marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true)
+				marketMakingMicroService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true)
 						.parallelStream().forEach(mm -> {
 							SmartContract sm = mm.getSmartContract();
 							var blockchain = sm.getBlockchain();
 							final int[] enqueued = { 0 };
 							var coin = sm.getCoin();
 							logger.info("Try to fix for coin {}", coin.getSymbol());
-							var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
+							var tankhahWallet = tankhahWalletMicroService.findByContract(sm).get(0);
 							final BigInteger[] tankhahNonce = {
 									EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex()) };
 							logger.info(String.format(
@@ -64,7 +64,7 @@ public class FixlMMTransferWalletBalanceSchedule {
 									blockchain.getName(), tankhahNonce[0]));
 							// PageRequest pageable = PageRequest.of(0,
 							// initBean.getFixTransferWalletBalancePerRound());
-							mmWalletService.findNWalletsRandomByContractIdNative(sm,
+							mmWalletMicroService.findNWalletsRandomByContractIdNative(sm,
 									initBean.getFixTransferWalletBalancePerRound()).forEach(wallet -> {
 										if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
 											BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),

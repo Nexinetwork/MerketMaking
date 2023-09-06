@@ -3,7 +3,7 @@ package com.plgchain.app.plingaHelper.schedule;
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.bean.TransferBean;
 import com.plgchain.app.plingaHelper.constant.WalletType;
-import com.plgchain.app.plingaHelper.microService.MarketMakingService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingMicroService;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
@@ -21,14 +21,14 @@ public class GenerateMMTransferWalletSchedule implements Serializable {
 	private static final Logger logger = LoggerFactory.getLogger(GenerateMMTransferWalletSchedule.class);
 
 	private final InitBean initBean;
-	private final MarketMakingService marketMakingService;
+	private final MarketMakingMicroService marketMakingMicroService;
 	private final TransferBean transferBean;
 
 	@Inject
-	public GenerateMMTransferWalletSchedule(InitBean initBean, MarketMakingService marketMakingService,
+	public GenerateMMTransferWalletSchedule(InitBean initBean, MarketMakingMicroService marketMakingMicroService,
 			TransferBean transferBean) {
 		this.initBean = initBean;
-		this.marketMakingService = marketMakingService;
+		this.marketMakingMicroService = marketMakingMicroService;
 		this.transferBean = transferBean;
 	}
 
@@ -39,12 +39,12 @@ public class GenerateMMTransferWalletSchedule implements Serializable {
 			initBean.startActionRunning("generateMMTransferWallet");
 			logger.info("Running Schedule : generateMMTransferWallet");
 			try {
-				marketMakingService.findByInitialWalletCreationDone(false).forEach(mm -> {
+				marketMakingMicroService.findByInitialWalletCreationDone(false).forEach(mm -> {
 					transferBean.generateWalletsForMarketmaking(mm, initBean.getJpaBatchCount(), mm.getSmartContract(),
 							mm.getSmartContract().getBlockchain(), mm.getSmartContract().getCoin(),
 							WalletType.TRANSFER);
 					mm.setInitialWalletCreationDone(true);
-					marketMakingService.save(mm);
+					marketMakingMicroService.save(mm);
 					logger.info(String.format("wallets for marketmaking %s has been created", mm));
 				});
 			} catch (Exception e) {

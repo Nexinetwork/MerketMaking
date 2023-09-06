@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.bean.coingecko.CoingeckoBean;
-import com.plgchain.app.plingaHelper.microService.CoinService;
+import com.plgchain.app.plingaHelper.microService.CoinMicroService;
 import jakarta.inject.Inject;
 
 @Component
@@ -15,15 +15,15 @@ public class UpdateMustCheckCoingeckoCoinSchedule {
 
 	private final static Logger logger = LoggerFactory.getLogger(UpdateMustCheckCoingeckoCoinSchedule.class);
 
-	private final CoinService coinService;
+	private final CoinMicroService coinMicroService;
 	private final CoingeckoBean coingeckoBean;
 
 	@Inject
 	private InitBean initBean;
 
 	@Inject
-	public UpdateMustCheckCoingeckoCoinSchedule(CoinService coinService, CoingeckoBean coingeckoBean) {
-		this.coinService = coinService;
+	public UpdateMustCheckCoingeckoCoinSchedule(CoinMicroService coinMicroService, CoingeckoBean coingeckoBean) {
+		this.coinMicroService = coinMicroService;
 		this.coingeckoBean = coingeckoBean;
 	}
 
@@ -31,7 +31,7 @@ public class UpdateMustCheckCoingeckoCoinSchedule {
 	public void updateMustCheckCoingeckoCoinS() {
 		if (!initBean.doesActionRunning("updateMustCheckCoingeckoCoinS")) {
 			initBean.startActionRunning("updateMustCheckCoingeckoCoinS");
-			coinService.findByMustCheck(true).stream().forEach(coin -> {
+			coinMicroService.findByMustCheck(true).stream().forEach(coin -> {
 				coingeckoBean.createOrUpdateCoingeckoCoin(coin.getCoingeckoId());
 			});
 			initBean.stopActionRunning("updateMustCheckCoingeckoCoinS");

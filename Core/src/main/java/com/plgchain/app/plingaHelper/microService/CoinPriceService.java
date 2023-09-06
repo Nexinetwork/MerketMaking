@@ -14,13 +14,13 @@ import com.plgchain.app.plingaHelper.dao.CoinPriceDao;
 import com.plgchain.app.plingaHelper.entity.CoinPrice;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.Currency;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 /**
  *
  */
 @Service
-public class CoinPriceService extends BaseService<CoinPrice> implements Serializable {
+public class CoinPriceService extends BaseMicroService<CoinPrice> implements Serializable {
 
 	private static final long serialVersionUID = -8641271050704411082L;
 

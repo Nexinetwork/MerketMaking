@@ -27,7 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class TopBaseService<E, D extends BaseLongDao> {
+public class TopBaseMicroService<E, D extends BaseLongDao> {
 
     @Autowired
     protected EntityManager entityManager ;

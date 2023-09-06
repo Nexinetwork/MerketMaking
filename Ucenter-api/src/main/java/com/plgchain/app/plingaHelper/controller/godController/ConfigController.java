@@ -14,7 +14,7 @@ import com.plgchain.app.plingaHelper.constant.AdminCommandType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.controller.BaseController;
 import com.plgchain.app.plingaHelper.entity.SystemConfig;
-import com.plgchain.app.plingaHelper.microService.SystemConfigService;
+import com.plgchain.app.plingaHelper.microService.SystemConfigMicroService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 
@@ -31,7 +31,7 @@ public class ConfigController extends BaseController implements Serializable {
 	private final static Logger logger = LoggerFactory.getLogger(ConfigController.class);
 
 	@Inject
-	private SystemConfigService systemConfigService;
+	private SystemConfigMicroService systemConfigMicroService;
 
 	@Inject
 	private KafkaTemplate<String, String> kafkaTemplate;
@@ -41,11 +41,11 @@ public class ConfigController extends BaseController implements Serializable {
 		try {
             String configName = "checkNodeHealth";
 
-            Optional<SystemConfig> existingConfig = systemConfigService.findByConfigName(configName);
+            Optional<SystemConfig> existingConfig = systemConfigMicroService.findByConfigName(configName);
 
             SystemConfig sc = existingConfig.orElseGet(() -> new SystemConfig(configName));
             sc.setConfigBooleanValue(true);
-            systemConfigService.save(sc);
+            systemConfigMicroService.save(sc);
             CommandToRun ctr = new CommandToRun();
 			ctr.setAdminCommandType(AdminCommandType.RELOADCONFIGS);
 			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
@@ -61,11 +61,11 @@ public class ConfigController extends BaseController implements Serializable {
 		try {
             String configName = "checkNodeHealth";
 
-            Optional<SystemConfig> existingConfig = systemConfigService.findByConfigName(configName);
+            Optional<SystemConfig> existingConfig = systemConfigMicroService.findByConfigName(configName);
 
             SystemConfig sc = existingConfig.orElseGet(() -> new SystemConfig(configName));
             sc.setConfigBooleanValue(false);
-            systemConfigService.save(sc);
+            systemConfigMicroService.save(sc);
             CommandToRun ctr = new CommandToRun();
 			ctr.setAdminCommandType(AdminCommandType.RELOADCONFIGS);
 			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));

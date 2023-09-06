@@ -21,14 +21,14 @@ import static org.springframework.data.mongodb.core.query.Query.query;
  *
  */
 @Service
-public class SequenceGeneratorService implements Serializable {
+public class SequenceGeneratorMicroService implements Serializable {
 
 	private static final long serialVersionUID = 5733254848481411053L;
 
 	private MongoOperations mongoOperations;
 
     @Autowired
-    public SequenceGeneratorService(MongoOperations mongoOperations) {
+    public SequenceGeneratorMicroService(MongoOperations mongoOperations) {
         this.mongoOperations = mongoOperations;
     }
 

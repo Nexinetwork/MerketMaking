@@ -17,9 +17,9 @@ import com.plgchain.app.plingaHelper.controller.BaseController;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
 import com.plgchain.app.plingaHelper.exception.RestActionError;
-import com.plgchain.app.plingaHelper.microService.CoinService;
-import com.plgchain.app.plingaHelper.microService.MarketMakingService;
-import com.plgchain.app.plingaHelper.microService.SmartContractService;
+import com.plgchain.app.plingaHelper.microService.CoinMicroService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingMicroService;
+import com.plgchain.app.plingaHelper.microService.SmartContractMicroService;
 import com.plgchain.app.plingaHelper.type.request.CoinReq;
 import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
@@ -44,13 +44,13 @@ public class CoinController extends BaseController implements Serializable {
 	private KafkaTemplate<String, String> kafkaTemplate;
 
 	@Inject
-	private CoinService coinService;
+	private CoinMicroService coinMicroService;
 
 	@Inject
-	private SmartContractService smartContractService;
+	private SmartContractMicroService smartContractMicroService;
 
 	@Inject
-	private MarketMakingService marketMakingService;
+	private MarketMakingMicroService marketMakingMicroService;
 
 	@PostMapping("/coin/createNewCoin")
 	public MessageResult createNewCoin(@RequestBody CoinReq coinReq) {
@@ -115,7 +115,7 @@ public class CoinController extends BaseController implements Serializable {
 			return error("Blockchain is null");
 		if (Strings.isNullOrEmpty(cReq.getContractsAddress()))
 			return error("Contract is null");
-		return marketMakingService.findByBlockchainAndContractAddress(cReq.getBlockchain(), cReq.getContractsAddress())
+		return marketMakingMicroService.findByBlockchainAndContractAddress(cReq.getBlockchain(), cReq.getContractsAddress())
 	            .map(MarketMaking::getAsMarketMakingResponse)
 	            .map(this::success)
 	            .orElseGet(() -> error("Contract not found"));
@@ -124,7 +124,7 @@ public class CoinController extends BaseController implements Serializable {
 	@RequestMapping("/contract/findContractsByContractAddress")
 	public MessageResult findContractsByContractAddress(@RequestBody String contractAddress) {
 		logger.info("findContractsByContractAdress fired.");
-		var result = smartContractService.findByContractsAddress(contractAddress)
+		var result = smartContractMicroService.findByContractsAddress(contractAddress)
 		        .stream()
 		        .map(SmartContract::getSmartContractRes)
 		        .collect(Collectors.toList());

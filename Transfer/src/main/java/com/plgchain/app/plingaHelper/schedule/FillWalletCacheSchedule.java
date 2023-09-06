@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
-import com.plgchain.app.plingaHelper.microService.MarketMakingService;
-import com.plgchain.app.plingaHelper.microService.MarketMakingWalletService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingMicroService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingWalletMicroService;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -32,10 +32,10 @@ public class FillWalletCacheSchedule implements Serializable {
 	private InitBean initBean;
 
 	@Inject
-	private MarketMakingService marketMakingService;
+	private MarketMakingMicroService marketMakingMicroService;
 
 	@Inject
-	private MarketMakingWalletService marketMakingWalletService;
+	private MarketMakingWalletMicroService marketMakingWalletMicroService;
 
 	@Transactional
 	//@Scheduled(cron = "0 */15 * * * *", zone = "GMT")
@@ -43,14 +43,14 @@ public class FillWalletCacheSchedule implements Serializable {
 		if (!initBean.doesActionRunning("fillWalletCache")) {
 			initBean.startActionRunning("fillWalletCache");
 			logger.info("fillWalletCache started.");
-			marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true)
+			marketMakingMicroService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true)
 					.stream().forEach(mm -> {
 						SmartContract sm = mm.getSmartContract();
 						int count = initBean.getCachedContracts() - initBean.getWalletCacheCount(sm.getContractId());
 						if (count > 0) {
 							logger.info(
 									String.format("Try to load %s of contract %s", count, sm.getContractsAddress()));
-							initBean.fillWalletCache(sm.getContractId(), marketMakingWalletService
+							initBean.fillWalletCache(sm.getContractId(), marketMakingWalletMicroService
 									.findNWalletsRandomByContractIdAndWalletTypeNative(sm.getContractId(),WalletType.TRANSFER, count));
 						} else {
 							logger.info(String.format("contract %s is full in no need to fill",

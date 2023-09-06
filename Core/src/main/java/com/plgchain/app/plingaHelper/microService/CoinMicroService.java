@@ -16,13 +16,13 @@ import org.springframework.stereotype.Service;
 import com.plgchain.app.plingaHelper.annotation.LogMethod;
 import com.plgchain.app.plingaHelper.dao.CoinDao;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 /**
  *
  */
 @Service
-public class CoinService extends BaseService<Coin> implements Serializable {
+public class CoinMicroService extends BaseMicroService<Coin> implements Serializable {
 
 	private static final long serialVersionUID = -8641271050704411082L;
 

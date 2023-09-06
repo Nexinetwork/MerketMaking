@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.plgchain.app.plingaHelper.dao.TankhahWalletDao;
 import com.plgchain.app.plingaHelper.entity.TankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 import jakarta.inject.Inject;
 
@@ -20,7 +20,7 @@ import jakarta.inject.Inject;
  *
  */
 @Service
-public class TankhahWalletService extends BaseService<TankhahWallet> implements Serializable {
+public class TankhahWalletMicroService extends BaseMicroService<TankhahWallet> implements Serializable {
 
 	private static final long serialVersionUID = -889011709682489433L;
 

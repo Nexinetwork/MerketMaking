@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.Strings;
 import com.plgchain.app.plingaHelper.bean.InitBean;
-import com.plgchain.app.plingaHelper.microService.BlockchainNodeService;
-import com.plgchain.app.plingaHelper.microService.BlockchainService;
+import com.plgchain.app.plingaHelper.microService.BlockchainNodeMicroService;
+import com.plgchain.app.plingaHelper.microService.BlockchainMicroService;
 import com.plgchain.app.plingaHelper.util.blockchain.BlockchainUtil;
 
 /**
@@ -33,23 +33,23 @@ public class BlockchainUpdateDetailsSchedule implements Serializable {
 	private InitBean initBean;
 
 	@Autowired
-	private BlockchainService blockchainService;
+	private BlockchainMicroService blockchainMicroService;
 
 	@Autowired
-	private BlockchainNodeService blockchainNodeService;
+	private BlockchainNodeMicroService blockchainNodeMicroService;
 
 	@Scheduled(cron = "0 1 */2 * * *", zone = "GMT")
 	public void blockchainUpdateDetails() {
-		blockchainService.findAll().stream().filter(blockchain -> blockchain.isEvm()).forEach(blockchain -> {
+		blockchainMicroService.findAll().stream().filter(blockchain -> blockchain.isEvm()).forEach(blockchain -> {
 			try {
 				if (!Strings.isNullOrEmpty(blockchain.getRpcUrl())) {
 					BigInteger currentBlock = BlockchainUtil.getLatestBlockNumber(initBean.getHttpClient(),blockchain.getRpcUrl());
-					long nodeCounts = blockchainNodeService.countByBlockchain(blockchain);
+					long nodeCounts = blockchainNodeMicroService.countByBlockchain(blockchain);
 					blockchain.setLastCheck(LocalDateTime.now());
 					blockchain.setHealthy(true);
 					blockchain.setNodeCount(Math.toIntExact(nodeCounts));
 					blockchain.setHeight(currentBlock);
-					blockchain = blockchainService.save(blockchain);
+					blockchain = blockchainMicroService.save(blockchain);
 					logger.info(String.format("Blockchain %s has been updated to %s", blockchain.getName(),
 							blockchain.toString()));
 				}

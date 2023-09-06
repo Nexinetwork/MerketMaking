@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.dao.UserDao;
 import com.plgchain.app.plingaHelper.entity.User;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 @Service
-public class UserService extends BaseService<User> implements Serializable {
+public class UserMicroService extends BaseMicroService<User> implements Serializable {
 
 	private static final long serialVersionUID = -820540009110569732L;
 

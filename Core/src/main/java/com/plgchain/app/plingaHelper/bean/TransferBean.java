@@ -23,7 +23,7 @@ import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
-import com.plgchain.app.plingaHelper.microService.MarketMakingWalletService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingWalletMicroService;
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 
@@ -43,7 +43,7 @@ public class TransferBean implements Serializable {
 	private static final int waitOnMaxEnqueIsSeconds = 2;
 
 	@Inject
-	private MarketMakingWalletService marketMakingWalletService;
+	private MarketMakingWalletMicroService marketMakingWalletMicroService;
 
 	@Inject
 	private BlockchainBean blockchainBean;
@@ -60,7 +60,7 @@ public class TransferBean implements Serializable {
 						.walletType(walletType).mainCoinBalance(BigDecimal.ZERO).build())
 				.collect(Collectors.toList());
 
-		marketMakingWalletService.batchSaveAll(wList, jpaBatchCount);
+		marketMakingWalletMicroService.batchSaveAll(wList, jpaBatchCount);
 	}
 
 	/*

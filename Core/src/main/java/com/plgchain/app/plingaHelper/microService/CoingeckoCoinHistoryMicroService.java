@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.dao.CoingeckoCoinHistoryDao;
 import com.plgchain.app.plingaHelper.entity.coingecko.CoingeckoCoinHistory;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 import jakarta.inject.Inject;
 
@@ -19,7 +19,7 @@ import jakarta.inject.Inject;
  *
  */
 @Service
-public class CoingeckoCoinHistoryService extends BaseService<CoingeckoCoinHistory> implements Serializable {
+public class CoingeckoCoinHistoryMicroService extends BaseMicroService<CoingeckoCoinHistory> implements Serializable {
 
 	private static final long serialVersionUID = 1994814416456311489L;
 

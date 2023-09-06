@@ -31,11 +31,11 @@ import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.TempTankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
-import com.plgchain.app.plingaHelper.microService.BlockchainService;
-import com.plgchain.app.plingaHelper.microService.CoinService;
-import com.plgchain.app.plingaHelper.microService.MarketMakingService;
-import com.plgchain.app.plingaHelper.microService.MarketMakingWalletService;
-import com.plgchain.app.plingaHelper.microService.TempTankhahWalletService;
+import com.plgchain.app.plingaHelper.microService.BlockchainMicroService;
+import com.plgchain.app.plingaHelper.microService.CoinMicroService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingMicroService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingWalletMicroService;
+import com.plgchain.app.plingaHelper.microService.TempTankhahWalletMicroService;
 import com.plgchain.app.plingaHelper.util.NumberUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 
@@ -86,24 +86,28 @@ public class InitBean implements Serializable {
 
 	public final int cachedContracts = 20000;
 
+	private final int chunkSize = 20000;
+
+	private final int defiWalletCount = 2000;
+
 	private Map<Long, Set<MarketMakingWalletDto>> transferWalletMapCache = new HashMap<Long, Set<MarketMakingWalletDto>>();
 
 	private Map<Long, List<EvmWalletDto>> tmpTankhahWallet;
 
 	@Inject
-	private MarketMakingWalletService marketMakingWalletService;
+	private MarketMakingWalletMicroService marketMakingWalletMicroService;
 
 	@Inject
-	private MarketMakingService marketMakingService;
+	private MarketMakingMicroService marketMakingMicroService;
 
 	@Inject
-	private BlockchainService blockchainService;
+	private BlockchainMicroService blockchainMicroService;
 
 	@Inject
-	private CoinService coinService;
+	private CoinMicroService coinMicroService;
 
 	@Inject
-	private TempTankhahWalletService tempTankhahWalletService;
+	private TempTankhahWalletMicroService tempTankhahWalletMicroService;
 
 	@PostConstruct
 	public void init() {
@@ -129,8 +133,8 @@ public class InitBean implements Serializable {
 
 		return tmpTankhahWallet.computeIfAbsent(contractId, id -> {
 			List<EvmWalletDto> lst;
-			if (tempTankhahWalletService.existsBySmartContractAndWalletType(smartContract, WalletType.TRANSFER)) {
-				lst = tempTankhahWalletService.findBySmartContractAndWalletType(smartContract, WalletType.TRANSFER)
+			if (tempTankhahWalletMicroService.existsBySmartContractAndWalletType(smartContract, WalletType.TRANSFER)) {
+				lst = tempTankhahWalletMicroService.findBySmartContractAndWalletType(smartContract, WalletType.TRANSFER)
 						.stream().map(TempTankhahWallet::getAsEvmWalletDto).collect(Collectors.toList());
 				logger.info(String.format("Temp tankhah for contract %s has been read from Database",
 						smartContract.getContractsAddress()));
@@ -141,7 +145,7 @@ public class InitBean implements Serializable {
 					ttw.setWalletType(WalletType.TRANSFER);
 				}).collect(Collectors.toList());
 
-				tempTankhahWalletService.saveAll(ttwLst);
+				tempTankhahWalletMicroService.saveAll(ttwLst);
 				logger.info(String.format("Temp tankhah for contract %s has been generated and saved to database.",
 						smartContract.getContractsAddress()));
 			}
@@ -170,11 +174,11 @@ public class InitBean implements Serializable {
 
 	@Transactional
 	public void writeWalletDataToCache() {
-		marketMakingService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true).stream()
+		marketMakingMicroService.findByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByRandom(true, true).stream()
 				.forEach(mm -> {
 					SmartContract sm = mm.getSmartContract();
 					transferWalletMapCache.put(sm.getContractId(),
-							Set.copyOf(marketMakingWalletService.findNWalletsRandomByContractIdAndWalletTypeNative(
+							Set.copyOf(marketMakingWalletMicroService.findNWalletsRandomByContractIdAndWalletTypeNative(
 									sm.getContractId(), WalletType.TRANSFER, cachedContracts)));
 					Coin coin = sm.getCoin();
 					Blockchain blockchain = sm.getBlockchain();

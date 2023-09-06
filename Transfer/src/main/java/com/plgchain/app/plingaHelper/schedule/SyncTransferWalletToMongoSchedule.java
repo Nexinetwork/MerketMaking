@@ -4,9 +4,6 @@
 package com.plgchain.app.plingaHelper.schedule;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,11 +13,9 @@ import com.google.common.base.Strings;
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.entity.MMWallet;
-import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
-import com.plgchain.app.plingaHelper.microService.MarketMakingService;
-import com.plgchain.app.plingaHelper.microService.MarketMakingWalletService;
-import com.plgchain.app.plingaHelper.microService.MMWalletService;
-
+import com.plgchain.app.plingaHelper.microService.MarketMakingMicroService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingWalletMicroService;
+import com.plgchain.app.plingaHelper.service.MMWalletService;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
@@ -34,13 +29,13 @@ public class SyncTransferWalletToMongoSchedule implements Serializable {
 	private final static Logger logger = LoggerFactory.getLogger(SyncTransferWalletToMongoSchedule.class);
 
 	@Inject
-	private MarketMakingService marketMakingService;
+	private MarketMakingMicroService marketMakingMicroService;
 
 	@Inject
 	private MMWalletService mmWalletService;
 
 	@Inject
-	private MarketMakingWalletService marketMakingWalletService;
+	private MarketMakingWalletMicroService marketMakingWalletMicroService;
 
 	@Inject
 	private InitBean initBean;
@@ -48,52 +43,59 @@ public class SyncTransferWalletToMongoSchedule implements Serializable {
 	@Transactional
 	@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
 	public void syncTransferWalletToMongo() {
-		if (!initBean.doesActionRunning("syncTransferWalletToMongo")) {
-			initBean.startActionRunning("syncTransferWalletToMongo");
-			logger.info("syncTransferWalletToMongo started.");
-			Optional<MarketMaking> optionalMarketMaking = marketMakingService.findByMustUpdateMongoTransfer(true).stream()
-			        .filter(mm -> mm.isInitialWalletCreationDone() && !Strings.isNullOrEmpty(mm.getTrPid()))
-			        .findFirst();
-					optionalMarketMaking.ifPresent(mm -> {
-						mmWalletService.findById(mm.getMarketMakingId()).ifPresentOrElse(www -> {
-							www.setTransferWalletList(
-									marketMakingWalletService.findAllWalletsByContractIdAndWalletTypeNative(
-											mm.getSmartContract().getContractId(), WalletType.TRANSFER));
-							www = mmWalletService.save(www);
-							mm.setMustUpdateMongoTransfer(false);
-							marketMakingService.save(mm);
-							logger.info(
-									String.format("Contract %s of coin %s of blockchain %s has been updated in mongodb",
-											mm.getSmartContract().getContractsAddress(),
-											mm.getSmartContract().getCoin().getSymbol(),
-											mm.getSmartContract().getBlockchain().getName()));
-							www = null;
-						}, () -> {
-							var mmv = MMWallet.builder().marketMakingId(mm.getMarketMakingId())
-									.blockchain(mm.getSmartContract().getBlockchain().getName())
-									.blockchainId(mm.getSmartContract().getBlockchain().getBlockchainId())
-									.coinId(mm.getSmartContract().getCoin().getCoinId())
-									.coinSymbol(mm.getSmartContract().getCoin().getSymbol())
-									.coin(mm.getSmartContract().getCoin().getName())
-									.contractAddress(mm.getSmartContract().getContractsAddress())
-									.contractId(mm.getSmartContract().getContractId())
-									.tankhahDefiWalletList(new ArrayList<>())
-									.tankhahTransferWalletList(new ArrayList<>())
-									.build();
+	    if (!initBean.doesActionRunning("syncTransferWalletToMongo")) {
+	        initBean.startActionRunning("syncTransferWalletToMongo");
+	        logger.info("syncTransferWalletToMongo started.");
 
-							mmv = mmWalletService.save(mmv);
-							logger.info(
-									String.format("Contract %s of coin %s of blockchain %s has been created in mongodb",
-											mm.getSmartContract().getContractsAddress(),
-											mm.getSmartContract().getCoin().getSymbol(),
-											mm.getSmartContract().getBlockchain().getName()));
-						});
-					});
-			initBean.stopActionRunning("syncTransferWalletToMongo");
-			logger.info("syncTransferWalletToMongo finished.");
-		} else {
-			logger.warn("Schedule method syncTransferWalletToMongo already running, skipping it.");
-		}
+	        marketMakingMicroService.findByMustUpdateMongoTransfer(true)
+	                .stream()
+	                .filter(mm -> mm.isInitialWalletCreationDone() && !Strings.isNullOrEmpty(mm.getTrPid()))
+	                .findFirst()
+	                .ifPresent(mm -> {
+	                    logger.info("Syncing data for marketmaking {}", mm.getMarketMakingId());
+	                    mmWalletService.deleteByMarketMakingId(mm.getMarketMakingId());
+
+	                    logger.info("All objects has been deleted for marketmaking {}", mm.getMarketMakingId());
+	                    var walletList = marketMakingWalletMicroService
+	                            .findAllWalletsByContractIdAndWalletTypeNative(mm.getSmartContract().getContractId(),
+	                                    WalletType.TRANSFER);
+
+	                    logger.info("{} wallets has been loaded for marketmaking {}", walletList.size(),
+	                            mm.getMarketMakingId());
+
+	                    var mmWallet = MMWallet.builder()
+	                            .blockchain(mm.getSmartContract().getBlockchain().getName())
+	                            .blockchainId(mm.getSmartContract().getBlockchain().getBlockchainId())
+	                            .coin(mm.getSmartContract().getCoin().getName())
+	                            .coinId(mm.getSmartContract().getCoin().getCoinId())
+	                            .coinSymbol(mm.getSmartContract().getCoin().getSymbol())
+	                            .contractAddress(mm.getSmartContract().getContractsAddress())
+	                            .contractId(mm.getSmartContract().getContractId())
+	                            .marketMakingId(mm.getMarketMakingId())
+	                            .build();
+
+	                    mmWalletService.saveWithChunk(mmWallet, walletList, initBean.getChunkSize(),
+	                            initBean.getDefiWalletCount(), mm.getTrPid());
+
+	                    logger.info("{} wallets saved to mongodb for marketmaking {}", walletList.size(),
+	                            mm.getMarketMakingId());
+
+	                    int chunkCount = (int) Math.ceil((double) walletList.size() / initBean.getChunkSize());
+	                    mm.setChunkCount(chunkCount);
+	                    mm.setMustUpdateMongoTransfer(false);
+	                    mm.setMustUpdateMongoDefi(false);
+
+	                    marketMakingMicroService.save(mm);
+
+	                    logger.info("Sync completed for marketmaking {}", mm.getMarketMakingId());
+	                });
+
+	        initBean.stopActionRunning("syncTransferWalletToMongo");
+	        logger.info("syncTransferWalletToMongo finished.");
+	    } else {
+	        logger.warn("Schedule method syncTransferWalletToMongo already running, skipping it.");
+	    }
 	}
+
 
 }

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.plgchain.app.plingaHelper.dao.MMWalletDao;
 import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.MMWallet;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 import com.plgchain.app.plingaHelper.util.SecurityUtil;
 
 import jakarta.inject.Inject;
@@ -23,12 +23,15 @@ import jakarta.inject.Inject;
  *
  */
 @Service
-public class MMWalletService extends BaseService<MMWallet> implements Serializable {
+public class MMWalletMicroService extends BaseMicroService<MMWallet> implements Serializable {
 
 	private static final long serialVersionUID = 1834752888558756630L;
 
 	@Inject
 	private MMWalletDao mmWalletDao;
+
+	@Inject
+	private SequenceGeneratorMicroService sequenceGeneratorMicroService;
 
 	public boolean isEmptyDocument() {
 		return mmWalletDao.count() == 0;
@@ -38,12 +41,24 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 		return mmWalletDao.findById(marketMakingId);
 	}
 
-	public Optional<MMWallet> findByContractId(long contractId) {
+	public List<MMWallet> findByContractId(long contractId) {
 		return mmWalletDao.findByContractId(contractId);
 	}
 
-	public Optional<MMWallet> findByContractIdAndChunk(long contractId,long chunk) {
+	public List<MMWallet> findByContractIdAndChunk(long contractId,long chunk) {
 		return mmWalletDao.findByContractIdAndChunk(contractId,chunk);
+	}
+
+	public List<MMWallet> findByMarketMakingId(long marketMakingId) {
+		return mmWalletDao.findByMarketMakingId(marketMakingId);
+	}
+
+	public List<MMWallet> findByMarketMakingIdAndChunk(long marketMakingId,long chunk) {
+		return mmWalletDao.findByMarketMakingIdAndChunk(marketMakingId, chunk);
+	}
+
+	public Optional<MMWallet> findTopByMarketMakingIdOrderByChunkDesc(long marketMakingId) {
+		return mmWalletDao.findTopByMarketMakingIdOrderByChunkDesc(marketMakingId);
 	}
 
 	public List<MarketMakingWalletDto> addTransferWallet(MMWallet mmw, MarketMakingWalletDto mmwd, String secretKey) {
@@ -142,7 +157,17 @@ public class MMWalletService extends BaseService<MMWallet> implements Serializab
 	}
 
 	public MMWallet save(MMWallet mmw) {
+		if (mmw.getId() <= 0)
+			mmw.setId(sequenceGeneratorMicroService.generateSequence(MMWallet.SEQUENCE_NAME));
 		return mmWalletDao.save(mmw);
+	}
+
+	public void deleteByMarketMakingId(long marketMakingId) {
+		mmWalletDao.deleteByMarketMakingId(marketMakingId);
+	}
+
+	public void deleteByContractId(long contractId) {
+		mmWalletDao.deleteByContractId(contractId);
 	}
 
 }

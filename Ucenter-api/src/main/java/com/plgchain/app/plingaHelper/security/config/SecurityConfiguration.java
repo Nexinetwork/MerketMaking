@@ -19,7 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.plgchain.app.plingaHelper.security.service.UserService;
+import com.plgchain.app.plingaHelper.security.service.UserMicroService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
-	private final UserService userService;
+	private final UserMicroService userMicroService;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -56,7 +56,7 @@ public class SecurityConfiguration {
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(userService.userDetailsService());
+		authProvider.setUserDetailsService(userMicroService.userDetailsService());
 		authProvider.setPasswordEncoder(passwordEncoder());
 		return authProvider;
 	}

@@ -19,12 +19,12 @@ import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.TempTankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.exception.InvalidMarketMaking;
-import com.plgchain.app.plingaHelper.microService.MMWalletService;
-import com.plgchain.app.plingaHelper.microService.MarketMakingService;
-import com.plgchain.app.plingaHelper.microService.MarketMakingWalletService;
-import com.plgchain.app.plingaHelper.microService.SmartContractService;
-import com.plgchain.app.plingaHelper.microService.TankhahWalletService;
-import com.plgchain.app.plingaHelper.microService.TempTankhahWalletService;
+import com.plgchain.app.plingaHelper.microService.MMWalletMicroService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingMicroService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingWalletMicroService;
+import com.plgchain.app.plingaHelper.microService.SmartContractMicroService;
+import com.plgchain.app.plingaHelper.microService.TankhahWalletMicroService;
+import com.plgchain.app.plingaHelper.microService.TempTankhahWalletMicroService;
 import com.plgchain.app.plingaHelper.util.NumberUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
@@ -40,37 +40,37 @@ public class WalletActionBean implements Serializable {
 	private static final Logger logger = LoggerFactory.getLogger(WalletActionBean.class);
 
 	private final InitBean initBean;
-	private final MarketMakingService marketMakingService;
+	private final MarketMakingMicroService marketMakingMicroService;
 	private final TransferBean transferBean;
-	private final TankhahWalletService tankhahWalletService;
-	private final MarketMakingWalletService marketMakingWalletService;
-	private final SmartContractService smartContractService;
+	private final TankhahWalletMicroService tankhahWalletMicroService;
+	private final MarketMakingWalletMicroService marketMakingWalletMicroService;
+	private final SmartContractMicroService smartContractMicroService;
 	private final BlockchainBean blockchainBean;
-	private final TempTankhahWalletService tempTankhahWalletService;
+	private final TempTankhahWalletMicroService tempTankhahWalletMicroService;
 
 	@Inject
-	public WalletActionBean(InitBean initBean, MarketMakingService marketMakingService, TransferBean transferBean,
-			TankhahWalletService tankhahWalletService, MarketMakingWalletService marketMakingWalletService,
-			SmartContractService smartContractService, BlockchainBean blockchainBean, MMWalletService mmWalletService,
-			TempTankhahWalletService tempTankhahWalletService) {
+	public WalletActionBean(InitBean initBean, MarketMakingMicroService marketMakingMicroService, TransferBean transferBean,
+			TankhahWalletMicroService tankhahWalletMicroService, MarketMakingWalletMicroService marketMakingWalletMicroService,
+			SmartContractMicroService smartContractMicroService, BlockchainBean blockchainBean, MMWalletMicroService mmWalletMicroService,
+			TempTankhahWalletMicroService tempTankhahWalletMicroService) {
 		this.initBean = initBean;
-		this.marketMakingService = marketMakingService;
+		this.marketMakingMicroService = marketMakingMicroService;
 		this.transferBean = transferBean;
-		this.tankhahWalletService = tankhahWalletService;
-		this.marketMakingWalletService = marketMakingWalletService;
-		this.smartContractService = smartContractService;
+		this.tankhahWalletMicroService = tankhahWalletMicroService;
+		this.marketMakingWalletMicroService = marketMakingWalletMicroService;
+		this.smartContractMicroService = smartContractMicroService;
 		this.blockchainBean = blockchainBean;
-		this.tempTankhahWalletService = tempTankhahWalletService;
+		this.tempTankhahWalletMicroService = tempTankhahWalletMicroService;
 	}
 
 	@Async
 	@Transactional
 	public void fixAllTransferWalletsByContractId(long contractId) {
-		var sm = smartContractService.findById(contractId).get();
+		var sm = smartContractMicroService.findById(contractId).get();
 		Blockchain blockchain = sm.getBlockchain();
 		Coin coin = sm.getCoin();
-		var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
-		var mm = marketMakingService.findBySmartContract(sm).get();
+		var tankhahWallet = tankhahWalletMicroService.findByContract(sm).get(0);
+		var mm = marketMakingMicroService.findBySmartContract(sm).get();
 		if (!(mm.isInitialWalletCreationDone() && mm.isInitialWalletFundingDone()))
 			throw new InvalidMarketMaking();
 		final int[] enqueued = { 0 };
@@ -83,7 +83,7 @@ public class WalletActionBean implements Serializable {
 		Page<MarketMakingWalletDto> mmWalletPageDto = null;
 		do {
 			PageRequest pageable = PageRequest.of(page, initBean.getFixTransferWalletBalancePerRound());
-			marketMakingWalletService
+			marketMakingWalletMicroService
 					.findAllWalletsByContractIdAndWalletTypeNativePaged(contractId, WalletType.TRANSFER, pageable)
 					.stream().forEach(wallet -> {
 						if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
@@ -232,11 +232,11 @@ public class WalletActionBean implements Serializable {
 	@Transactional
 	public void fixAllTransferWalletsByContractIdInOneAction(long contractId) {
 		logger.info(String.format("Try to fill contract %s", contractId));
-		var sm = smartContractService.findById(contractId).get();
+		var sm = smartContractMicroService.findById(contractId).get();
 		Blockchain blockchain = sm.getBlockchain();
 		Coin coin = sm.getCoin();
-		var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
-		var mm = marketMakingService.findBySmartContract(sm).get();
+		var tankhahWallet = tankhahWalletMicroService.findByContract(sm).get(0);
+		var mm = marketMakingMicroService.findBySmartContract(sm).get();
 		if (!mm.isInitialWalletCreationDone())
 			throw new InvalidMarketMaking();
 		final int[] enqueued = { 0 };
@@ -245,7 +245,7 @@ public class WalletActionBean implements Serializable {
 		logger.info(String.format("Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
 				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
 				tankhahNonce[0]));
-		marketMakingWalletService.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
+		marketMakingWalletMicroService.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
 				.stream().forEach(wallet -> {
 					if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
 						BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
@@ -446,11 +446,11 @@ public class WalletActionBean implements Serializable {
 	@Transactional
 	public void fixAllTransferWalletsByContractIdInOneActionWithTempTankhah(long contractId) {
 		logger.info(String.format("Try to fill contract %s", contractId));
-		var sm = smartContractService.findById(contractId).get();
+		var sm = smartContractMicroService.findById(contractId).get();
 		Blockchain blockchain = sm.getBlockchain();
 		Coin coin = sm.getCoin();
-		var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
-		var mm = marketMakingService.findBySmartContract(sm).get();
+		var tankhahWallet = tankhahWalletMicroService.findByContract(sm).get(0);
+		var mm = marketMakingMicroService.findBySmartContract(sm).get();
 		if (!mm.isInitialWalletCreationDone())
 			throw new InvalidMarketMaking();
 		final BigInteger[] tankhahNonce = {
@@ -458,7 +458,7 @@ public class WalletActionBean implements Serializable {
 		logger.info(String.format("Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
 				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
 				tankhahNonce[0]));
-		marketMakingWalletService.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
+		marketMakingWalletMicroService.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
 				.stream().forEach(wallet -> {
 					if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
 						BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
@@ -776,17 +776,17 @@ public class WalletActionBean implements Serializable {
 	@Transactional
 	public void backAllTokenToTankhah(long contractId) {
 		logger.info(String.format("Try to back all tokens to tankhah for contract %s", contractId));
-		var sm = smartContractService.findById(contractId).get();
+		var sm = smartContractMicroService.findById(contractId).get();
 		Blockchain blockchain = sm.getBlockchain();
 		Coin coin = sm.getCoin();
-		var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
-		// var mm = marketMakingService.findBySmartContract(sm).get();
+		var tankhahWallet = tankhahWalletMicroService.findByContract(sm).get(0);
+		// var mm = marketMakingMicroService.findBySmartContract(sm).get();
 		final BigInteger[] tankhahNonce = {
 				EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex()) };
 		logger.info(String.format("Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
 				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
 				tankhahNonce[0]));
-		marketMakingWalletService.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
+		marketMakingWalletMicroService.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
 				.stream().forEach(wallet -> {
 					EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
 
@@ -811,14 +811,14 @@ public class WalletActionBean implements Serializable {
 
 	@Transactional
 	public void generateTempTankhahWallet(long contractId) {
-		smartContractService.findById(contractId).ifPresent(sm -> {
-			if (!tempTankhahWalletService.existsBySmartContractAndWalletType(sm, WalletType.TRANSFER)) {
+		smartContractMicroService.findById(contractId).ifPresent(sm -> {
+			if (!tempTankhahWalletMicroService.existsBySmartContractAndWalletType(sm, WalletType.TRANSFER)) {
 				var lst = EvmWalletUtil.generateRandomWallet(initBean.getTmpTankhahWalletCount());
 				lst.stream().map(ewDto -> new TempTankhahWallet(ewDto)).peek(ttw -> {
 					ttw.setSmartContract(sm);
 					ttw.setWalletType(WalletType.TRANSFER);
 					try {
-						ttw = tempTankhahWalletService.saveAndFlush(ttw);
+						ttw = tempTankhahWalletMicroService.saveAndFlush(ttw);
 						// logger.info("TempTankhahWallet has been saved to database : " + ttw);
 					} catch (Exception e) {
 						logger.error("Error occurred while saving TempTankhahWallet:", e);
@@ -826,7 +826,7 @@ public class WalletActionBean implements Serializable {
 					}
 				}).collect(Collectors.toList());
 
-				// tempTankhahWalletService.saveAll(ttwLst);
+				// tempTankhahWalletMicroService.saveAll(ttwLst);
 			}
 		});
 	}
@@ -835,11 +835,11 @@ public class WalletActionBean implements Serializable {
 	@Transactional
 	public void backAllTokenFromTempTankhahToTankhah(long contractId) {
 		logger.info(String.format("Try to back all tokens from temp tankhah to tankhah for contract %s", contractId));
-		var sm = smartContractService.findById(contractId).get();
+		var sm = smartContractMicroService.findById(contractId).get();
 		Blockchain blockchain = sm.getBlockchain();
 		Coin coin = sm.getCoin();
-		var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
-		tempTankhahWalletService.findBySmartContractAndWalletType(sm, WalletType.TRANSFER)
+		var tankhahWallet = tankhahWalletMicroService.findByContract(sm).get(0);
+		tempTankhahWalletMicroService.findBySmartContractAndWalletType(sm, WalletType.TRANSFER)
 				.stream().forEach(wallet -> {
 					BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
 							wallet.getPrivateKey(), sm.getContractsAddress());
@@ -881,10 +881,10 @@ public class WalletActionBean implements Serializable {
 	@Transactional
 	public void deleteTempTankhahWallet(long contractId) {
 		logger.info(String.format("Try to delete temp tankhah wallets for contract %s", contractId));
-		var sm = smartContractService.findById(contractId).get();
-		tempTankhahWalletService.findBySmartContractAndWalletType(sm, WalletType.TRANSFER)
+		var sm = smartContractMicroService.findById(contractId).get();
+		tempTankhahWalletMicroService.findBySmartContractAndWalletType(sm, WalletType.TRANSFER)
 		.forEach(wallet -> {
-			tempTankhahWalletService.delete(wallet);
+			tempTankhahWalletMicroService.delete(wallet);
 		});
 		logger.info(String.format("All temp tankhah wallets for contract %s has been deleted.", contractId));
 	}

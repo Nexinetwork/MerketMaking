@@ -33,15 +33,15 @@ import com.plgchain.app.plingaHelper.entity.coingecko.CoingeckoCoin;
 import com.plgchain.app.plingaHelper.entity.coingecko.CoingeckoCoinHistory;
 import com.plgchain.app.plingaHelper.entity.coingecko.Currency;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
-import com.plgchain.app.plingaHelper.microService.BlockchainService;
-import com.plgchain.app.plingaHelper.microService.CoinListHistoryService;
-import com.plgchain.app.plingaHelper.microService.CoinListService;
-import com.plgchain.app.plingaHelper.microService.CoinService;
-import com.plgchain.app.plingaHelper.microService.CoingeckoCategoryService;
-import com.plgchain.app.plingaHelper.microService.CoingeckoCoinService;
-import com.plgchain.app.plingaHelper.microService.CoingeckoCoinHistoryService;
-import com.plgchain.app.plingaHelper.microService.CurrencyService;
-import com.plgchain.app.plingaHelper.microService.SmartContractService;
+import com.plgchain.app.plingaHelper.microService.BlockchainMicroService;
+import com.plgchain.app.plingaHelper.microService.CoinListHistoryMicroService;
+import com.plgchain.app.plingaHelper.microService.CoinListMicroService;
+import com.plgchain.app.plingaHelper.microService.CoinMicroService;
+import com.plgchain.app.plingaHelper.microService.CoingeckoCategoryMicroService;
+import com.plgchain.app.plingaHelper.microService.CoingeckoCoinMicroService;
+import com.plgchain.app.plingaHelper.microService.CoingeckoCoinHistoryMicroService;
+import com.plgchain.app.plingaHelper.microService.CurrencyMicroService;
+import com.plgchain.app.plingaHelper.microService.SmartContractMicroService;
 
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -59,38 +59,38 @@ public class CoingeckoBean implements Serializable {
 	private InitBean initBean;
 
 	@Inject
-	private BlockchainService blockchainService;
+	private BlockchainMicroService blockchainMicroService;
 
 	@Inject
-	private CoingeckoCategoryService coingeckoCategoryService;
+	private CoingeckoCategoryMicroService coingeckoCategoryMicroService;
 
 	@Inject
-	private CurrencyService currencyService;
+	private CurrencyMicroService currencyMicroService;
 
 	@Inject
-	private CoinService coinService;
+	private CoinMicroService coinMicroService;
 
 	@Inject
-	private SmartContractService smartContractService;
+	private SmartContractMicroService smartContractMicroService;
 
 	@Inject
-	private CoinListService coinListService;
+	private CoinListMicroService coinListMicroService;
 
 	@Inject
-	private CoinListHistoryService coinListHistoryService;
+	private CoinListHistoryMicroService coinListHistoryMicroService;
 
 	@Inject
-	private CoingeckoCoinService coingeckoCoinService;
+	private CoingeckoCoinMicroService coingeckoCoinMicroService;
 
 	@Inject
-	private CoingeckoCoinHistoryService coingeckoCoinHistoryService;
+	private CoingeckoCoinHistoryMicroService coingeckoCoinHistoryMicroService;
 
 	public void updateCoingeckoNetworks() {
 		try {
 			var url = initBean.getCoingeckoBaseApi() + "/asset_platforms";
 			var json = CoingeckoUtil.runGetCommand(initBean.getHttpClient(),url);
 			JSON.parseArray(json, AssetPlatform.class).stream().forEach(network -> {
-				if (!blockchainService.existsBlockchainByCoingeckoId(network.getId())) {
+				if (!blockchainMicroService.existsBlockchainByCoingeckoId(network.getId())) {
 					var blockchain = Blockchain.builder().mustCheck(false).coingeckoId(network.getId())
 							.isEvm(network.getChain_identifier() != null)
 							.name(!Strings.isNullOrEmpty(network.getShortname()) ? network.getShortname()
@@ -99,7 +99,7 @@ public class CoingeckoBean implements Serializable {
 							.blockchainType((network.getChain_identifier() != null) ? BlockchainTechType.DPOS
 									: BlockchainTechType.POW)
 							.build();
-					blockchain = blockchainService.save(blockchain);
+					blockchain = blockchainMicroService.save(blockchain);
 					logger.info(String.format("Blockchain %s has been saved in System", blockchain));
 				}
 			});
@@ -112,8 +112,8 @@ public class CoingeckoBean implements Serializable {
 			var url = initBean.getCoingeckoBaseApi() + "/coins/categories/list";
 			var json = CoingeckoUtil.runGetCommand(initBean.getHttpClient(),url);
 			JSON.parseArray(json, CoingeckoCategory.class).stream().forEach(category -> {
-				if (!coingeckoCategoryService.existById(category.getCategory_id())) {
-					coingeckoCategoryService.save(category);
+				if (!coingeckoCategoryMicroService.existById(category.getCategory_id())) {
+					coingeckoCategoryMicroService.save(category);
 					logger.info(String.format("CoingeckoCategory %s has been added.", category.toString()));
 				}
 			});
@@ -126,9 +126,9 @@ public class CoingeckoBean implements Serializable {
 			var url = initBean.getCoingeckoBaseApi() + "/simple/supported_vs_currencies";
 			var json = CoingeckoUtil.runGetCommand(initBean.getHttpClient(),url);
 			JSON.parseArray(json, String.class).stream().forEach(currencyIso -> {
-				if (!currencyService.existById(currencyIso)) {
+				if (!currencyMicroService.existById(currencyIso)) {
 					var currency = Currency.builder().currencyId(currencyIso).build();
-					currency = currencyService.save(currency);
+					currency = currencyMicroService.save(currency);
 					logger.info(String.format("currency %s has been added.", currency.toString()));
 				}
 			});
@@ -142,8 +142,8 @@ public class CoingeckoBean implements Serializable {
 			var json = CoingeckoUtil.runGetCommand(initBean.getHttpClient(),url);
 
 			JSON.parseArray(json, Coin.class).stream().forEach(coin -> {
-				if (!coinService.existsCoinByCoingeckoId(coin.getCoingeckoId())) {
-					coin = coinService.save(coin);
+				if (!coinMicroService.existsCoinByCoingeckoId(coin.getCoingeckoId())) {
+					coin = coinMicroService.save(coin);
 					logger.info(String.format("coin %s has been added.", coin.toString()));
 				}
 			});
@@ -159,16 +159,16 @@ public class CoingeckoBean implements Serializable {
 			JSON.parseArray(json, CoinNetwork.class).stream().forEach(coinNetwork -> {
 				logger.info(String.format("Coin %s has Platforms :", coinNetwork.getId()));
 				try {
-					Coin coin = coinService.findByCoingeckoId(coinNetwork.getId()).get();
+					Coin coin = coinMicroService.findByCoingeckoId(coinNetwork.getId()).get();
 					for (Map.Entry<String, Object> entry : coinNetwork.getPlatforms().entrySet()) {
 						String key = entry.getKey();
 						Object value = entry.getValue();
-						Blockchain blockchain = blockchainService.findByCoingeckoId(key).get();
-						if (!smartContractService.existsSmartContractByBlockchainAndCoinAndContractsAddress(blockchain,
+						Blockchain blockchain = blockchainMicroService.findByCoingeckoId(key).get();
+						if (!smartContractMicroService.existsSmartContractByBlockchainAndCoinAndContractsAddress(blockchain,
 								coin, value.toString())) {
 							var sc = SmartContract.builder().blockchain(blockchain).coin(coin)
 									.contractsAddress(value.toString()).isMain(false).mustCheck(false).build();
-							sc = smartContractService.save(sc);
+							sc = smartContractMicroService.save(sc);
 							logger.info(String.format("SmartContract %s has been added", sc));
 						}
 					}
@@ -191,10 +191,10 @@ public class CoingeckoBean implements Serializable {
 			var coinList = CoingeckoUtil.runGetCommand(initBean.getHttpClient(),initBean.getCoingeckoBaseApi() + "/coins/list");
 			var coinListWithNetwork = CoingeckoUtil
 					.runGetCommand(initBean.getHttpClient(),initBean.getCoingeckoBaseApi() + "/coins/list?include_platform=true");
-			var mustAddContracts = smartContractService.findByMustAddAsMustAddContractReq();
+			var mustAddContracts = smartContractMicroService.findByMustAddAsMustAddContractReq();
 			JSON.parseArray(coinList, Coin.class).stream().forEach(coin -> {
-				if (!coinService.existsCoinByCoingeckoId(coin.getCoingeckoId())) {
-					coin = coinService.save(coin);
+				if (!coinMicroService.existsCoinByCoingeckoId(coin.getCoingeckoId())) {
+					coin = coinMicroService.save(coin);
 					logger.info(String.format("coin %s has been added.", coin.toString()));
 				}
 			});
@@ -217,28 +217,28 @@ public class CoingeckoBean implements Serializable {
 			var coinListObject = CoinList.builder().currentOriginalCoinList(coinList)
 					.currentOriginalCoinListWithPlatform(coinListWithNetwork).currentCoinList(coinList)
 					.currentCoinListWithPlatform(modifiedJCoinListWithNetwork).build();
-			if (coinListService.isEmptyDocument()) {
-				coinListService.save(coinListObject);
+			if (coinListMicroService.isEmptyDocument()) {
+				coinListMicroService.save(coinListObject);
 			} else {
-				var currentCoinListObject = coinListService.findFirst();
+				var currentCoinListObject = coinListMicroService.findFirst();
 				if (!currentCoinListObject.equals(coinListObject)) {
-					coinListService.save(coinListObject);
-					coinListHistoryService.save(currentCoinListObject);
+					coinListMicroService.save(coinListObject);
+					coinListHistoryMicroService.save(currentCoinListObject);
 				}
 			}
 			JSON.parseArray(coinListWithNetwork, CoinNetwork.class).stream().forEach(coinNetwork -> {
 				logger.info(String.format("Coin %s has Platforms :", coinNetwork.getId()));
 				try {
-					Coin coin = coinService.findByCoingeckoId(coinNetwork.getId()).get();
+					Coin coin = coinMicroService.findByCoingeckoId(coinNetwork.getId()).get();
 					for (Map.Entry<String, Object> entry : coinNetwork.getPlatforms().entrySet()) {
 						String key = entry.getKey();
 						Object value = entry.getValue();
-						Blockchain blockchain = blockchainService.findByCoingeckoId(key).get();
-						if (!smartContractService.existsSmartContractByBlockchainAndCoinAndContractsAddress(blockchain,
+						Blockchain blockchain = blockchainMicroService.findByCoingeckoId(key).get();
+						if (!smartContractMicroService.existsSmartContractByBlockchainAndCoinAndContractsAddress(blockchain,
 								coin, value.toString())) {
 							var sc = SmartContract.builder().blockchain(blockchain).coin(coin)
 									.contractsAddress(value.toString()).isMain(false).mustCheck(false).build();
-							sc = smartContractService.save(sc);
+							sc = smartContractMicroService.save(sc);
 							logger.info(String.format("SmartContract %s has been added", sc));
 						}
 					}
@@ -258,7 +258,7 @@ public class CoingeckoBean implements Serializable {
 			var url = initBean.getCoingeckoBaseApi() + "/coins/" + coinId;
 			var json = CoingeckoUtil.runGetCommand(initBean.getHttpClient(),url);
 			JSONObject jo = JSON.parseObject(json);
-			Coin coin = coinService.findByCoingeckoId(coinId).orElseThrow();
+			Coin coin = coinMicroService.findByCoingeckoId(coinId).orElseThrow();
 			List<SmartContract> contractList = coin.getContractList();
 			contractList.forEach(contract -> {
 				if (jo.getJSONObject("platforms") != null) {
@@ -276,7 +276,7 @@ public class CoingeckoBean implements Serializable {
 				}
 			});
 			var editedJson = JSON.toJSONString(jo);
-			Optional<CoingeckoCoin> coinGeckoCoinOp = coingeckoCoinService.findById(coinId);
+			Optional<CoingeckoCoin> coinGeckoCoinOp = coingeckoCoinMicroService.findById(coinId);
 			CoingeckoCoin coingeckoCoin = null;
 			if (coinGeckoCoinOp.isPresent()) {
 				var currentObject = coinGeckoCoinOp.get();
@@ -288,15 +288,15 @@ public class CoingeckoBean implements Serializable {
 					coin.setCoingeckoJson(editedJson);
 					coin.setLastCheck(LocalDateTime.now());
 					coin.setPriceInUsd(coingeckoCoin.getPriceInUsd());
-					coin = coinService.save(coin);
-					coingeckoCoin = coingeckoCoinService.save(coingeckoCoin);
+					coin = coinMicroService.save(coin);
+					coingeckoCoin = coingeckoCoinMicroService.save(coingeckoCoin);
 					logger.info(String.format("coingeckoCoin %s has been updated.", coinId));
-					CoingeckoCoinHistory cgh = coingeckoCoinHistoryService.findById(coinId).orElseThrow();
+					CoingeckoCoinHistory cgh = coingeckoCoinHistoryMicroService.findById(coinId).orElseThrow();
 					cgh.addCoingeckoCoin(coingeckoCoin);
-					coingeckoCoinHistoryService.save(cgh);
+					coingeckoCoinHistoryMicroService.save(cgh);
 				} else {
 					coin.setLastCheck(LocalDateTime.now());
-					coin = coinService.save(coin);
+					coin = coinMicroService.save(coin);
 				}
 			} else {
 				coingeckoCoin = new CoingeckoCoin(jo);
@@ -305,12 +305,12 @@ public class CoingeckoBean implements Serializable {
 				coin.setCoingeckoJson(editedJson);
 				coin.setPriceInUsd(coingeckoCoin.getPriceInUsd());
 				coin.setLastCheck(LocalDateTime.now());
-				coin = coinService.save(coin);
-				coingeckoCoin = coingeckoCoinService.save(coingeckoCoin);
+				coin = coinMicroService.save(coin);
+				coingeckoCoin = coingeckoCoinMicroService.save(coingeckoCoin);
 				CoingeckoCoinHistory cgh = new CoingeckoCoinHistory(coingeckoCoin.getId(), coingeckoCoin.getSymbol(),
 						coingeckoCoin.getName());
 				cgh.addCoingeckoCoin(coingeckoCoin);
-				coingeckoCoinHistoryService.save(cgh);
+				coingeckoCoinHistoryMicroService.save(cgh);
 				logger.info(String.format("coingeckoCoin %s has been added", coinId));
 			}
 			return coingeckoCoin;

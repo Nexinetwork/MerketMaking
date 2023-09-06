@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
 import com.plgchain.app.plingaHelper.constant.LogAction;
 import com.plgchain.app.plingaHelper.constant.LogType;
 import com.plgchain.app.plingaHelper.entity.Log;
-import com.plgchain.app.plingaHelper.microService.LogService;
+import com.plgchain.app.plingaHelper.microService.LogMicroService;
 
 @Aspect
 @Component
 public class Logger {
 
 	@Autowired
-	private LogService logService;
+	private LogMicroService logMicroService;
 
 	@Pointcut("@within(com.plgchain.app.plingaHelper.annotation.LogClass)")
 	public void logClass() {
@@ -45,7 +45,7 @@ public class Logger {
 		if (result != null)
 			res += " and result is " + result.toString();
 		log.setLogDetail(res);
-		logService.save(log);
+		logMicroService.save(log);
 	}
 
 	@AfterThrowing("(logClass() ||  logMethod()) && !notLogMethod()")

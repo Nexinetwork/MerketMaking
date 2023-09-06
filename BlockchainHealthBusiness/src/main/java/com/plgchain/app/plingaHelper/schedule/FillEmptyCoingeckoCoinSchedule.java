@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.bean.coingecko.CoingeckoBean;
-import com.plgchain.app.plingaHelper.microService.CoinService;
+import com.plgchain.app.plingaHelper.microService.CoinMicroService;
 import jakarta.inject.Inject;
 
 @Component
@@ -15,15 +15,15 @@ public class FillEmptyCoingeckoCoinSchedule {
 
 	private final static Logger logger = LoggerFactory.getLogger(FillEmptyCoingeckoCoinSchedule.class);
 
-	private final CoinService coinService;
+	private final CoinMicroService coinMicroService;
 	private final CoingeckoBean coingeckoBean;
 
 	@Inject
 	private InitBean initBean;
 
 	@Inject
-	public FillEmptyCoingeckoCoinSchedule(CoinService coinService, CoingeckoBean coingeckoBean) {
-		this.coinService = coinService;
+	public FillEmptyCoingeckoCoinSchedule(CoinMicroService coinMicroService, CoingeckoBean coingeckoBean) {
+		this.coinMicroService = coinMicroService;
 		this.coingeckoBean = coingeckoBean;
 	}
 
@@ -31,7 +31,7 @@ public class FillEmptyCoingeckoCoinSchedule {
 	public void fillEmptyCoingeckoCoin() {
 		if (!initBean.doesActionRunning("fillEmptyCoingeckoCoin")) {
 			initBean.startActionRunning("fillEmptyCoingeckoCoin");
-			coinService.findByCoingeckoJsonIsNullAndCoingeckoIdIsNotNull(10).forEach(coin -> {
+			coinMicroService.findByCoingeckoJsonIsNullAndCoingeckoIdIsNotNull(10).forEach(coin -> {
 				coingeckoBean.createOrUpdateCoingeckoCoin(coin.getCoingeckoId());
 			});
 			initBean.stopActionRunning("fillEmptyCoingeckoCoin");

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.bean.coingecko.CoingeckoBean;
 import com.plgchain.app.plingaHelper.entity.SystemConfig;
-import com.plgchain.app.plingaHelper.microService.SystemConfigService;
+import com.plgchain.app.plingaHelper.microService.SystemConfigMicroService;
 
 @Component
 public class InitCoingeckoSchedule implements Serializable {
@@ -27,39 +27,39 @@ public class InitCoingeckoSchedule implements Serializable {
 	private CoingeckoBean coingeckoBean;
 
 	@Autowired
-	private SystemConfigService systemConfigService;
+	private SystemConfigMicroService systemConfigMicroService;
 
 	@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
 	public void initCoingecko() {
 		if (!initBean.isInitCoingecko()) {
-			if (!systemConfigService.isByConfigNameExist("coingeckoNetworksInit")) {
+			if (!systemConfigMicroService.isByConfigNameExist("coingeckoNetworksInit")) {
 				coingeckoBean.updateCoingeckoNetworks();
 				var sc = SystemConfig.builder().configName("coingeckoNetworksInit").configBooleanValue(true).build();
-				sc = systemConfigService.save(sc);
-			} else if (!systemConfigService.isByConfigNameExist("coingeckocategoriesListInit")) {
+				sc = systemConfigMicroService.save(sc);
+			} else if (!systemConfigMicroService.isByConfigNameExist("coingeckocategoriesListInit")) {
 				coingeckoBean.updateCoingeckoCategoriesList();
 				var sc = SystemConfig.builder().configName("coingeckocategoriesListInit").configBooleanValue(true)
 						.build();
-				sc = systemConfigService.save(sc);
-			} else if (!systemConfigService.isByConfigNameExist("coingeckoCurrencyListInit")) {
+				sc = systemConfigMicroService.save(sc);
+			} else if (!systemConfigMicroService.isByConfigNameExist("coingeckoCurrencyListInit")) {
 				coingeckoBean.updateCoingeckoCurrencyList();
 				var sc = SystemConfig.builder().configName("coingeckoCurrencyListInit").configBooleanValue(true)
 						.build();
-				sc = systemConfigService.save(sc);
-			} else if (!systemConfigService.isByConfigNameExist("coingeckoCoinListInit")) {
+				sc = systemConfigMicroService.save(sc);
+			} else if (!systemConfigMicroService.isByConfigNameExist("coingeckoCoinListInit")) {
 				coingeckoBean.updateCoingeckoCoinList();
 				var sc = SystemConfig.builder().configName("coingeckoCoinListInit").configBooleanValue(true).build();
-				sc = systemConfigService.save(sc);
-			} else if (!systemConfigService.isByConfigNameExist("coingeckoSmartcontractInit")) {
+				sc = systemConfigMicroService.save(sc);
+			} else if (!systemConfigMicroService.isByConfigNameExist("coingeckoSmartcontractInit")) {
 				coingeckoBean.updateCoingeckoCoinListNetwork();
 				var sc = SystemConfig.builder().configName("coingeckoSmartcontractInit").configBooleanValue(true)
 						.build();
-				sc = systemConfigService.save(sc);
-			} else if (!systemConfigService.isByConfigNameExist("coingeckoCoinListMongoInit")) {
+				sc = systemConfigMicroService.save(sc);
+			} else if (!systemConfigMicroService.isByConfigNameExist("coingeckoCoinListMongoInit")) {
 				coingeckoBean.checkAndUpdateCoingeckoCoinListFull();
 				var sc = SystemConfig.builder().configName("coingeckoCoinListMongoInit").configBooleanValue(true)
 						.build();
-				sc = systemConfigService.save(sc);
+				sc = systemConfigMicroService.save(sc);
 			}
 		}
 	}

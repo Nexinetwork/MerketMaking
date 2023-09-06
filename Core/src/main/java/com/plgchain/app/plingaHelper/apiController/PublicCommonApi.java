@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.plgchain.app.plingaHelper.constant.UserStatus;
 import com.plgchain.app.plingaHelper.controller.BaseController;
 import com.plgchain.app.plingaHelper.entity.User;
-import com.plgchain.app.plingaHelper.microService.UserService;
+import com.plgchain.app.plingaHelper.microService.UserMicroService;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 
 //@CrossOrigin(origins = "*", maxAge = 3600)
@@ -21,7 +21,7 @@ public class PublicCommonApi extends BaseController implements Serializable {
 	private final PasswordEncoder passwordEncoder;
 
 	@Autowired
-	private UserService userService;
+	private UserMicroService userMicroService;
 
 	public PublicCommonApi(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
@@ -35,7 +35,7 @@ public class PublicCommonApi extends BaseController implements Serializable {
 		user.setLastname("Richardson");
 		user.setUserStatus(UserStatus.Active);
 		user.setPassword(passwordEncoder.encode("MYLoveArash2023plgchainLOGIN"));
-		userService.save(user);
+		userMicroService.save(user);
 		return success("Admin User Created.");
 	}
 

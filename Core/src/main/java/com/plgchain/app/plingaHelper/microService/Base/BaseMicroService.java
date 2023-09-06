@@ -28,7 +28,7 @@ import java.util.Map;
  * @date 2018/1/18 10:29
  */
 @Component
-public class BaseService<T> extends TopBaseService {
+public class BaseMicroService<T> extends TopBaseMicroService {
 
     //JPA查询工厂
     @Autowired

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.plgchain.app.plingaHelper.dao.SystemConfigDao;
 import com.plgchain.app.plingaHelper.entity.SystemConfig;
 import com.plgchain.app.plingaHelper.entity.TankhahWallet;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @SuppressWarnings({"unused"})
 @Slf4j
 @Service
-public class SystemConfigService extends BaseService<SystemConfig> implements Serializable {
+public class SystemConfigMicroService extends BaseMicroService<SystemConfig> implements Serializable {
 
 	/**
 	 *

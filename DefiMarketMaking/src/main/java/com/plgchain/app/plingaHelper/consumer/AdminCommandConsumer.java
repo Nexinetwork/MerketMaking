@@ -34,7 +34,7 @@ public class AdminCommandConsumer implements Serializable {
 	@Autowired
 	private InitBean initBean;
 
-	@KafkaListener(topics = SysConstant.KAFKA_ADMIN_COMMAND, containerFactory = "kafkaListenerContainerFactory", groupId = "DefiMarketMakingService.handleAdminCommand")
+	@KafkaListener(topics = SysConstant.KAFKA_ADMIN_COMMAND, containerFactory = "kafkaListenerContainerFactory", groupId = "DefiMarketMakingMicroService.handleAdminCommand")
 	public void handleAdminCommand(List<ConsumerRecord<String, String>> records) {
 		try {
 			for (int i = 0; i < records.size(); i++) {

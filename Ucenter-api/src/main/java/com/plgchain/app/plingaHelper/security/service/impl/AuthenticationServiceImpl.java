@@ -12,12 +12,12 @@ import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
 import com.plgchain.app.plingaHelper.security.dao.response.JwtAuthenticationResponse;
 import com.plgchain.app.plingaHelper.security.service.AuthenticationService;
 import com.plgchain.app.plingaHelper.security.service.JwtService;
-import com.plgchain.app.plingaHelper.microService.UserService;
+import com.plgchain.app.plingaHelper.microService.UserMicroService;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
-    private final UserService userService;
+    private final UserMicroService userMicroService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -27,7 +27,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .emailAddress(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
                 //.role(Role.USER)
                 .build();
-        userService.save(user);
+        userMicroService.save(user);
         var jwt = jwtService.generateToken(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
@@ -36,7 +36,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public JwtAuthenticationResponse signin(SigninRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        var user = userService.findByEmailAddress(request.getEmail())
+        var user = userMicroService.findByEmailAddress(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
         var jwt = jwtService.generateToken(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();

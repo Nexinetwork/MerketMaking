@@ -18,10 +18,10 @@ import com.google.common.base.Strings;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
 import com.plgchain.app.plingaHelper.entity.SystemConfig;
-import com.plgchain.app.plingaHelper.microService.BlockchainNodeService;
-import com.plgchain.app.plingaHelper.microService.BlockchainService;
-import com.plgchain.app.plingaHelper.microService.SmartContractService;
-import com.plgchain.app.plingaHelper.microService.SystemConfigService;
+import com.plgchain.app.plingaHelper.microService.BlockchainNodeMicroService;
+import com.plgchain.app.plingaHelper.microService.BlockchainMicroService;
+import com.plgchain.app.plingaHelper.microService.SmartContractMicroService;
+import com.plgchain.app.plingaHelper.microService.SystemConfigMicroService;
 import com.plgchain.app.plingaHelper.type.response.ContractMustAddResponse;
 
 import jakarta.annotation.PostConstruct;
@@ -47,20 +47,20 @@ public class InitBean implements Serializable {
 	private final static Logger logger = LoggerFactory.getLogger(InitBean.class);
 
 	@Inject
-	private BlockchainService blockchainService;
+	private BlockchainMicroService blockchainMicroService;
 
 	@Inject
-	private SystemConfigService systemConfigService;
+	private SystemConfigMicroService systemConfigMicroService;
 
 	@Inject
-	private BlockchainNodeService blockchainNodeService;
+	private BlockchainNodeMicroService blockchainNodeMicroService;
 
 	@SuppressWarnings("rawtypes")
 	@Inject
 	private RedisTemplate redisTemplate;
 
 	@Inject
-	private SmartContractService smartContractService;
+	private SmartContractMicroService smartContractMicroService;
 
 	private String privateKey;
 
@@ -85,10 +85,10 @@ public class InitBean implements Serializable {
 	}
 
 	public void loadConfigs() {
-		Optional<SystemConfig> coingeckoBaseApiConfig = systemConfigService.findByConfigName("coingeckoBaseFreeApi");
-	    Optional<SystemConfig> initCoingeckoConfig = systemConfigService.findByConfigName("initCoingecko");
-	    Optional<SystemConfig> checkNodeHealthConfig = systemConfigService.findByConfigName("checkNodeHealth");
-	    Optional<SystemConfig> privateKeyConfig = systemConfigService.findByConfigName("ssh-key-path");
+		Optional<SystemConfig> coingeckoBaseApiConfig = systemConfigMicroService.findByConfigName("coingeckoBaseFreeApi");
+	    Optional<SystemConfig> initCoingeckoConfig = systemConfigMicroService.findByConfigName("initCoingecko");
+	    Optional<SystemConfig> checkNodeHealthConfig = systemConfigMicroService.findByConfigName("checkNodeHealth");
+	    Optional<SystemConfig> privateKeyConfig = systemConfigMicroService.findByConfigName("ssh-key-path");
 
 	    coingeckoBaseApiConfig.ifPresent(config -> coingeckoBaseApi = config.getConfigStringValue());
 	    initCoingeckoConfig.ifPresent(config -> initCoingecko = config.getConfigBooleanValue());
@@ -114,7 +114,7 @@ public class InitBean implements Serializable {
 		// Predicate<Blockchain> mustCheck = blockchain -> blockchain.isEnabled() &&
 		// blockchain.isMustCheck();
 		HashOperations<String, String, String> blockchainDataString = redisTemplate.opsForHash();
-		blockchainService.findAll().stream().filter(blockchain -> blockchain.isEnabled() && blockchain.isMustCheck())
+		blockchainMicroService.findAll().stream().filter(blockchain -> blockchain.isEnabled() && blockchain.isMustCheck())
 				.forEach(blockchain -> {
 					if (blockchainDataString.hasKey(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName()))
 						blockchainDataString.delete(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName());
@@ -122,7 +122,7 @@ public class InitBean implements Serializable {
 						blockchainDataString.delete(SysConstant.REDIS_NODE_DATA, blockchain.getName());
 					blockchainDataString.put(SysConstant.REDIS_BLOCKCHAIN_DATA, blockchain.getName(),
 							JSON.toJSONString(blockchain));
-					List<BlockchainNode> blNodeList = blockchainNodeService.findByBlockchain(blockchain);
+					List<BlockchainNode> blNodeList = blockchainNodeMicroService.findByBlockchain(blockchain);
 					if (!blNodeList.isEmpty()) {
 						logger.info(String.format("There is %s node for blockchain %s", blNodeList.size(),
 								blockchain.getName()));
@@ -132,7 +132,7 @@ public class InitBean implements Serializable {
 						logger.info(String.format("There is not any node for blockchain %s", blockchain.getName()));
 					}
 				});
-		smartContractService.findByMustAdd(true).stream().filter(smartContract -> smartContract != null && !Strings.isNullOrEmpty(smartContract.getCoin().getCoingeckoId())).forEach(smartContract -> {
+		smartContractMicroService.findByMustAdd(true).stream().filter(smartContract -> smartContract != null && !Strings.isNullOrEmpty(smartContract.getCoin().getCoingeckoId())).forEach(smartContract -> {
 			if (blockchainDataString.hasKey(SysConstant.REDIS_CONTRACTS_MUSTADD_DATA,
 					smartContract.getCoin().getCoingeckoId()))
 				blockchainDataString.delete(SysConstant.REDIS_CONTRACTS_MUSTADD_DATA,

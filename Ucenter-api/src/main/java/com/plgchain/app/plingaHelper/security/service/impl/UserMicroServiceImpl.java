@@ -5,20 +5,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.plgchain.app.plingaHelper.microService.UserService;
+import com.plgchain.app.plingaHelper.microService.UserMicroService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements com.plgchain.app.plingaHelper.security.service.UserService {
-    private final UserService userService;
+public class UserMicroServiceImpl implements com.plgchain.app.plingaHelper.security.service.UserMicroService {
+    private final UserMicroService userMicroService;
     @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) {
-                return userService.findByEmailAddress(username)
+                return userMicroService.findByEmailAddress(username)
                         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             }
         };

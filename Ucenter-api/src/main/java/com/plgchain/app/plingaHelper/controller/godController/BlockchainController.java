@@ -19,7 +19,7 @@ import com.plgchain.app.plingaHelper.controller.BaseController;
 import com.plgchain.app.plingaHelper.dto.BlockchainNodeDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.exception.RestActionError;
-import com.plgchain.app.plingaHelper.microService.CoinService;
+import com.plgchain.app.plingaHelper.microService.CoinMicroService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.util.MessageResult;
 
@@ -42,7 +42,7 @@ public class BlockchainController extends BaseController implements Serializable
 	private KafkaTemplate<String, String> kafkaTemplate;
 
 	@Inject
-	private CoinService coinService;
+	private CoinMicroService coinMicroService;
 
 	@RequestMapping("/ping")
 	public MessageResult ping() {
@@ -111,11 +111,11 @@ public class BlockchainController extends BaseController implements Serializable
 		try {
 			if (Strings.isNullOrEmpty(coingeckoId))
 				error("Coin is empty");
-			if (!coinService.existsCoinByCoingeckoId(coingeckoId))
+			if (!coinMicroService.existsCoinByCoingeckoId(coingeckoId))
 				error("Invalid Coin");
-			var result = coinService.findByCoingeckoId(coingeckoId).get();
+			var result = coinMicroService.findByCoingeckoId(coingeckoId).get();
 			result.setMustCheck(true);
-			result = coinService.save(result);
+			result = coinMicroService.save(result);
 			CommandToRun ctr = new CommandToRun();
 			ctr.setAdminCommandType(AdminCommandType.UPDATECOINS);
 			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
@@ -131,11 +131,11 @@ public class BlockchainController extends BaseController implements Serializable
 		try {
 			if (Strings.isNullOrEmpty(coingeckoId))
 				error("Coin is empty");
-			if (!coinService.existsCoinByCoingeckoId(coingeckoId))
+			if (!coinMicroService.existsCoinByCoingeckoId(coingeckoId))
 				error("Invalid Coin");
-			var result = coinService.findByCoingeckoId(coingeckoId).get();
+			var result = coinMicroService.findByCoingeckoId(coingeckoId).get();
 			result.setMustCheck(false);
-			result = coinService.save(result);
+			result = coinMicroService.save(result);
 			CommandToRun ctr = new CommandToRun();
 			ctr.setAdminCommandType(AdminCommandType.UPDATECOINS);
 			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));

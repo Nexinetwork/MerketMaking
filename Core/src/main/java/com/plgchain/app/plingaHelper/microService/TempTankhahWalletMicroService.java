@@ -11,12 +11,12 @@ import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.dao.TempTankhahWalletDao;
 import com.plgchain.app.plingaHelper.entity.TempTankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 import jakarta.inject.Inject;
 
 @Service
-public class TempTankhahWalletService extends BaseService<TempTankhahWallet> implements Serializable {
+public class TempTankhahWalletMicroService extends BaseMicroService<TempTankhahWallet> implements Serializable {
 
 	private static final long serialVersionUID = -984115045697781591L;
 

@@ -28,7 +28,7 @@ import com.plgchain.app.plingaHelper.dao.MarketMakingWalletDao;
 import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 import jakarta.inject.Inject;
 
@@ -36,7 +36,7 @@ import jakarta.inject.Inject;
  *
  */
 @Service
-public class MarketMakingWalletService extends BaseService<MarketMakingWallet> implements Serializable {
+public class MarketMakingWalletMicroService extends BaseMicroService<MarketMakingWallet> implements Serializable {
 
 	private static final long serialVersionUID = -1912998788562981610L;
 

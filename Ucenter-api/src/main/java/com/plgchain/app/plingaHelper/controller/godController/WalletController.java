@@ -23,9 +23,9 @@ import com.plgchain.app.plingaHelper.controller.BaseController;
 import com.plgchain.app.plingaHelper.entity.TankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
-import com.plgchain.app.plingaHelper.microService.MarketMakingWalletService;
-import com.plgchain.app.plingaHelper.microService.SmartContractService;
-import com.plgchain.app.plingaHelper.microService.TankhahWalletService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingWalletMicroService;
+import com.plgchain.app.plingaHelper.microService.SmartContractMicroService;
+import com.plgchain.app.plingaHelper.microService.TankhahWalletMicroService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.type.response.MarketMakingWalletRes;
 import com.plgchain.app.plingaHelper.util.MessageResult;
@@ -49,16 +49,16 @@ public class WalletController extends BaseController implements Serializable {
 	private BlockchainBean blockchainBean;
 
 	@Inject
-	private TankhahWalletService tankhahWalletService;
+	private TankhahWalletMicroService tankhahWalletMicroService;
 
 	@Inject
-	private MarketMakingWalletService marketMakingWalletService;
+	private MarketMakingWalletMicroService marketMakingWalletMicroService;
 
 	@Inject
 	private KafkaTemplate<String, String> kafkaTemplate;
 
 	@Inject
-	private SmartContractService smartContractService;
+	private SmartContractMicroService smartContractMicroService;
 
 	@RequestMapping("/wallet/fixWalletPrivatekeys")
 	public MessageResult fixWalletPrivatekeys() {
@@ -75,7 +75,7 @@ public class WalletController extends BaseController implements Serializable {
 	@RequestMapping("/wallet/getTankhahWalletByPublicKey")
 	public MessageResult getTankhahWalletByPublicKey(@RequestBody String publicKey) {
 		logger.info("getTankhahWalletByPublicKey fired.");
-		List<MarketMakingWalletRes> result = tankhahWalletService.findByPublicKey(publicKey)
+		List<MarketMakingWalletRes> result = tankhahWalletMicroService.findByPublicKey(publicKey)
 		        .stream()
 		        .map(TankhahWallet::getAsMarketMakingWalletRes)
 		        .collect(Collectors.toList());
@@ -85,7 +85,7 @@ public class WalletController extends BaseController implements Serializable {
 	@RequestMapping("/wallet/getMarketMakingWalletByPublicKey")
 	public MessageResult getMarketMakingWalletByPublicKey(@RequestBody String publicKey) {
 	    logger.info("getMarketMakingWalletByPublicKey fired.");
-	    List<MarketMakingWalletRes> result = marketMakingWalletService.findByPublicKey(publicKey)
+	    List<MarketMakingWalletRes> result = marketMakingWalletMicroService.findByPublicKey(publicKey)
 	        .stream()
 	        .map(MarketMakingWallet::getAsMarketMakingWalletRes)
 	        .collect(Collectors.toList());
@@ -98,7 +98,7 @@ public class WalletController extends BaseController implements Serializable {
 	    	error("ContractId is null");
 	    if (contractId < 0)
 	    	error("ContractId is null");
-	    Optional<SmartContract> sm = smartContractService.findById(contractId);
+	    Optional<SmartContract> sm = smartContractMicroService.findById(contractId);
 	    if (sm.isEmpty())
 	    	error("Invalid contractId.");
 	    CommandToRun ctr = new CommandToRun();
@@ -114,7 +114,7 @@ public class WalletController extends BaseController implements Serializable {
 	    	error("ContractId is null");
 	    if (contractId < 0)
 	    	error("ContractId is null");
-	    Optional<SmartContract> sm = smartContractService.findById(contractId);
+	    Optional<SmartContract> sm = smartContractMicroService.findById(contractId);
 	    if (sm.isEmpty())
 	    	error("Invalid contractId.");
 	    CommandToRun ctr = new CommandToRun();
@@ -130,7 +130,7 @@ public class WalletController extends BaseController implements Serializable {
 	    	error("ContractId is null");
 	    if (contractId < 0)
 	    	error("ContractId is null");
-	    Optional<SmartContract> sm = smartContractService.findById(contractId);
+	    Optional<SmartContract> sm = smartContractMicroService.findById(contractId);
 	    if (sm.isEmpty())
 	    	error("Invalid contractId.");
 	    CommandToRun ctr = new CommandToRun();
@@ -146,7 +146,7 @@ public class WalletController extends BaseController implements Serializable {
 	    	error("ContractId is null");
 	    if (contractId < 0)
 	    	error("ContractId is null");
-	    Optional<SmartContract> sm = smartContractService.findById(contractId);
+	    Optional<SmartContract> sm = smartContractMicroService.findById(contractId);
 	    if (sm.isEmpty())
 	    	error("Invalid contractId.");
 	    CommandToRun ctr = new CommandToRun();

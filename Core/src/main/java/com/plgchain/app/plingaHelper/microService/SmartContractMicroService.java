@@ -17,13 +17,13 @@ import com.plgchain.app.plingaHelper.dao.SmartContractDao;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 /**
  *
  */
 @Service
-public class SmartContractService extends BaseService<SmartContract> implements Serializable {
+public class SmartContractMicroService extends BaseMicroService<SmartContract> implements Serializable {
 
 	private static final long serialVersionUID = -8641271050704411082L;
 

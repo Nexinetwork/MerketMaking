@@ -5,9 +5,9 @@ import com.plgchain.app.plingaHelper.bean.TransferBean;
 import com.plgchain.app.plingaHelper.constant.TransactionParallelType;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
-import com.plgchain.app.plingaHelper.microService.MarketMakingService;
-import com.plgchain.app.plingaHelper.microService.MarketMakingWalletService;
-import com.plgchain.app.plingaHelper.microService.TankhahWalletService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingMicroService;
+import com.plgchain.app.plingaHelper.microService.MarketMakingWalletMicroService;
+import com.plgchain.app.plingaHelper.microService.TankhahWalletMicroService;
 import com.plgchain.app.plingaHelper.util.NumberUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 
@@ -28,21 +28,21 @@ public class FundInitialMMTransferWalletSchedule {
 	private static final Logger logger = LoggerFactory.getLogger(FundInitialMMTransferWalletSchedule.class);
 
 	private final InitBean initBean;
-	private final MarketMakingService marketMakingService;
+	private final MarketMakingMicroService marketMakingMicroService;
 	private final TransferBean transferBean;
-	private final TankhahWalletService tankhahWalletService;
-	private final MarketMakingWalletService mmWalletService;
+	private final TankhahWalletMicroService tankhahWalletMicroService;
+	private final MarketMakingWalletMicroService mmWalletMicroService;
 	private final int sleepInSeconds = 4;
 
 	@Inject
-	public FundInitialMMTransferWalletSchedule(InitBean initBean, MarketMakingService marketMakingService,
-			TransferBean transferBean, TankhahWalletService tankhahWalletService,
-			MarketMakingWalletService mmWalletService) {
+	public FundInitialMMTransferWalletSchedule(InitBean initBean, MarketMakingMicroService marketMakingMicroService,
+			TransferBean transferBean, TankhahWalletMicroService tankhahWalletMicroService,
+			MarketMakingWalletMicroService mmWalletMicroService) {
 		this.initBean = initBean;
-		this.marketMakingService = marketMakingService;
+		this.marketMakingMicroService = marketMakingMicroService;
 		this.transferBean = transferBean;
-		this.tankhahWalletService = tankhahWalletService;
-		this.mmWalletService = mmWalletService;
+		this.tankhahWalletMicroService = tankhahWalletMicroService;
+		this.mmWalletMicroService = mmWalletMicroService;
 	}
 
 	//@Scheduled(cron = "0 */10 * * * *", zone = "GMT")
@@ -52,7 +52,7 @@ public class FundInitialMMTransferWalletSchedule {
 			initBean.startActionRunning("fundInitialMMTransferWallet");
 			logger.info("Running Schedule : fundInitialMMTransferWallet");
 			try {
-				marketMakingService
+				marketMakingMicroService
 						.findTopByInitialWalletCreationDoneAndInitialWalletFundingDoneOrderByMarketMakingId(true, false)
 						.ifPresent(mm -> {
 							SmartContract sm = mm.getSmartContract();
@@ -60,7 +60,7 @@ public class FundInitialMMTransferWalletSchedule {
 							var coin = sm.getCoin();
 							final int[] enqueued = { 0 };
 							logger.info("Try to fund for coin {}", sm.getCoin().getSymbol());
-							var tankhahWallet = tankhahWalletService.findByContract(sm).get(0);
+							var tankhahWallet = tankhahWalletMicroService.findByContract(sm).get(0);
 							final BigInteger[] tankhahNonce = { EVMUtil.getNonceByPrivateKey(sm.getBlockchain().getRpcUrl(),
 									tankhahWallet.getPrivateKeyHex()) };
 							logger.info("Current nonce of tankhah wallet is: " + tankhahNonce[0]);
@@ -70,7 +70,7 @@ public class FundInitialMMTransferWalletSchedule {
 							Page<MarketMakingWallet> mmWalletPage;
 							do {
 								PageRequest pageable = PageRequest.of(page, size);
-								mmWalletPage = mmWalletService.findByContractWithPaging(sm, pageable);
+								mmWalletPage = mmWalletMicroService.findByContractWithPaging(sm, pageable);
 								mmWalletPage.getContent().stream().filter(
 										wallet -> mm.getTransactionParallelType().equals(TransactionParallelType.SYNC))
 										.forEach(wallet -> {
@@ -152,7 +152,7 @@ public class FundInitialMMTransferWalletSchedule {
 							} while (mmWalletPage.hasNext());
 
 							mm.setInitialWalletFundingDone(true);
-							marketMakingService.save(mm);
+							marketMakingMicroService.save(mm);
 						});
 			} catch (Exception e) {
 				logger.error(e.getMessage());

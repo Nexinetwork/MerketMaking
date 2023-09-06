@@ -12,7 +12,7 @@ import com.plgchain.app.plingaHelper.dao.CoinListHistoryDao;
 import com.plgchain.app.plingaHelper.dto.CoinListDto;
 import com.plgchain.app.plingaHelper.entity.CoinListHistory;
 import com.plgchain.app.plingaHelper.entity.coingecko.CoinList;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 import jakarta.inject.Inject;
 
@@ -20,7 +20,7 @@ import jakarta.inject.Inject;
  *
  */
 @Service
-public class CoinListHistoryService extends BaseService<CoinListHistory> implements Serializable {
+public class CoinListHistoryMicroService extends BaseMicroService<CoinListHistory> implements Serializable {
 
 	private static final long serialVersionUID = 4346595704862253248L;
 

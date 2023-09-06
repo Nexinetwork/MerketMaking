@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.dao.BlockchainDao;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 /**
  *
  */
 @Service
-public class BlockchainService extends BaseService<Blockchain> implements Serializable {
+public class BlockchainMicroService extends BaseMicroService<Blockchain> implements Serializable {
 
 	private static final long serialVersionUID = -8641271050704411082L;
 

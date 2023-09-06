@@ -63,6 +63,9 @@ public class MarketMaking implements Serializable {
 	@Column(name = "\"initialDefiWallet\"", nullable = false)
 	private int initialDefiWallet;
 
+	@Column(name = "\"chunkCount\"")
+	private int chunkCount;
+
 	@Column(name = "\"minInitial\"", nullable = false)
 	private BigDecimal minInitial;
 

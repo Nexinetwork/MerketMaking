@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.dao.LogDao;
 import com.plgchain.app.plingaHelper.entity.Log;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 /**
  *
  */
 @Service
-public class LogService extends BaseService<Log> implements Serializable {
+public class LogMicroService extends BaseMicroService<Log> implements Serializable {
 
 	private static final long serialVersionUID = -8641271050704411082L;
 

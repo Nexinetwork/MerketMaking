@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.dao.CoinListDao;
 import com.plgchain.app.plingaHelper.entity.coingecko.CoinList;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 import jakarta.inject.Inject;
 
 @Service
-public class CoinListService extends BaseService<CoinList> implements Serializable {
+public class CoinListMicroService extends BaseMicroService<CoinList> implements Serializable {
 
 	private static final long serialVersionUID = -6413325789707324383L;
 
@@ -20,7 +20,7 @@ public class CoinListService extends BaseService<CoinList> implements Serializab
 	private CoinListDao coinListDao;
 
 	@Inject
-	private SequenceGeneratorService sequenceGeneratorService;
+	private SequenceGeneratorMicroService sequenceGeneratorMicroService;
 
 	public CoinList findFirst() {
 		return coinListDao.findFirstBy();
@@ -32,7 +32,7 @@ public class CoinListService extends BaseService<CoinList> implements Serializab
 
 	public CoinList save(CoinList cl) {
 		if (cl.getId() <= 0)
-			cl.setId(sequenceGeneratorService.generateSequence(CoinList.SEQUENCE_NAME));
+			cl.setId(sequenceGeneratorMicroService.generateSequence(CoinList.SEQUENCE_NAME));
 		return coinListDao.save(cl);
 	}
 

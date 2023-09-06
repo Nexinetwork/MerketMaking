@@ -6,7 +6,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.plgchain.app.plingaHelper.controller.AuthenticationController;
 import com.plgchain.app.plingaHelper.security.service.JwtService;
-import com.plgchain.app.plingaHelper.security.service.UserService;
+import com.plgchain.app.plingaHelper.security.service.UserMicroService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,7 +28,7 @@ import org.springframework.security.core.context.SecurityContext;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final UserService userService;
+    private final UserMicroService userMicroService;
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         userEmail = jwtService.extractUserName(jwt);
         if (StringUtils.isNotEmpty(userEmail)
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userService.userDetailsService()
+            UserDetails userDetails = userMicroService.userDetailsService()
                     .loadUserByUsername(userEmail);
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();

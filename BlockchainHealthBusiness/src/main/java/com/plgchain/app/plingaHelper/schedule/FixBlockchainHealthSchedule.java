@@ -16,7 +16,7 @@ import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.constant.BlockchainNodeType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.entity.BlockchainNode;
-import com.plgchain.app.plingaHelper.microService.BlockchainNodeService;
+import com.plgchain.app.plingaHelper.microService.BlockchainNodeMicroService;
 import com.plgchain.app.plingaHelper.util.ArrayListHelper;
 import com.plgchain.app.plingaHelper.util.BlockscoutUtil;
 import com.plgchain.app.plingaHelper.util.ServiceUtil;
@@ -40,7 +40,7 @@ public class FixBlockchainHealthSchedule implements Serializable {
 	private InitBean initBean;
 
 	@Inject
-	private BlockchainNodeService blockchainNodeService;
+	private BlockchainNodeMicroService blockchainNodeMicroService;
 
 	@SuppressWarnings("unchecked")
 	// @Scheduled(cron = "0 */15 * * * *", zone = "GMT")
@@ -56,7 +56,7 @@ public class FixBlockchainHealthSchedule implements Serializable {
 				// BlockchainNode.class);
 				// logger.info(String.format("Blockchain %s has %s node and node lists are %s",
 				// key,blnLst.size(),blnLst));
-				blockchainNodeService.findByEnabledAndMustCheck(true, true).parallelStream()
+				blockchainNodeMicroService.findByEnabledAndMustCheck(true, true).parallelStream()
 						.filter(blchNode -> blchNode != null && blchNode.getBlockchain().isEnabled() && blchNode.getBlockchain().isMustCheck()).forEach(blockchainNode -> {
 							try {
 								if (blockchainNode.getNodeType().equals(BlockchainNodeType.BLOCKCHAINNODE)) {

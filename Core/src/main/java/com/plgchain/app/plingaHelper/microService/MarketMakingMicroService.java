@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.plgchain.app.plingaHelper.dao.MarketMakingDao;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
-import com.plgchain.app.plingaHelper.microService.Base.BaseService;
+import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
 
 import jakarta.inject.Inject;
 
@@ -20,7 +20,7 @@ import jakarta.inject.Inject;
  *
  */
 @Service
-public class MarketMakingService extends BaseService<MarketMaking> implements Serializable {
+public class MarketMakingMicroService extends BaseMicroService<MarketMaking> implements Serializable {
 
 	private static final long serialVersionUID = -3217338693572386600L;
 
