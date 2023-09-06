@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
 import java.util.function.IntFunction;
@@ -53,60 +54,36 @@ public class SecurityUtil implements Serializable {
 	}
 
 
-	public static String encryptString(String str,String encryptionKeyString) {
-		try {
-			byte[] encryptionKeyBytes = encryptionKeyString.getBytes();
-			SecretKey secretKey = new SecretKeySpec(encryptionKeyBytes, "AES");
-			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-			cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-			byte[] encryptedBytes = cipher.doFinal(str.getBytes());
-			String encryptedText = Base64.getEncoder().encodeToString(encryptedBytes);
-			return encryptedText;
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+	public static String encryptString(String str, String encryptionKeyString) {
+	    try {
+	        byte[] encryptionKeyBytes = Arrays.copyOf(encryptionKeyString.getBytes(), 16);
+	        SecretKey secretKey = new SecretKeySpec(encryptionKeyBytes, "AES");
+	        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+	        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+	        byte[] encryptedBytes = cipher.doFinal(str.getBytes());
+	        String encryptedText = Base64.getEncoder().encodeToString(encryptedBytes);
+	        return encryptedText;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return null;
 	}
 
-	public static String decryptString(String str,String encryptionKeyString) {
-		try {
-			byte[] encryptionKeyBytes = encryptionKeyString.getBytes();
-			SecretKey secretKey = new SecretKeySpec(encryptionKeyBytes, "AES");
-			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-			cipher.init(Cipher.DECRYPT_MODE, secretKey);
-			byte[] decryptedBytes = cipher.doFinal(str.getBytes());
-			String decryptedText = Base64.getEncoder().encodeToString(decryptedBytes);
-			return decryptedText;
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+
+	public static String decryptString(String encryptedText, String encryptionKeyString) {
+	    try {
+	        byte[] encryptionKeyBytes = Arrays.copyOf(encryptionKeyString.getBytes(), 16);
+	        SecretKey secretKey = new SecretKeySpec(encryptionKeyBytes, "AES");
+	        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+	        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+	        byte[] encryptedBytes = Base64.getDecoder().decode(encryptedText);
+	        byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+	        String decryptedText = new String(decryptedBytes);
+	        return decryptedText;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return null;
 	}
 
 }

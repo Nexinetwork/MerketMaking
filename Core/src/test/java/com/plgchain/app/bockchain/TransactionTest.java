@@ -14,6 +14,7 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.http.HttpService;
 
 import com.plgchain.app.plingaHelper.util.NumberUtil;
+import com.plgchain.app.plingaHelper.util.SecurityUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 
 /**
@@ -53,10 +54,20 @@ public class TransactionTest implements Serializable {
 		}
 	}
 
-	@Test
+	//@Test
 	public void generateRandomTestCase() {
 		for (int i=0;i<1000;i++)
 			System.out.println(NumberUtil.generateRandomNumber(0, 2, 0));
+	}
+
+	@Test
+	public void walletEncryptionTestCase() {
+		String privateKey = "0x28f845a6b5d1e45fa15dfef4fabad4866b8abac57e2204e7f87043c227ee1e9b";
+		String secretKey = "E*PPX2$<7fE57o0gcNiJw50BoZZvKpKynC^NfrFd38!^7ccWidi61JaUt?F0d9<X?KExRd9@$7DWMdR3<7Y!3*)4jGVDzP4MzSr27Lyf@MbU$Vy_??EeC&!VgaUcmuXp";
+		System.out.println(privateKey);
+		String encryptedKey = SecurityUtil.encryptString(privateKey, secretKey);
+		System.out.println(encryptedKey);
+		System.out.println(SecurityUtil.decryptString(encryptedKey, secretKey));
 	}
 
 	//@Test
