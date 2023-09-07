@@ -465,8 +465,10 @@ public class WalletActionBean implements Serializable {
 		logger.info(String.format("Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
 				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
 				tankhahNonce[0]));
-		marketMakingWalletMicroService.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
-				.stream().forEach(wallet -> {
+		IntStream.range(0, mm.getChunkCount()).forEach(idx -> {
+			mmWalletService.findByContractIdAndChunk(contractId, idx).ifPresent(mmw -> {
+				mmw.getTransferWalletList().forEach(wallet -> {
+					wallet.setPrivateKeyHex(SecurityUtil.decryptString(wallet.getEncryptedPrivateKey(), mm.getTrPid()));
 					if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
 						BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
 						if (balance.compareTo(mm.getMaxInitial()) > 0) {
@@ -777,6 +779,8 @@ public class WalletActionBean implements Serializable {
 						}
 					}
 				});
+			});
+		});
 	}
 
 	@Async
