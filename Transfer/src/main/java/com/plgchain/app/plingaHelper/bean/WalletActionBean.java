@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ import com.plgchain.app.plingaHelper.microService.MarketMakingWalletMicroService
 import com.plgchain.app.plingaHelper.microService.SmartContractMicroService;
 import com.plgchain.app.plingaHelper.microService.TankhahWalletMicroService;
 import com.plgchain.app.plingaHelper.microService.TempTankhahWalletMicroService;
+import com.plgchain.app.plingaHelper.service.MMWalletService;
 import com.plgchain.app.plingaHelper.util.NumberUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
@@ -47,12 +49,15 @@ public class WalletActionBean implements Serializable {
 	private final SmartContractMicroService smartContractMicroService;
 	private final BlockchainBean blockchainBean;
 	private final TempTankhahWalletMicroService tempTankhahWalletMicroService;
+	private final MMWalletService mmWalletService;
 
 	@Inject
-	public WalletActionBean(InitBean initBean, MarketMakingMicroService marketMakingMicroService, TransferBean transferBean,
-			TankhahWalletMicroService tankhahWalletMicroService, MarketMakingWalletMicroService marketMakingWalletMicroService,
-			SmartContractMicroService smartContractMicroService, BlockchainBean blockchainBean, MMWalletMicroService mmWalletMicroService,
-			TempTankhahWalletMicroService tempTankhahWalletMicroService) {
+	public WalletActionBean(InitBean initBean, MarketMakingMicroService marketMakingMicroService,
+			TransferBean transferBean, TankhahWalletMicroService tankhahWalletMicroService,
+			MarketMakingWalletMicroService marketMakingWalletMicroService,
+			SmartContractMicroService smartContractMicroService, BlockchainBean blockchainBean,
+			MMWalletMicroService mmWalletMicroService, TempTankhahWalletMicroService tempTankhahWalletMicroService,
+			MMWalletService mmWalletService) {
 		this.initBean = initBean;
 		this.marketMakingMicroService = marketMakingMicroService;
 		this.transferBean = transferBean;
@@ -61,6 +66,7 @@ public class WalletActionBean implements Serializable {
 		this.smartContractMicroService = smartContractMicroService;
 		this.blockchainBean = blockchainBean;
 		this.tempTankhahWalletMicroService = tempTankhahWalletMicroService;
+		this.mmWalletService = mmWalletService;
 	}
 
 	@Async
@@ -786,26 +792,32 @@ public class WalletActionBean implements Serializable {
 		logger.info(String.format("Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
 				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
 				tankhahNonce[0]));
-		marketMakingWalletMicroService.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
-				.stream().forEach(wallet -> {
-					EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
+		marketMakingMicroService.findBySmartContract(sm).ifPresent(mm -> {
+			IntStream.range(0, mm.getChunkCount()).forEach(idx -> {
+				mmWalletService.findByContractIdAndChunk(contractId, idx).ifPresent(mmw -> {
+					mmw.getTransferWalletList().forEach(wallet -> {
+						EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
 
-					BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
-							wallet.getPrivateKeyHex(), sm.getContractsAddress());
-					if (tokenBalance.compareTo(BigDecimal.ZERO) > 0) {
-						BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
-								wallet.getPrivateKeyHex());
-						if (blockchain.isAutoGas()) {
-							transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
-									wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(),
-									tokenBalance, EVMUtil.DefaultTokenGasLimit, nonce);
-						} else {
-							transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
-									wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(),
-									tokenBalance, EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
+						BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
+								wallet.getPrivateKeyHex(), sm.getContractsAddress());
+						if (tokenBalance.compareTo(BigDecimal.ZERO) > 0) {
+							BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+									wallet.getPrivateKeyHex());
+							if (blockchain.isAutoGas()) {
+								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
+										sm.getContractsAddress(), tokenBalance, EVMUtil.DefaultTokenGasLimit, nonce);
+							} else {
+								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
+										sm.getContractsAddress(), tokenBalance, EVMUtil.DefaultGasPrice,
+										EVMUtil.DefaultTokenGasLimit, nonce);
+							}
 						}
-					}
+					});
 				});
+			});
+		});
 
 	}
 
@@ -839,13 +851,12 @@ public class WalletActionBean implements Serializable {
 		Blockchain blockchain = sm.getBlockchain();
 		Coin coin = sm.getCoin();
 		var tankhahWallet = tankhahWalletMicroService.findByContract(sm).get(0);
-		tempTankhahWalletMicroService.findBySmartContractAndWalletType(sm, WalletType.TRANSFER)
-				.stream().forEach(wallet -> {
-					BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
-							wallet.getPrivateKey(), sm.getContractsAddress());
+		tempTankhahWalletMicroService.findBySmartContractAndWalletType(sm, WalletType.TRANSFER).stream()
+				.forEach(wallet -> {
+					BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(), wallet.getPrivateKey(),
+							sm.getContractsAddress());
 					if (tokenBalance.compareTo(BigDecimal.ZERO) > 0) {
-						BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
-								wallet.getPrivateKey());
+						BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKey());
 						if (blockchain.isAutoGas()) {
 							transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKey(),
 									wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(),
@@ -856,21 +867,19 @@ public class WalletActionBean implements Serializable {
 									tokenBalance, EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
 						}
 					}
-					BigDecimal mainCoinBalance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
+					BigDecimal mainCoinBalance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
+							wallet.getPublicKey());
 					if (mainCoinBalance.compareTo(initBean.getMinimumBalanceForTransfer()) > 0) {
 						BigDecimal amount = mainCoinBalance.subtract(initBean.getMinimumBalanceForTransfer());
-						BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
-								wallet.getPrivateKey());
+						BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKey());
 						if (blockchain.isAutoGas()) {
-								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-										wallet.getPrivateKey(), wallet.getPublicKey(),
-										tankhahWallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
-										nonce);
+							transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKey(),
+									wallet.getPublicKey(), tankhahWallet.getPublicKey(), amount,
+									EVMUtil.DefaultGasLimit, nonce);
 						} else {
-								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-										wallet.getPrivateKey(), wallet.getPublicKey(),
-										tankhahWallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
-										EVMUtil.DefaultGasLimit, nonce);
+							transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKey(),
+									wallet.getPublicKey(), tankhahWallet.getPublicKey(), amount,
+									EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, nonce);
 						}
 					}
 				});
@@ -882,8 +891,7 @@ public class WalletActionBean implements Serializable {
 	public void deleteTempTankhahWallet(long contractId) {
 		logger.info(String.format("Try to delete temp tankhah wallets for contract %s", contractId));
 		var sm = smartContractMicroService.findById(contractId).get();
-		tempTankhahWalletMicroService.findBySmartContractAndWalletType(sm, WalletType.TRANSFER)
-		.forEach(wallet -> {
+		tempTankhahWalletMicroService.findBySmartContractAndWalletType(sm, WalletType.TRANSFER).forEach(wallet -> {
 			tempTankhahWalletMicroService.delete(wallet);
 		});
 		logger.info(String.format("All temp tankhah wallets for contract %s has been deleted.", contractId));

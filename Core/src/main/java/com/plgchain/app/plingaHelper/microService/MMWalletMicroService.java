@@ -45,7 +45,7 @@ public class MMWalletMicroService extends BaseMicroService<MMWallet> implements 
 		return mmWalletDao.findByContractId(contractId);
 	}
 
-	public List<MMWallet> findByContractIdAndChunk(long contractId,long chunk) {
+	public Optional<MMWallet> findByContractIdAndChunk(long contractId,long chunk) {
 		return mmWalletDao.findByContractIdAndChunk(contractId,chunk);
 	}
 
@@ -53,7 +53,7 @@ public class MMWalletMicroService extends BaseMicroService<MMWallet> implements 
 		return mmWalletDao.findByMarketMakingId(marketMakingId);
 	}
 
-	public List<MMWallet> findByMarketMakingIdAndChunk(long marketMakingId,long chunk) {
+	public Optional<MMWallet> findByMarketMakingIdAndChunk(long marketMakingId,long chunk) {
 		return mmWalletDao.findByMarketMakingIdAndChunk(marketMakingId, chunk);
 	}
 

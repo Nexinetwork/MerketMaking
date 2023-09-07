@@ -3,6 +3,7 @@ package com.plgchain.app.plingaHelper.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -32,6 +33,10 @@ public class MMWalletService {
 
 	public List<MMWallet> findByContractId(long contractId) {
 		return mmWalletMicroService.findByContractId(contractId);
+	}
+
+	public Optional<MMWallet> findByContractIdAndChunk(long contractId,long chunk) {
+		return mmWalletMicroService.findByContractIdAndChunk(contractId,chunk);
 	}
 
 	public MMWallet setTransferWallet(MMWallet mmw, List<MarketMakingWalletDto> mmwdNewLst, String secretKey) {
