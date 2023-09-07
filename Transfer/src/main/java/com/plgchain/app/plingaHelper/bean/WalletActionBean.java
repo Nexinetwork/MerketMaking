@@ -28,6 +28,7 @@ import com.plgchain.app.plingaHelper.microService.TankhahWalletMicroService;
 import com.plgchain.app.plingaHelper.microService.TempTankhahWalletMicroService;
 import com.plgchain.app.plingaHelper.service.MMWalletService;
 import com.plgchain.app.plingaHelper.util.NumberUtil;
+import com.plgchain.app.plingaHelper.util.SecurityUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EvmWalletUtil;
 
@@ -796,6 +797,7 @@ public class WalletActionBean implements Serializable {
 			IntStream.range(0, mm.getChunkCount()).forEach(idx -> {
 				mmWalletService.findByContractIdAndChunk(contractId, idx).ifPresent(mmw -> {
 					mmw.getTransferWalletList().forEach(wallet -> {
+						wallet.setPrivateKeyHex(SecurityUtil.decryptString(wallet.getEncryptedPrivateKey(), mm.getTrPid()));
 						EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
 
 						BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
