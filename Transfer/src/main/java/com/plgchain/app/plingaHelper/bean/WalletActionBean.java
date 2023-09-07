@@ -469,6 +469,7 @@ public class WalletActionBean implements Serializable {
 			mmWalletService.findByContractIdAndChunk(contractId, idx).ifPresent(mmw -> {
 				mmw.getTransferWalletList().forEach(wallet -> {
 					wallet.setPrivateKeyHex(SecurityUtil.decryptString(wallet.getEncryptedPrivateKey(), mm.getTrPid()));
+					logger.info(String.format("Checking for wallet %s", wallet.getPublicKey()));
 					if (sm.getContractsAddress().equals(EVMUtil.mainToken)) {
 						BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
 						if (balance.compareTo(mm.getMaxInitial()) > 0) {
