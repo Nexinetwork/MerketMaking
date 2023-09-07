@@ -466,6 +466,7 @@ public class WalletActionBean implements Serializable {
 				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
 				tankhahNonce[0]));
 		IntStream.range(0, mm.getChunkCount()).forEach(idx -> {
+			int count = 1;
 			mmWalletService.findByContractIdAndChunk(contractId, idx).ifPresent(mmw -> {
 				mmw.getTransferWalletList().forEach(wallet -> {
 					wallet.setPrivateKeyHex(SecurityUtil.decryptString(wallet.getEncryptedPrivateKey(), mm.getTrPid()));
@@ -678,7 +679,7 @@ public class WalletActionBean implements Serializable {
 								}
 							}
 						} else {
-							logger.info(String.format(" wallet %s has enogh main coin balance", wallet.getPublicKey()));
+							logger.info(String.format(" wallet %s has enogh main coin balance with chunk %s and count %s", wallet.getPublicKey(),idx,count));
 						}
 						var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(), mm.getMaxInitial(),
 								mm.getInitialDecimal());
@@ -779,7 +780,7 @@ public class WalletActionBean implements Serializable {
 								}
 							}
 						} else {
-							logger.info(String.format(" wallet %s has enogh main token %s balance", wallet.getPublicKey(),sm.getContractsAddress()));
+							logger.info(String.format(" wallet %s has enogh main token %s balance and chunk %s and count %s", wallet.getPublicKey(),sm.getContractsAddress(),idx,count));
 						}
 					}
 				});
