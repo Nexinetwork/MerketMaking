@@ -536,12 +536,14 @@ public class WalletActionBean implements Serializable {
 									}
 									tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 								} else {
+									BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+											tmpTankhah.getPrivateKey());
 									if (blockchain.isAutoGas()) {
 										try {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
-													tmpTankhah.getNonce());
+													nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -558,7 +560,7 @@ public class WalletActionBean implements Serializable {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
-													EVMUtil.DefaultGasLimit, tmpTankhah.getNonce());
+													EVMUtil.DefaultGasLimit, nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -647,12 +649,14 @@ public class WalletActionBean implements Serializable {
 										logger.info("Tankhah does not enough balance skip it.");
 									}
 								} else {
+									BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+											tmpTankhah.getPrivateKey());
 									if (blockchain.isAutoGas()) {
 										try {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
-													tmpTankhah.getNonce());
+													nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -666,7 +670,7 @@ public class WalletActionBean implements Serializable {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
-													EVMUtil.DefaultGasLimit, tmpTankhah.getNonce());
+													EVMUtil.DefaultGasLimit, nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -749,12 +753,14 @@ public class WalletActionBean implements Serializable {
 										tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 									}
 								} else {
+									BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+											tmpTankhah.getPrivateKey());
 									if (blockchain.isAutoGas()) {
 										try {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), sm.getContractsAddress(), amount,
-													EVMUtil.DefaultTokenGasLimit, tmpTankhah.getNonce());
+													EVMUtil.DefaultTokenGasLimit, nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -769,7 +775,7 @@ public class WalletActionBean implements Serializable {
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), sm.getContractsAddress(), amount,
 													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
-													tmpTankhah.getNonce());
+													nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -879,12 +885,14 @@ public class WalletActionBean implements Serializable {
 									}
 									tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 								} else {
+									BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+											tmpTankhah.getPrivateKey());
 									if (blockchain.isAutoGas()) {
 										try {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
-													tmpTankhah.getNonce());
+													nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -901,7 +909,7 @@ public class WalletActionBean implements Serializable {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
-													EVMUtil.DefaultGasLimit, tmpTankhah.getNonce());
+													EVMUtil.DefaultGasLimit, nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -990,12 +998,14 @@ public class WalletActionBean implements Serializable {
 										logger.info("Tankhah does not enough balance skip it.");
 									}
 								} else {
+									BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+											tmpTankhah.getPrivateKey());
 									if (blockchain.isAutoGas()) {
 										try {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
-													tmpTankhah.getNonce());
+													nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -1009,7 +1019,7 @@ public class WalletActionBean implements Serializable {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
-													EVMUtil.DefaultGasLimit, tmpTankhah.getNonce());
+													EVMUtil.DefaultGasLimit, nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -1092,12 +1102,14 @@ public class WalletActionBean implements Serializable {
 										tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 									}
 								} else {
+									BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+											tmpTankhah.getPrivateKey());
 									if (blockchain.isAutoGas()) {
 										try {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), sm.getContractsAddress(), amount,
-													EVMUtil.DefaultTokenGasLimit, tmpTankhah.getNonce());
+													EVMUtil.DefaultTokenGasLimit, nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -1112,7 +1124,7 @@ public class WalletActionBean implements Serializable {
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), sm.getContractsAddress(), amount,
 													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
-													tmpTankhah.getNonce());
+													nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
