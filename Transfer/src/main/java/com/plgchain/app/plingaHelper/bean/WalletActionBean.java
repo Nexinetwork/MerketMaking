@@ -1164,23 +1164,23 @@ public class WalletActionBean implements Serializable {
 								wallet.getPrivateKeyHex(), sm.getContractsAddress());
 						BigDecimal mainCoinBalance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
 								wallet.getPublicKey());
-						if (mainCoinBalance.compareTo(new BigDecimal("0.1")) < 0) {
-							var amount = new BigDecimal("0.1");
-							if (blockchain.isAutoGas()) {
-								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-										tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-										wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+						if (tokenBalance.compareTo(BigDecimal.ZERO) > 0) {
+							if (mainCoinBalance.compareTo(new BigDecimal("0.1")) < 0) {
+								var amount = new BigDecimal("0.1");
+								if (blockchain.isAutoGas()) {
+									transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+											tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+											wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+								} else {
+									transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+											tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+											wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
+											EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+
+								}
+								tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+								tmpWalletList.add(wallet);
 							} else {
-								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-										tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-										wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit,
-										tankhahNonce[0]);
-
-							}
-							tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
-
-						} else {
-							if (tokenBalance.compareTo(BigDecimal.ZERO) > 0) {
 								BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
 										wallet.getPrivateKeyHex());
 								if (blockchain.isAutoGas()) {
@@ -1199,6 +1199,23 @@ public class WalletActionBean implements Serializable {
 					});
 				});
 			});
+		});
+		tmpWalletList.forEach(wallet -> {
+			BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
+					wallet.getPrivateKeyHex(), sm.getContractsAddress());
+			BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+					wallet.getPrivateKeyHex());
+			if (blockchain.isAutoGas()) {
+				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+						wallet.getPrivateKeyHex(), wallet.getPublicKey(),
+						tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+						EVMUtil.DefaultTokenGasLimit, nonce);
+			} else {
+				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+						wallet.getPrivateKeyHex(), wallet.getPublicKey(),
+						tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+						EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
+			}
 		});
 
 	}
@@ -1230,23 +1247,23 @@ public class WalletActionBean implements Serializable {
 								wallet.getPrivateKeyHex(), sm.getContractsAddress());
 						BigDecimal mainCoinBalance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
 								wallet.getPublicKey());
-						if (mainCoinBalance.compareTo(new BigDecimal("0.1")) < 0) {
-							var amount = new BigDecimal("0.1");
-							if (blockchain.isAutoGas()) {
-								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-										tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-										wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+						if (tokenBalance.compareTo(BigDecimal.ZERO) > 0) {
+							if (mainCoinBalance.compareTo(new BigDecimal("0.1")) < 0) {
+								var amount = new BigDecimal("0.1");
+								if (blockchain.isAutoGas()) {
+									transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+											tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+											wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+								} else {
+									transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+											tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+											wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
+											EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+
+								}
+								tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+								tmpWalletList.add(wallet);
 							} else {
-								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-										tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
-										wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit,
-										tankhahNonce[0]);
-
-							}
-							tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
-
-						} else {
-							if (tokenBalance.compareTo(BigDecimal.ZERO) > 0) {
 								BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
 										wallet.getPrivateKeyHex());
 								if (blockchain.isAutoGas()) {
@@ -1265,6 +1282,23 @@ public class WalletActionBean implements Serializable {
 					});
 				});
 			});
+		});
+		tmpWalletList.forEach(wallet -> {
+			BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
+					wallet.getPrivateKeyHex(), sm.getContractsAddress());
+			BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+					wallet.getPrivateKeyHex());
+			if (blockchain.isAutoGas()) {
+				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+						wallet.getPrivateKeyHex(), wallet.getPublicKey(),
+						tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+						EVMUtil.DefaultTokenGasLimit, nonce);
+			} else {
+				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+						wallet.getPrivateKeyHex(), wallet.getPublicKey(),
+						tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+						EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
+			}
 		});
 
 	}
