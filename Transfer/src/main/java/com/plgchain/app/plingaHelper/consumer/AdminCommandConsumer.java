@@ -51,7 +51,12 @@ public class AdminCommandConsumer implements Serializable {
 				} else if (ctr.getAdminCommandType().equals(AdminCommandType.FIXTRANSFERWALLETFUNDINGREVERSE)) {
 					walletActionBean.fixAllTransferWalletsByContractIdInOneActionWithTempTankhahReverse(ctr.getLong1());
 				} else if (ctr.getAdminCommandType().equals(AdminCommandType.BACKALLTOKENTOTANKHAH)) {
-					walletActionBean.backAllTokenToTankhah(ctr.getLong1());
+					if (ctr.getInt1() == null)
+						walletActionBean.backAllTokenToTankhah(ctr.getLong1());
+					else if (ctr.getInt1() <= 0)
+						walletActionBean.backAllTokenToTankhah(ctr.getLong1());
+					else
+						walletActionBean.backAllTokenToTankhah(ctr.getLong1(),ctr.getInt1());
 				} else if (ctr.getAdminCommandType().equals(AdminCommandType.BACKALLTOKENTOTANKHAHREVERSE)) {
 					walletActionBean.backAllTokenToTankhahReverse(ctr.getLong1());
 				} else if (ctr.getAdminCommandType().equals(AdminCommandType.BACKALLFROMTMPTANKHAHTOTANKHAH)) {
