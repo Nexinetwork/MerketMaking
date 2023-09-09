@@ -1207,6 +1207,8 @@ public class WalletActionBean implements Serializable {
 											EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
 								}
 							}
+						} else {
+							logger.info(String.format("Wallet %s at chunk %s has balance 0 and skip", wallet.getPublicKey(),idx));
 						}
 					});
 				});
