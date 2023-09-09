@@ -52,11 +52,18 @@ public class AdminCommandConsumer implements Serializable {
 					walletActionBean.fixAllTransferWalletsByContractIdInOneActionWithTempTankhahReverse(ctr.getLong1());
 				} else if (ctr.getAdminCommandType().equals(AdminCommandType.BACKALLTOKENTOTANKHAH)) {
 					if (ctr.getInt1() == null)
-						walletActionBean.backAllTokenToTankhah(ctr.getLong1());
+						walletActionBean.backAllTokenToTankhah(ctr.getLong1(),0);
 					else if (ctr.getInt1() <= 0)
-						walletActionBean.backAllTokenToTankhah(ctr.getLong1());
+						walletActionBean.backAllTokenToTankhah(ctr.getLong1(),0);
 					else
 						walletActionBean.backAllTokenToTankhah(ctr.getLong1(),ctr.getInt1());
+				} else if (ctr.getAdminCommandType().equals(AdminCommandType.BACKALLTOKENTOTANKHAHPPARALLEL)) {
+					if (ctr.getInt1() == null)
+						walletActionBean.backAllTokenToTankhahParallel(ctr.getLong1(),0);
+					else if (ctr.getInt1() <= 0)
+						walletActionBean.backAllTokenToTankhahParallel(ctr.getLong1(),0);
+					else
+						walletActionBean.backAllTokenToTankhahParallel(ctr.getLong1(),ctr.getInt1());
 				} else if (ctr.getAdminCommandType().equals(AdminCommandType.BACKALLTOKENTOTANKHAHREVERSE)) {
 					walletActionBean.backAllTokenToTankhahReverse(ctr.getLong1());
 				} else if (ctr.getAdminCommandType().equals(AdminCommandType.BACKALLFROMTMPTANKHAHTOTANKHAH)) {

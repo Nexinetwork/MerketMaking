@@ -144,6 +144,25 @@ public class WalletController extends BaseController implements Serializable {
 	    return success("Actions Successfully put in queue please be paitent.");
 	}
 
+	@RequestMapping("/wallet/backAllTokensToTankhahParallel")
+	public MessageResult backAllTokensToTankhahParallel(@RequestBody GeneralReq req) {
+	    if (req == null)
+	    	error("ContractId is null");
+	    if (req.getLong1() == null)
+	    	error("ContractId is null");
+	    if (req.getLong1() < 0)
+	    	error("ContractId is null");
+	    Optional<SmartContract> sm = smartContractMicroService.findById(req.getLong1());
+	    if (sm.isEmpty())
+	    	error("Invalid contractId.");
+	    CommandToRun ctr = new CommandToRun();
+		ctr.setAdminCommandType(AdminCommandType.BACKALLTOKENTOTANKHAHPPARALLEL);
+		ctr.setLong1(req.getLong1());
+		ctr.setInt1(req.getInt1());
+		kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+	    return success("Actions Successfully put in queue please be paitent.");
+	}
+
 	@RequestMapping("/wallet/backAllTokensToTankhahReverse")
 	public MessageResult backAllTokensToTankhahReverse(@RequestBody Long contractId) {
 	    if (contractId == null)

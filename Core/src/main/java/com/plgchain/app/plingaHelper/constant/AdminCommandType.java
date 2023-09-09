@@ -20,6 +20,7 @@ public enum AdminCommandType implements BaseEnum {
 	RESTARTALLNODESOFBLOCKCHAIN("Restart All Nodes Of Blockchain"),
 	RESTARTALLNODESOFALLBLOCKCHAINS("Restart All Nodes Of ALL Blockchains"), RELOADCONFIGS("Reload configs"),
 	BACKALLTOKENTOTANKHAH("Back all token to tankhah"),
+	BACKALLTOKENTOTANKHAHPPARALLEL("Back all token to tankhah parallel"),
 	BACKALLTOKENTOTANKHAHREVERSE("Back all token to tankhah reverse"),
 	BACKALLFROMTMPTANKHAHTOTANKHAH("Back all from temp tankhah to tankhah"),
 	DELETETEMPTANKHAHWALLET("Delete temp tankhah wallet");
