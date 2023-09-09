@@ -1165,6 +1165,7 @@ public class WalletActionBean implements Serializable {
 				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
 				tankhahNonce[0]));
 		marketMakingMicroService.findBySmartContract(sm).ifPresent(mm -> {
+			final int[] count = { 0 };
 			IntStream.range(0, mm.getChunkCount()).forEach(idx -> {
 				mmWalletService.findByContractIdAndChunk(contractId, idx).ifPresent(mmw -> {
 					mmw.getTransferWalletList().forEach(wallet -> {
@@ -1208,7 +1209,8 @@ public class WalletActionBean implements Serializable {
 								}
 							}
 						} else {
-							logger.info(String.format("Wallet %s at chunk %s has balance 0 and skip", wallet.getPublicKey(),idx));
+							logger.info(String.format("Wallet %s/%s at chunk %s has balance 0 and skip", wallet.getPublicKey(),count[0],idx));
+							count[0]++;
 						}
 					});
 				});
