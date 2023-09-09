@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
+import com.plgchain.app.plingaHelper.type.request.GeneralReq;
 import com.plgchain.app.plingaHelper.util.SecurityUtil;
 import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 
@@ -101,12 +102,12 @@ public class WalletUtilTest implements Serializable {
 	public void backAllTokensToTankhah() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		int a = 1;
+		var req = GeneralReq.builder().long1(12139L).int1(15).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensToTankhah")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body("12139").asString();
+				.body(req).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
