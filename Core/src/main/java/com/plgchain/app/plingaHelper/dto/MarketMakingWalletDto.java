@@ -96,13 +96,13 @@ public class MarketMakingWalletDto implements Serializable {
 		MarketMakingWalletDto other = (MarketMakingWalletDto) obj;
 		return mmWalletId == other.mmWalletId
 				|| (Objects.equals(encryptedPrivateKey, other.encryptedPrivateKey) && contractId == other.contractId
-						&& walletType == other.walletType)
+						&& Objects.equals(walletType, other.walletType))
 				|| (contractId == other.contractId && Objects.equals(privateKey, other.privateKey)
-						&& walletType == other.walletType)
+						&& Objects.equals(walletType, other.walletType))
 				|| (contractId == other.contractId && Objects.equals(privateKeyHex, other.privateKeyHex)
-						&& walletType == other.walletType)
+						&& Objects.equals(walletType, other.walletType))
 				|| (contractId == other.contractId && Objects.equals(publicKey, other.publicKey)
-						&& walletType == other.walletType);
+						&& Objects.equals(walletType, other.walletType));
 	}
 
 	@Override

@@ -23,6 +23,8 @@ public enum AdminCommandType implements BaseEnum {
 	BACKALLTOKENTOTANKHAHPPARALLEL("Back all token to tankhah parallel"),
 	BACKALLTOKENTOTANKHAHREVERSE("Back all token to tankhah reverse"),
 	BACKALLFROMTMPTANKHAHTOTANKHAH("Back all from temp tankhah to tankhah"),
+	UPDATEALLWALLETSBALANCESBYCONTRACTID("Update All Wallets Balances By ContractId"),
+	UPDATEALLWALLETSBALANCESBYCONTRACTIDPARALLEL("Update All Wallets Balances By ContractId Parallel"),
 	DELETETEMPTANKHAHWALLET("Delete temp tankhah wallet");
 
 	@Setter

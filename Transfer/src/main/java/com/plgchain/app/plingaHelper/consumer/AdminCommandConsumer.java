@@ -70,6 +70,10 @@ public class AdminCommandConsumer implements Serializable {
 					walletActionBean.backAllTokenFromTempTankhahToTankhah(ctr.getLong1());
 				} else if (ctr.getAdminCommandType().equals(AdminCommandType.DELETETEMPTANKHAHWALLET)) {
 					walletActionBean.deleteTempTankhahWallet(ctr.getLong1());
+				} else if (ctr.getAdminCommandType().equals(AdminCommandType.UPDATEALLWALLETSBALANCESBYCONTRACTID)) {
+					walletActionBean.updateAllwalletsBalancesByContractId(ctr.getLong1());
+				} else if (ctr.getAdminCommandType().equals(AdminCommandType.UPDATEALLWALLETSBALANCESBYCONTRACTIDPARALLEL)) {
+					walletActionBean.updateAllwalletsBalancesByContractIdParallel(ctr.getLong1());
 				}
 			}
 		} catch (Exception e) {

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -21,6 +22,8 @@ import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.TempTankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
+import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
+import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
 import com.plgchain.app.plingaHelper.exception.InvalidMarketMaking;
 import com.plgchain.app.plingaHelper.microService.MMWalletMicroService;
 import com.plgchain.app.plingaHelper.microService.MarketMakingMicroService;
@@ -542,8 +545,7 @@ public class WalletActionBean implements Serializable {
 										try {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
-													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
-													nonce);
+													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit, nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -655,8 +657,7 @@ public class WalletActionBean implements Serializable {
 										try {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
-													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
-													nonce);
+													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit, nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -774,8 +775,7 @@ public class WalletActionBean implements Serializable {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), sm.getContractsAddress(), amount,
-													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
-													nonce);
+													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -891,8 +891,7 @@ public class WalletActionBean implements Serializable {
 										try {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
-													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
-													nonce);
+													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit, nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -1004,8 +1003,7 @@ public class WalletActionBean implements Serializable {
 										try {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
-													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit,
-													nonce);
+													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit, nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -1123,8 +1121,7 @@ public class WalletActionBean implements Serializable {
 											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), sm.getContractsAddress(), amount,
-													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
-													nonce);
+													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
 											mustRetry = false;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
@@ -1209,7 +1206,8 @@ public class WalletActionBean implements Serializable {
 								}
 							}
 						} else {
-							logger.info(String.format("Wallet %s/%s at chunk %s has balance 0 and skip", wallet.getPublicKey(),count[0],idx));
+							logger.info(String.format("Wallet %s/%s at chunk %s has balance 0 and skip",
+									wallet.getPublicKey(), count[0], idx));
 							count[0]++;
 						}
 					});
@@ -1217,19 +1215,16 @@ public class WalletActionBean implements Serializable {
 			});
 		});
 		tmpWalletList.forEach(wallet -> {
-			BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
-					wallet.getPrivateKeyHex(), sm.getContractsAddress());
-			BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
-					wallet.getPrivateKeyHex());
+			BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+					sm.getContractsAddress());
+			BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKeyHex());
 			if (blockchain.isAutoGas()) {
-				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-						wallet.getPrivateKeyHex(), wallet.getPublicKey(),
-						tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+						wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
 						EVMUtil.DefaultTokenGasLimit, nonce);
 			} else {
-				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-						wallet.getPrivateKeyHex(), wallet.getPublicKey(),
-						tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+						wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
 						EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
 			}
 		});
@@ -1238,7 +1233,7 @@ public class WalletActionBean implements Serializable {
 
 	@Async
 	@Transactional
-	public void backAllTokenToTankhah(long contractId,int chunk) {
+	public void backAllTokenToTankhah(long contractId, int chunk) {
 		List<MarketMakingWalletDto> tmpWalletList = new ArrayList<MarketMakingWalletDto>();
 		logger.info(String.format("Try to back all tokens to tankhah for contract %s", contractId));
 		var sm = smartContractMicroService.findById(contractId).get();
@@ -1296,7 +1291,8 @@ public class WalletActionBean implements Serializable {
 								}
 							}
 						} else {
-							logger.info(String.format("Wallet %s/%s at chunk %s has balance 0 and skip", wallet.getPublicKey(),count[0],idx));
+							logger.info(String.format("Wallet %s/%s at chunk %s has balance 0 and skip",
+									wallet.getPublicKey(), count[0], idx));
 							count[0]++;
 						}
 					});
@@ -1304,19 +1300,16 @@ public class WalletActionBean implements Serializable {
 			});
 		});
 		tmpWalletList.forEach(wallet -> {
-			BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
-					wallet.getPrivateKeyHex(), sm.getContractsAddress());
-			BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
-					wallet.getPrivateKeyHex());
+			BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+					sm.getContractsAddress());
+			BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKeyHex());
 			if (blockchain.isAutoGas()) {
-				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-						wallet.getPrivateKeyHex(), wallet.getPublicKey(),
-						tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+						wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
 						EVMUtil.DefaultTokenGasLimit, nonce);
 			} else {
-				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-						wallet.getPrivateKeyHex(), wallet.getPublicKey(),
-						tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+						wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
 						EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
 			}
 		});
@@ -1325,7 +1318,7 @@ public class WalletActionBean implements Serializable {
 
 	@Async
 	@Transactional
-	public void backAllTokenToTankhahParallel(long contractId,int chunk) {
+	public void backAllTokenToTankhahParallel(long contractId, int chunk) {
 		List<MarketMakingWalletDto> tmpWalletList = new ArrayList<MarketMakingWalletDto>();
 		logger.info(String.format("Try to back all tokens to tankhah for contract %s", contractId));
 		var sm = smartContractMicroService.findById(contractId).get();
@@ -1383,7 +1376,8 @@ public class WalletActionBean implements Serializable {
 								}
 							}
 						} else {
-							logger.info(String.format("Wallet %s/%s at chunk %s has balance 0 and skip", wallet.getPublicKey(),count[0],idx));
+							logger.info(String.format("Wallet %s/%s at chunk %s has balance 0 and skip",
+									wallet.getPublicKey(), count[0], idx));
 							count[0]++;
 						}
 					});
@@ -1391,19 +1385,16 @@ public class WalletActionBean implements Serializable {
 			});
 		});
 		tmpWalletList.forEach(wallet -> {
-			BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
-					wallet.getPrivateKeyHex(), sm.getContractsAddress());
-			BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
-					wallet.getPrivateKeyHex());
+			BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+					sm.getContractsAddress());
+			BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKeyHex());
 			if (blockchain.isAutoGas()) {
-				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-						wallet.getPrivateKeyHex(), wallet.getPublicKey(),
-						tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+						wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
 						EVMUtil.DefaultTokenGasLimit, nonce);
 			} else {
-				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-						wallet.getPrivateKeyHex(), wallet.getPublicKey(),
-						tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+						wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
 						EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
 			}
 		});
@@ -1474,19 +1465,16 @@ public class WalletActionBean implements Serializable {
 			});
 		});
 		tmpWalletList.forEach(wallet -> {
-			BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
-					wallet.getPrivateKeyHex(), sm.getContractsAddress());
-			BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
-					wallet.getPrivateKeyHex());
+			BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+					sm.getContractsAddress());
+			BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), wallet.getPrivateKeyHex());
 			if (blockchain.isAutoGas()) {
-				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-						wallet.getPrivateKeyHex(), wallet.getPublicKey(),
-						tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+						wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
 						EVMUtil.DefaultTokenGasLimit, nonce);
 			} else {
-				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
-						wallet.getPrivateKeyHex(), wallet.getPublicKey(),
-						tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
+				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), wallet.getPrivateKeyHex(),
+						wallet.getPublicKey(), tankhahWallet.getPublicKey(), sm.getContractsAddress(), tokenBalance,
 						EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
 			}
 		});
@@ -1567,6 +1555,64 @@ public class WalletActionBean implements Serializable {
 			tempTankhahWalletMicroService.delete(wallet);
 		});
 		logger.info(String.format("All temp tankhah wallets for contract %s has been deleted.", contractId));
+	}
+
+	@Async
+	@Transactional
+	public void updateAllwalletsBalancesByContractId(long contractId) {
+		smartContractMicroService.findById(contractId).ifPresent(sm -> {
+			Blockchain blockchain = sm.getBlockchain();
+			Coin coin = sm.getCoin();
+			final int[] count = { Math.toIntExact(marketMakingWalletMicroService.countByContractAndWalletType(sm, WalletType.TRANSFER)) };
+			final int[] idx = {0};
+			marketMakingWalletMicroService
+					.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER).forEach(wallet -> {
+						BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(), wallet.getPrivateKey(),
+								sm.getContractsAddress());
+						BigDecimal mainCoinBalance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
+								wallet.getPublicKey());
+						if (!wallet.getBalance().equals(tokenBalance)) {
+							MarketMakingWallet mmw = marketMakingWalletMicroService.findById(wallet.getMmWalletId()).get();
+							BigDecimal oldBalance = mmw.getBalance();
+							mmw.setBalance(tokenBalance);
+							mmw.setMainCoinBalance(mainCoinBalance);
+							mmw = marketMakingWalletMicroService.saveAndFlush(mmw);
+							logger.info(String.format("%s/%s wallet %s balance has been changed from %s to %s", ++idx[0],count,wallet.getPublicKey(),oldBalance.toString(),tokenBalance.toString()));
+						} else {
+							logger.info(String.format("%s/%s wallet %s balance not changed and is %s.", ++idx[0],count,wallet.getPublicKey(),tokenBalance.toString()));
+						}
+
+					});
+		});
+	}
+
+	@Async
+	@Transactional
+	public void updateAllwalletsBalancesByContractIdParallel(long contractId) {
+		smartContractMicroService.findById(contractId).ifPresent(sm -> {
+			Blockchain blockchain = sm.getBlockchain();
+			Coin coin = sm.getCoin();
+			final int[] count = { Math.toIntExact(marketMakingWalletMicroService.countByContractAndWalletType(sm, WalletType.TRANSFER)) };
+			final int[] idx = {0};
+			marketMakingWalletMicroService
+					.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER).parallelStream().forEach(wallet -> {
+						BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(), wallet.getPrivateKey(),
+								sm.getContractsAddress());
+						BigDecimal mainCoinBalance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
+								wallet.getPublicKey());
+						if (!wallet.getBalance().equals(tokenBalance)) {
+							MarketMakingWallet mmw = marketMakingWalletMicroService.findById(wallet.getMmWalletId()).get();
+							BigDecimal oldBalance = mmw.getBalance();
+							mmw.setBalance(tokenBalance);
+							mmw.setMainCoinBalance(mainCoinBalance);
+							mmw = marketMakingWalletMicroService.saveAndFlush(mmw);
+							logger.info(String.format("%s/%s wallet %s balance has been changed from %s to %s", ++idx[0],count,wallet.getPublicKey(),oldBalance.toString(),tokenBalance.toString()));
+						} else {
+							logger.info(String.format("%s/%s wallet %s balance not changed and is %s.", ++idx[0],count,wallet.getPublicKey(),tokenBalance.toString()));
+						}
+
+					});
+		});
 	}
 
 }

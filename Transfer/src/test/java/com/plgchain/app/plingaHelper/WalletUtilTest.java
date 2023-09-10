@@ -102,7 +102,7 @@ public class WalletUtilTest implements Serializable {
 	public void backAllTokensToTankhah() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = GeneralReq.builder().long1(12139L).int1(0).build();
+		var req = GeneralReq.builder().long1(12140L).int1(0).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensToTankhah")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -111,11 +111,37 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
+	//@Test
+	public void updateAllwalletsBalancesByContractId() {
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
+		var req = GeneralReq.builder().long1(12139L).build();
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/updateAllwalletsBalancesByContractId")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(JSON.toJSONString(req) ).asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
 	@Test
+	public void updateAllwalletsBalancesByContractIdParallel() {
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
+		var req = GeneralReq.builder().long1(12139L).build();
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/updateAllwalletsBalancesByContractIdParallel")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(JSON.toJSONString(req) ).asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	//@Test
 	public void backAllTokensToTankhahParallel() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = GeneralReq.builder().long1(12139L).int1(24).build();
+		var req = GeneralReq.builder().long1(12139L).int1(83).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensToTankhahParallel")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
