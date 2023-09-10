@@ -1577,9 +1577,9 @@ public class WalletActionBean implements Serializable {
 							mmw.setBalance(tokenBalance);
 							mmw.setMainCoinBalance(mainCoinBalance);
 							mmw = marketMakingWalletMicroService.saveAndFlush(mmw);
-							logger.info(String.format("%s/%s wallet %s balance has been changed from %s to %s", ++idx[0],count,wallet.getPublicKey(),oldBalance.toString(),tokenBalance.toString()));
+							logger.info(String.format("%s/%s wallet %s balance has been changed from %s to %s", ++idx[0],count[0],wallet.getPublicKey(),oldBalance.toString(),tokenBalance.toString()));
 						} else {
-							logger.info(String.format("%s/%s wallet %s balance not changed and is %s.", ++idx[0],count,wallet.getPublicKey(),tokenBalance.toString()));
+							logger.info(String.format("%s/%s wallet %s balance not changed and is %s.", ++idx[0],count[0],wallet.getPublicKey(),tokenBalance.toString()));
 						}
 
 					});
@@ -1606,9 +1606,9 @@ public class WalletActionBean implements Serializable {
 							mmw.setBalance(tokenBalance);
 							mmw.setMainCoinBalance(mainCoinBalance);
 							mmw = marketMakingWalletMicroService.saveAndFlush(mmw);
-							logger.info(String.format("%s/%s wallet %s balance has been changed from %s to %s", ++idx[0],count,wallet.getPublicKey(),oldBalance.toString(),tokenBalance.toString()));
+							logger.info(String.format("%s/%s wallet %s balance has been changed from %s to %s", ++idx[0],count[0],wallet.getPublicKey(),oldBalance.toString(),tokenBalance.toString()));
 						} else {
-							logger.info(String.format("%s/%s wallet %s balance not changed and is %s.", ++idx[0],count,wallet.getPublicKey(),tokenBalance.toString()));
+							logger.info(String.format("%s/%s wallet %s balance not changed and is %s.", ++idx[0],count[0],wallet.getPublicKey(),tokenBalance.toString()));
 						}
 
 					});
