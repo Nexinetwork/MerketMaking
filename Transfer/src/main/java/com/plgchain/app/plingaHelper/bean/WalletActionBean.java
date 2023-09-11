@@ -1246,7 +1246,7 @@ public class WalletActionBean implements Serializable {
 				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
 				tankhahNonce[0]));
 		IntStream.range(0, mm.getChunkCount()).forEach(idx -> {
-			int count = 1;
+			int[] count = {0};
 			mmWalletService.findByContractIdAndChunk(contractId, idx).ifPresent(mmw -> {
 				mmw.getTransferWalletList().forEach(wallet -> {
 					wallet.setPrivateKeyHex(SecurityUtil.decryptString(wallet.getEncryptedPrivateKey(), mm.getTrPid()));
@@ -1337,7 +1337,7 @@ public class WalletActionBean implements Serializable {
 						}
 					} else {
 						logger.info(String.format("wallet %s has enough main coin balance: %s with chunk %s and count %s",
-								wallet.getPublicKey(), balance.toString(),idx, count));
+								wallet.getPublicKey(), balance.toString(),idx, ++count[0]));
 					}
 				});
 			});
