@@ -71,6 +71,13 @@ public class AdminCommandConsumer implements Serializable {
 						walletActionBean.creditMinimumMainCoinForTokenWallets(ctr.getLong1(),0);
 					else
 						walletActionBean.creditMinimumMainCoinForTokenWallets(ctr.getLong1(),ctr.getInt1());
+				} else if (ctr.getAdminCommandType().equals(AdminCommandType.CREDITMAINCOINBALANCEINTOKENWALLETSREVERSE)) {
+					if (ctr.getInt1() == null)
+						walletActionBean.creditMinimumMainCoinForTokenWalletsReverse(ctr.getLong1(),0);
+					else if (ctr.getInt1() <= 0)
+						walletActionBean.creditMinimumMainCoinForTokenWalletsReverse(ctr.getLong1(),0);
+					else
+						walletActionBean.creditMinimumMainCoinForTokenWalletsReverse(ctr.getLong1(),ctr.getInt1());
 				} else if (ctr.getAdminCommandType().equals(AdminCommandType.BACKALLTOKENTOTANKHAHREVERSE)) {
 					walletActionBean.backAllTokenToTankhahReverse(ctr.getLong1());
 				} else if (ctr.getAdminCommandType().equals(AdminCommandType.BACKALLFROMTMPTANKHAHTOTANKHAH)) {

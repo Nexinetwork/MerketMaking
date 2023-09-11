@@ -26,6 +26,7 @@ public enum AdminCommandType implements BaseEnum {
 	UPDATEALLWALLETSBALANCESBYCONTRACTID("Update All Wallets Balances By ContractId"),
 	UPDATEALLWALLETSBALANCESBYCONTRACTIDPARALLEL("Update All Wallets Balances By ContractId Parallel"),
 	CREDITMAINCOINBALANCEINTOKENWALLETS("Credit main coin balance in token wallets"),
+	CREDITMAINCOINBALANCEINTOKENWALLETSREVERSE("Credit main coin balance in token wallets reverse"),
 	DELETETEMPTANKHAHWALLET("Delete temp tankhah wallet");
 
 	@Setter

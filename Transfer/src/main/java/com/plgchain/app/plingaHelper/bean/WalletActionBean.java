@@ -1344,6 +1344,119 @@ public class WalletActionBean implements Serializable {
 		});
 	}
 
+	public void creditMinimumMainCoinForTokenWalletsReverse(long contractId, int chunk) {
+		logger.info(String.format("Try to fill main coin for contract %s", contractId));
+		var sm = smartContractMicroService.findById(contractId).get();
+		Blockchain blockchain = sm.getBlockchain();
+		Coin coin = sm.getCoin();
+		var tankhahWallet = tankhahWalletMicroService.findByContract(sm).get(0);
+		var mm = marketMakingMicroService.findBySmartContract(sm).get();
+		if (!mm.isInitialWalletCreationDone())
+			throw new InvalidMarketMaking();
+		final BigInteger[] tankhahNonce = {
+				EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex()) };
+		logger.info(String.format("Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
+				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
+				tankhahNonce[0]));
+		IntStream.rangeClosed(0, mm.getChunkCount()).mapToObj(i -> mm.getChunkCount() - i).forEach(idx -> {
+			int[] count = {0};
+			mmWalletService.findByContractIdAndChunk(contractId, idx).ifPresent(mmw -> {
+				mmw.getTransferWalletList().forEach(wallet -> {
+					wallet.setPrivateKeyHex(SecurityUtil.decryptString(wallet.getEncryptedPrivateKey(), mm.getTrPid()));
+					BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), wallet.getPublicKey());
+					if (balance.compareTo(initBean.getMinimumMainCoin()) < 0) {
+						boolean mustRetry = true;
+						while (mustRetry) {
+							EvmWalletDto tmpTankhah = initBean.getRandomTmpTankhahWallet(sm);
+							var amount = NumberUtil.generateRandomNumber(initBean.getMinMaincoinInContractWallet(),
+									initBean.getMaxMaincoinInContractWallet(),
+									initBean.getDecimalMaincoinInContractWallet());
+							BigDecimal tmpTankhahBalance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
+									tmpTankhah.getPublicKey());
+							if (tmpTankhahBalance.compareTo(amount) < 0) {
+								BigDecimal tankhahBalance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(),
+										tankhahWallet.getPublicKey());
+								if (tankhahBalance.compareTo(
+										amount.multiply(new BigDecimal(initBean.getTmpTankhahWalletCount()))) >= 0) {
+									if (blockchain.isAutoGas()) {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+													tmpTankhah.getPublicKey(),
+													amount.multiply(
+															new BigDecimal(initBean.getTmpTankhahWalletCount())),
+													EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.stopAndStartMMNode(blockchain);
+												mustRetry = false;
+											}
+										}
+									} else {
+										try {
+											transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+													tankhahWallet.getPrivateKeyHex(), tankhahWallet.getPublicKey(),
+													tmpTankhah.getPublicKey(),
+													amount.multiply(
+															new BigDecimal(initBean.getTmpTankhahWalletCount())),
+													EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+											mustRetry = false;
+										} catch (RuntimeException e) {
+											if (e.getMessage()
+													.equals("maximum number of enqueued transactions reached")) {
+												blockchainBean.restartBlockchain(blockchain);
+												mustRetry = false;
+											}
+										}
+									}
+									tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
+								} else {
+									logger.info("Tankhah does not enough balance skip it.");
+								}
+							} else {
+								BigInteger nonce = EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(),
+										tmpTankhah.getPrivateKey());
+								if (blockchain.isAutoGas()) {
+									try {
+										transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+												tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
+												wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit, nonce);
+										mustRetry = false;
+									} catch (RuntimeException e) {
+										if (e.getMessage().equals("maximum number of enqueued transactions reached")) {
+											blockchainBean.stopAndStartMMNode(blockchain);
+											mustRetry = true;
+										}
+									}
+								} else {
+									try {
+										transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
+												tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
+												wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
+												EVMUtil.DefaultGasLimit, nonce);
+										mustRetry = false;
+									} catch (RuntimeException e) {
+										if (e.getMessage().equals("maximum number of enqueued transactions reached")) {
+											blockchainBean.restartBlockchain(blockchain);
+											mustRetry = true;
+										}
+									}
+								}
+								initBean.setNonceOfTmpTankhahWallet(sm, tmpTankhah,
+										tmpTankhah.getNonce().add(BigInteger.ONE));
+							}
+						}
+					} else {
+						logger.info(String.format("wallet %s has enough main coin balance: %s with chunk %s and count %s",
+								wallet.getPublicKey(), balance.toString(),idx, ++count[0]));
+					}
+				});
+			});
+		});
+	}
+
 	@Async
 	@Transactional
 	public void backAllTokenToTankhah(long contractId, int chunk) {
