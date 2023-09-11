@@ -98,7 +98,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void backAllTokensToTankhah() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -141,7 +141,7 @@ public class WalletUtilTest implements Serializable {
 	public void backAllTokensToTankhahParallel() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = GeneralReq.builder().long1(12139L).int1(83).build();
+		var req = GeneralReq.builder().long1(12139L).int1(0).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensToTankhahParallel")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())

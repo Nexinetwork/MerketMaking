@@ -68,6 +68,8 @@ public class InitBean implements Serializable {
 
 	private int fixTransferWalletBalancePerRound = 500;
 
+	private final BigDecimal minimumMainCoin = new BigDecimal("0.1");
+
 	private int transferPerRound = 1000;
 
 	private BigDecimal minMaincoinInContractWallet = new BigDecimal(2);
