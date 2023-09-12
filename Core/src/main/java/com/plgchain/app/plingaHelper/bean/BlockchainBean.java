@@ -44,6 +44,7 @@ import com.plgchain.app.plingaHelper.microService.TankhahWalletMicroService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.type.request.CoinReq;
 import com.plgchain.app.plingaHelper.type.request.ContractReq;
+import com.plgchain.app.plingaHelper.type.request.GeneralReq;
 import com.plgchain.app.plingaHelper.type.request.MarketMakingReq;
 import com.plgchain.app.plingaHelper.type.request.SmartContractReq;
 import com.plgchain.app.plingaHelper.type.response.TankhahWalletRes;
@@ -348,8 +349,7 @@ public class BlockchainBean implements Serializable {
 		if (mm == null) {
 			mm = MarketMaking.builder().smartContract(smartContract).currentTransferWalletCount(0)
 					.initialWalletCreationDone(false).initialWalletFundingDone(false)
-					.trPid(SecurityUtil.generateRandomString(128))
-					.dfPid(SecurityUtil.generateRandomString(128))
+					.trPid(SecurityUtil.generateRandomString(128)).dfPid(SecurityUtil.generateRandomString(128))
 					.build();
 		}
 
@@ -404,8 +404,8 @@ public class BlockchainBean implements Serializable {
 
 	@Transactional
 	public List<TankhahWalletRes> getTankhahWalletListAsResult() {
-		return tankhahWalletMicroService.findAll().stream().map(th -> TankhahWalletRes.builder().balance(th.getBalance())
-				.blockchain(th.getContract().getBlockchain().getName())
+		return tankhahWalletMicroService.findAll().stream().map(th -> TankhahWalletRes.builder()
+				.balance(th.getBalance()).blockchain(th.getContract().getBlockchain().getName())
 				.blockchainId(th.getContract().getBlockchain().getBlockchainId())
 				.coinId(th.getContract().getCoin().getCoinId()).coinName(th.getContract().getCoin().getName())
 				.coinSymbol(th.getContract().getCoin().getSymbol())
@@ -571,5 +571,71 @@ public class BlockchainBean implements Serializable {
 		} else {
 			logger.error(String.format("Node 5s has bean already restarting skip ir", rpcUrl));
 		}
+	}
+
+	@Transactional
+	public SmartContract getContract(GeneralReq gr) throws RestActionError {
+		if (gr == null)
+			throw new RestActionError("Object is null");
+		Optional<SmartContract> contract = Optional.empty();
+
+		if (gr.getContractId() != null && gr.getContractId() > 0) {
+			contract = smartContractMicroService.findById(gr.getContractId());
+		}
+		if (gr.getMarketMakingId() != null && gr.getMarketMakingId() > 0) {
+			contract = marketMakingMicroService.findById(gr.getMarketMakingId()).map(MarketMaking::getSmartContract);
+		}
+		if (gr.getBlockchainId() != null && gr.getBlockchainId() > 0 && !Strings.isNullOrEmpty(gr.getContractAddress())) {
+			Optional<Blockchain> blockchain = blockchainMicroService.findById(gr.getBlockchainId());
+			if (blockchain.isPresent()) {
+				contract = smartContractMicroService.findByBlockchainAndContractsAddress(blockchain.get(), gr.getContractAddress().trim());
+			}
+		}
+		if (!Strings.isNullOrEmpty(gr.getBlockchain()) && !Strings.isNullOrEmpty(gr.getContractAddress())) {
+			Optional<Blockchain> blockchain = blockchainMicroService.findByName(gr.getBlockchain().trim());
+			if (blockchain.isPresent()) {
+				contract = smartContractMicroService.findByBlockchainAndContractsAddress(blockchain.get(), gr.getContractAddress().trim());
+			}
+		}
+		return contract.orElseThrow(() -> new RestActionError("Contract not found"));
+
+	}
+
+	@Transactional
+	public MarketMaking getMarketMaking(GeneralReq gr) throws RestActionError {
+		if (gr == null)
+			throw new RestActionError("Object is null");
+		Optional<MarketMaking> mm = Optional.empty();
+
+		if (gr.getMarketMakingId() != null && gr.getMarketMakingId() > 0) {
+			mm = marketMakingMicroService.findById(gr.getMarketMakingId());
+		}
+		if (gr.getContractId() != null && gr.getContractId() > 0) {
+			var contractOptional = smartContractMicroService.findById(gr.getContractId());
+			if (contractOptional.isPresent()) {
+				mm = marketMakingMicroService.findBySmartContract(contractOptional.get());
+			}
+		}
+
+		if (gr.getBlockchainId() != null && gr.getBlockchainId() > 0 && !Strings.isNullOrEmpty(gr.getContractAddress())) {
+			Optional<Blockchain> blockchain = blockchainMicroService.findById(gr.getBlockchainId());
+			if (blockchain.isPresent()) {
+				var contractOptional = smartContractMicroService.findByBlockchainAndContractsAddress(blockchain.get(), gr.getContractAddress().trim());
+				if (contractOptional.isPresent()) {
+					mm = marketMakingMicroService.findBySmartContract(contractOptional.get());
+				}
+			}
+		}
+		if (!Strings.isNullOrEmpty(gr.getBlockchain()) && !Strings.isNullOrEmpty(gr.getContractAddress())) {
+			Optional<Blockchain> blockchain = blockchainMicroService.findByName(gr.getBlockchain().trim());
+			if (blockchain.isPresent()) {
+				var contractOptional = smartContractMicroService.findByBlockchainAndContractsAddress(blockchain.get(), gr.getContractAddress().trim());
+				if (contractOptional.isPresent()) {
+					mm = marketMakingMicroService.findBySmartContract(contractOptional.get());
+				}
+			}
+		}
+		return mm.orElseThrow(() -> new RestActionError("MarketMaking not found"));
+
 	}
 }

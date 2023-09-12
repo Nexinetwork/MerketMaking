@@ -115,7 +115,7 @@ public class WalletUtilTest implements Serializable {
 	public void backAllTokensToTankhahReverse() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = GeneralReq.builder().long1(12139L).int1(0).build();
+		var req = GeneralReq.builder().long1(12140L).int1(0).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensToTankhahReverse")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -180,7 +180,7 @@ public class WalletUtilTest implements Serializable {
 	public void creditMinimumMainCoinForTokenWalletsReverse() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = GeneralReq.builder().long1(12139L).int1(0).build();
+		var req = GeneralReq.builder().long1(12140L).int1(0).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/creditMinimumMainCoinForTokenWalletsReverse")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -198,7 +198,7 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensFromTempTankhahToTankhah")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body("12151").asString();
+				.body("12139").asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
