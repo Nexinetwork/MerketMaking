@@ -80,6 +80,10 @@ public class MMWalletService {
 		return mmwd;
 	}
 
+	public MMWallet save(MMWallet mmw) {
+		return mmWalletMicroService.save(mmw);
+	}
+
 	public List<MMWallet> saveWithChunk(MMWallet mmw, int chunkSize, int defiWalletSize) {
 		List<MarketMakingWalletDto> transferWalletList = mmw.getTransferWalletList();
 		int chunkCount = (int) Math.ceil((double) transferWalletList.size() / chunkSize);

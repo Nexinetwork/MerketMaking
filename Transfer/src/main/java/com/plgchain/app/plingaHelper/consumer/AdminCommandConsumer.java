@@ -14,10 +14,12 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson2.JSON;
+import com.plgchain.app.plingaHelper.bean.ContractActionBean;
 import com.plgchain.app.plingaHelper.bean.InitBean;
 import com.plgchain.app.plingaHelper.bean.WalletActionBean;
 import com.plgchain.app.plingaHelper.constant.AdminCommandType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
+import com.plgchain.app.plingaHelper.service.SmartContractService;
 import com.plgchain.app.plingaHelper.type.CommandToRun;
 
 import jakarta.inject.Inject;
@@ -37,6 +39,9 @@ public class AdminCommandConsumer implements Serializable {
 
 	@Inject
 	private WalletActionBean walletActionBean;
+
+	@Inject
+	private ContractActionBean contractActionBean;
 
 	@KafkaListener(topics = SysConstant.KAFKA_ADMIN_COMMAND, containerFactory = "kafkaListenerContainerFactory", groupId = "TransferService.handleAdminCommand")
 	public void handleAdminCommand(List<ConsumerRecord<String, String>> records) {
@@ -88,6 +93,8 @@ public class AdminCommandConsumer implements Serializable {
 					walletActionBean.updateAllwalletsBalancesByContractId(ctr.getLong1());
 				} else if (ctr.getAdminCommandType().equals(AdminCommandType.UPDATEALLWALLETSBALANCESBYCONTRACTIDPARALLEL)) {
 					walletActionBean.updateAllwalletsBalancesByContractIdParallel(ctr.getLong1());
+				} else if (ctr.getAdminCommandType().equals(AdminCommandType.UPDATECONTRACTADDRESS)) {
+					contractActionBean.changeContractAddressOfContract(ctr.getLong1(),ctr.getStr1());
 				}
 			}
 		} catch (Exception e) {

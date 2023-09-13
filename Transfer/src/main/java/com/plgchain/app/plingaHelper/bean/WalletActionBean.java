@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -22,7 +21,6 @@ import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.TempTankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
-import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
 import com.plgchain.app.plingaHelper.exception.InvalidMarketMaking;
 import com.plgchain.app.plingaHelper.microService.MMWalletMicroService;

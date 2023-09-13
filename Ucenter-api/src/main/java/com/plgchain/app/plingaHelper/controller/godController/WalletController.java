@@ -74,9 +74,16 @@ public class WalletController extends BaseController implements Serializable {
 		}
 	}
 
+
+	@RequestMapping("/wallet/getAllTankhahWallets")
+	public MessageResult getAllTankhahWallets() {
+		List<MarketMakingWalletRes> result = tankhahWalletMicroService.findAll().stream()
+				.map(TankhahWallet::getAsMarketMakingWalletRes).collect(Collectors.toList());
+		return success(result);
+	}
+
 	@RequestMapping("/wallet/getTankhahWalletByPublicKey")
 	public MessageResult getTankhahWalletByPublicKey(@RequestBody String publicKey) {
-		logger.info("getTankhahWalletByPublicKey fired.");
 		List<MarketMakingWalletRes> result = tankhahWalletMicroService.findByPublicKey(publicKey).stream()
 				.map(TankhahWallet::getAsMarketMakingWalletRes).collect(Collectors.toList());
 		return success(result);
@@ -91,35 +98,37 @@ public class WalletController extends BaseController implements Serializable {
 	}
 
 	@RequestMapping("/wallet/correctMetamaskTransWalletsFunding")
-	public MessageResult correctMetamaskTransWalletsFunding(@RequestBody Long contractId) {
-		if (contractId == null)
-			error("ContractId is null");
-		if (contractId < 0)
-			error("ContractId is null");
-		Optional<SmartContract> sm = smartContractMicroService.findById(contractId);
-		if (sm.isEmpty())
-			error("Invalid contractId.");
-		CommandToRun ctr = new CommandToRun();
-		ctr.setAdminCommandType(AdminCommandType.FIXTRANSFERWALLETFUNDING);
-		ctr.setLong1(contractId);
-		kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
-		return success("Actions Successfully put in queue please be paitent.");
+	public MessageResult correctMetamaskTransWalletsFunding(@RequestBody GeneralReq req) {
+		try {
+			if (req == null)
+				error("ContractId is null");
+			var sm = blockchainBean.getContract(req);
+			CommandToRun ctr = new CommandToRun();
+			ctr.setAdminCommandType(AdminCommandType.FIXTRANSFERWALLETFUNDING);
+			ctr.setLong1(sm.getContractId());
+			ctr.setInt1(req.getInt1());
+			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+			return success("Actions Successfully put in queue please be paitent.");
+		} catch (RestActionError e) {
+			return error(e.getMessage());
+		}
 	}
 
 	@RequestMapping("/wallet/correctMetamaskTransWalletsFundingReverse")
-	public MessageResult correctMetamaskTransWalletsFundingReverse(@RequestBody Long contractId) {
-		if (contractId == null)
-			error("ContractId is null");
-		if (contractId < 0)
-			error("ContractId is null");
-		Optional<SmartContract> sm = smartContractMicroService.findById(contractId);
-		if (sm.isEmpty())
-			error("Invalid contractId.");
-		CommandToRun ctr = new CommandToRun();
-		ctr.setAdminCommandType(AdminCommandType.FIXTRANSFERWALLETFUNDINGREVERSE);
-		ctr.setLong1(contractId);
-		kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
-		return success("Actions Successfully put in queue please be paitent.");
+	public MessageResult correctMetamaskTransWalletsFundingReverse(@RequestBody GeneralReq req) {
+		try {
+			if (req == null)
+				error("ContractId is null");
+			var sm = blockchainBean.getContract(req);
+			CommandToRun ctr = new CommandToRun();
+			ctr.setAdminCommandType(AdminCommandType.FIXTRANSFERWALLETFUNDINGREVERSE);
+			ctr.setLong1(sm.getContractId());
+			ctr.setInt1(req.getInt1());
+			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+			return success("Actions Successfully put in queue please be paitent.");
+		} catch (RestActionError e) {
+			return error(e.getMessage());
+		}
 	}
 
 	@RequestMapping("/wallet/backAllTokensToTankhah")
