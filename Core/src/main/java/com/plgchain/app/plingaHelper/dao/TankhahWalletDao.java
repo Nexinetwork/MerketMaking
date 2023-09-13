@@ -20,5 +20,8 @@ public interface TankhahWalletDao extends BaseLongDao<TankhahWallet> {
 	@Query("SELECT s FROM SmartContract s WHERE s.marketMaking = TRUE AND NOT EXISTS (SELECT t.contract FROM TankhahWallet t WHERE t.contract = s)")
 	public List<SmartContract> findAllSmartContractsNotHaveTankhahWallet();
 
+	@Query("SELECT s FROM SmartContract s WHERE s.contract.contractsAddress = :contractAddress")
+	public List<TankhahWallet> findByContractAddress(String contractAddress);
+
 
 }

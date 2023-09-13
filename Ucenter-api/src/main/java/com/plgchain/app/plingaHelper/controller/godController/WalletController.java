@@ -89,6 +89,13 @@ public class WalletController extends BaseController implements Serializable {
 		return success(result);
 	}
 
+	@RequestMapping("/wallet/getTankhahWalletByContractAddress")
+	public MessageResult getTankhahWalletByContractAddress(@RequestBody String contractAddress) {
+		List<MarketMakingWalletRes> result = tankhahWalletMicroService.findByContractAddress(contractAddress).stream()
+				.map(TankhahWallet::getAsMarketMakingWalletRes).collect(Collectors.toList());
+		return success(result);
+	}
+
 	@RequestMapping("/wallet/getMarketMakingWalletByPublicKey")
 	public MessageResult getMarketMakingWalletByPublicKey(@RequestBody String publicKey) {
 		logger.info("getMarketMakingWalletByPublicKey fired.");

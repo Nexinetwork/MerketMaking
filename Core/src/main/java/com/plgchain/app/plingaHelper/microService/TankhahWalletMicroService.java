@@ -67,6 +67,10 @@ public class TankhahWalletMicroService extends BaseMicroService<TankhahWallet> i
 		tankhahWalletDao.deleteAll();
 	}
 
+	public List<TankhahWallet> findByContractAddress(String contractAddress) {
+		return tankhahWalletDao.findByContractAddress(contractAddress);
+	}
+
 	public List<TankhahWallet> saveAll(List<TankhahWallet> oList) {
 		return tankhahWalletDao.saveAll(oList);
 	}
