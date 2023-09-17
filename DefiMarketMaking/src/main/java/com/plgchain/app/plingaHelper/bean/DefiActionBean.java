@@ -67,8 +67,10 @@ public class DefiActionBean implements Serializable {
 			var wList = mmw.getDefiWalletList();
 			logger.info(String.format("Defi wallet count for contract %s is %s", sm.getContractsAddress(),wList.size()));
 			mmw.getDefiWalletList().forEach(wallet -> {
-				wallet.setPrivateKeyHex(SecurityUtil.decryptString(wallet.getEncryptedPrivateKey(),
-						sm.getMarketMakingObject().getTrPid()));
+				/*
+				 * wallet.setPrivateKeyHex(SecurityUtil.decryptString(wallet.
+				 * getEncryptedPrivateKey(), sm.getMarketMakingObject().getTrPid()));
+				 */
 				if (blockchain.isAutoGas()) {
 
 				} else {
