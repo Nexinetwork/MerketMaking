@@ -49,7 +49,7 @@ public class DefiActionBean implements Serializable {
 	public void approveDefiV1WalletOfContractforOtherContract(long contractId, String contractAddress) {
 		var sm = smartContractMicroService.findById(contractId).get();
 		Blockchain blockchain = sm.getBlockchain();
-		//Coin coin = sm.getCoin();
+		// Coin coin = sm.getCoin();
 		if (Strings.isNullOrEmpty(blockchain.getDefiV1Factory())) {
 			logger.info(String.format("factory for defi V1 for blockchain %s not set.", blockchain.getName()));
 			return;
@@ -65,16 +65,17 @@ public class DefiActionBean implements Serializable {
 
 		mmWalletService.findByContractIdAndChunk(contractId, 0).ifPresent(mmw -> {
 			var wList = mmw.getDefiWalletList();
-			logger.info(String.format("Defi wallet count for contract %s is %s", sm.getContractsAddress(),wList.size()));
+			logger.info(
+					String.format("Defi wallet count for contract %s is %s", sm.getContractsAddress(), wList.size()));
 			mmw.getDefiWalletList().forEach(wallet -> {
-				/*
-				 * wallet.setPrivateKeyHex(SecurityUtil.decryptString(wallet.
-				 * getEncryptedPrivateKey(), sm.getMarketMakingObject().getTrPid()));
-				 */
+
+				wallet.setPrivateKeyHex(SecurityUtil.decryptString(wallet.getEncryptedPrivateKey(),
+						sm.getMarketMakingObject().getTrPid()));
+
 				if (blockchain.isAutoGas()) {
 
 				} else {
-					// logger.info("Try to approve wallet : " + wallet);
+					logger.info("Try to approve wallet : " + wallet);
 					TransactionReceipt tr = EVMUtil.approveContractOnWallet(blockchain.getRpcUrl(),
 							wallet.getPrivateKeyHex(), blockchain.getDefiV1Router(), contractAddress,
 							EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit);
