@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -14,13 +15,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
 
+import com.netflix.servo.util.Strings;
 import com.plgchain.app.plingaHelper.constant.WalletType;
 import com.plgchain.app.plingaHelper.dto.EvmWalletDto;
 import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.TempTankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.Coin;
+import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMaking;
 import com.plgchain.app.plingaHelper.entity.marketMaking.MarketMakingWallet;
 import com.plgchain.app.plingaHelper.exception.InvalidMarketMaking;
 import com.plgchain.app.plingaHelper.microService.MMWalletMicroService;
@@ -469,7 +474,7 @@ public class WalletActionBean implements Serializable {
 				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
 				tankhahNonce[0]));
 		IntStream.rangeClosed(0, mm.getChunkCount()).mapToObj(i -> mm.getChunkCount() - i).forEach(idx -> {
-			int count = 1;
+			int [] count = {0};
 			mmWalletService.findByContractIdAndChunk(contractId, idx).ifPresent(mmw -> {
 				mmw.getTransferWalletList().forEach(wallet -> {
 					wallet.setPrivateKeyHex(SecurityUtil.decryptString(wallet.getEncryptedPrivateKey(), mm.getTrPid()));
@@ -1846,6 +1851,38 @@ public class WalletActionBean implements Serializable {
 									count[0], wallet.getPublicKey(), tokenBalance.toString()));
 						}
 
+					});
+		});
+	}
+
+	@Async
+	@Transactional
+	public void fixPrivateKeyByContractId(long contractId) {
+		smartContractMicroService.findById(contractId).ifPresent(sm -> {
+			final int[] count = { Math
+					.toIntExact(marketMakingWalletMicroService.countByContractAndWalletType(sm, WalletType.TRANSFER)) };
+			final int[] idx = { 0 };
+			marketMakingWalletMicroService
+					.findAllWalletsByContractIdAndWalletTypeNative(contractId, WalletType.TRANSFER)
+					.forEach(wallet -> {
+						if (Strings.isNullOrEmpty(wallet.getPrivateKeyHex())) {
+							Optional<MarketMakingWallet> mmw = marketMakingWalletMicroService.findById(wallet.getMmWalletId());
+							if (mmw.isPresent()) {
+								EvmWalletDto ewmwdto = EvmWalletUtil.generateWallet(new BigInteger(mmw.get().getPrivateKey()));
+								logger.info(String.format("(%s/%s) private key for wallet %s is %s", ++idx[0],count[0],wallet.getPublicKey(),ewmwdto.getHexKey()));
+							}
+
+						} else {
+							try {
+								var credentials = Credentials.create(wallet.getPrivateKeyHex());
+							} catch (Exception e) {
+								Optional<MarketMakingWallet> mmw = marketMakingWalletMicroService.findById(wallet.getMmWalletId());
+								if (mmw.isPresent()) {
+									EvmWalletDto ewmwdto = EvmWalletUtil.generateWallet(new BigInteger(mmw.get().getPrivateKey()));
+									logger.info(String.format("(%s/%s) private key for wallet %s is %s", ++idx[0],count[0],wallet.getPublicKey(),ewmwdto.getHexKey()));
+								}
+							}
+						}
 					});
 		});
 	}

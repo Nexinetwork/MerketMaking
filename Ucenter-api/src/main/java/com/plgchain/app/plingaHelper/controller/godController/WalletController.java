@@ -291,4 +291,21 @@ public class WalletController extends BaseController implements Serializable {
 		}
 	}
 
+	@RequestMapping("/wallet/fixPrivateKeyByContract")
+	public MessageResult fixPrivateKeyByContract(@RequestBody GeneralReq req) {
+		try {
+			if (req == null)
+				error("ContractId is null");
+			var sm = blockchainBean.getContract(req);
+			CommandToRun ctr = new CommandToRun();
+			ctr.setAdminCommandType(AdminCommandType.FIXPRIVATEKEYBYCONTRACTID);
+			ctr.setLong1(sm.getContractId());
+			ctr.setInt1(req.getInt1());
+			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+			return success("Actions Successfully put in queue please be paitent.");
+		} catch (RestActionError e) {
+			return error(e.getMessage());
+		}
+	}
+
 }

@@ -45,7 +45,19 @@ public class WalletUtilTest implements Serializable {
 	}
 
 	//@Test
-	public void getTankhahWalletTestCase() {
+	public void getTankhahWalletByContractAddress() {
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/getTankhahWalletByContractAddress")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body("0x40Aa6A2463fBAabEA6DB995aaB604C2393cbc37D").asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	//@Test
+	public void getTankhahWalletByPublicKey() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
 		HttpResponse<String> response = Unirest
@@ -72,16 +84,18 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("balance : " + balance.toString());
 	}
 
-	//@Test
+	@Test
 	public void correctMetamaskTransWalletsFunding() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		int a = 1;
+		var blockchain = "Nexi-DPOS-V1";
+		// var blockchain = "Nexi-DPOS-V2";
+		var req = GeneralReq.builder().blockchain(blockchain).contractAddress("0x40Aa6A2463fBAabEA6DB995aaB604C2393cbc37D").int1(0).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFunding")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body("12140").asString();
+				.body(JSON.toJSONString(req)).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
@@ -89,16 +103,35 @@ public class WalletUtilTest implements Serializable {
 	public void correctMetamaskTransWalletsFundingReverse() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		int a = 1;
+		//var blockchain = "Plinga-DPOS";
+		var blockchain = "Nexi-DPOS-V1";
+		// var blockchain = "Nexi-DPOS-V2";
+		var req = GeneralReq.builder().blockchain(blockchain).contractAddress("0x40Aa6A2463fBAabEA6DB995aaB604C2393cbc37D").int1(0).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFundingReverse")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body("12140").asString();
+				.body(JSON.toJSONString(req)).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
+	public void updateContractAddress() {
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
+		//var blockchain = "Plinga-DPOS";
+		var blockchain = "Nexi-DPOS-V1";
+		// var blockchain = "Nexi-DPOS-V2";
+		var req = GeneralReq.builder().blockchain(blockchain).contractAddress("0x30199Be78D0A2A885b3E03f7D5B08DE2ad251648").str1("0x40Aa6A2463fBAabEA6DB995aaB604C2393cbc37D").build();
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.83:7001/api/v1/godaction/contract/updateContractAddress")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(JSON.toJSONString(req)).asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	//@Test
 	public void backAllTokensToTankhah() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -154,7 +187,7 @@ public class WalletUtilTest implements Serializable {
 	public void backAllTokensToTankhahParallel() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = GeneralReq.builder().long1(12139L).int1(0).build();
+		var req = GeneralReq.builder().contractId(12140L).int1(0).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensToTankhahParallel")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -167,7 +200,7 @@ public class WalletUtilTest implements Serializable {
 	public void creditMinimumMainCoinForTokenWallets() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = GeneralReq.builder().long1(12139L).int1(0).build();
+		var req = GeneralReq.builder().contractId(12140L).int1(0).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/creditMinimumMainCoinForTokenWallets")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -214,5 +247,21 @@ public class WalletUtilTest implements Serializable {
 				.body("12150").asString();
 		System.out.println("Result is : " + response.getBody());
 	}
+
+	//@Test
+		public void fixPrivateKeyByContract() {
+			// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+			// BigDecimal("1")).listed(true).build();
+			//var blockchain = "Plinga-DPOS";
+			var blockchain = "Nexi-DPOS-V1";
+			// var blockchain = "Nexi-DPOS-V2";
+			var req = GeneralReq.builder().blockchain(blockchain).contractAddress("0x30199Be78D0A2A885b3E03f7D5B08DE2ad251648").build();
+			HttpResponse<String> response = Unirest
+					.post("http://185.173.129.83:7001/api/v1/godaction/wallet/fixPrivateKeyByContract")
+					.header("content-type", "application/json").header("Authorization", getAuthToken())
+					// .header("x-api-key", "REPLACE_KEY_VALUE")
+					.body(JSON.toJSONString(req)).asString();
+			System.out.println("Result is : " + response.getBody());
+		}
 
 }
