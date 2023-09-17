@@ -85,4 +85,21 @@ public class ContractController extends BaseController implements Serializable {
 		}
 	}
 
+	@RequestMapping("/contract/approveContractForTokenContract")
+	public MessageResult approveContractForTokenContract(@RequestBody GeneralReq req) {
+		try {
+			if (req == null)
+				error("ContractId is null");
+			var sm = blockchainBean.getContract(req);
+			CommandToRun ctr = new CommandToRun();
+			ctr.setAdminCommandType(AdminCommandType.APPROVECONTRACTFORTOKENCONTRACTID);
+			ctr.setLong1(sm.getContractId());
+			ctr.setStr1(req.getStr1());
+			kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+			return success("Actions Successfully put in queue please be paitent.");
+		} catch (RestActionError e) {
+			return error(e.getMessage());
+		}
+	}
+
 }

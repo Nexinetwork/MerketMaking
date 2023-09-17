@@ -1887,5 +1887,4 @@ public class WalletActionBean implements Serializable {
 					});
 		});
 	}
-
 }

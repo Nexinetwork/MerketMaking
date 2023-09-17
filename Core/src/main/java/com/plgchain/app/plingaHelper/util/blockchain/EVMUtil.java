@@ -47,6 +47,8 @@ import org.web3j.utils.Convert;
 import org.web3j.utils.Convert.Unit;
 
 import com.alibaba.fastjson2.JSON;
+import com.plgchain.app.plingaHelper.contracts.defi.nexi.v1.PancakeERC20;
+import com.plgchain.app.plingaHelper.type.DynamicGasProvider;
 
 import org.web3j.utils.Numeric;
 
@@ -58,6 +60,9 @@ public class EVMUtil implements Serializable {
 	private static final long serialVersionUID = -4942141276353870379L;
 
 	public static BigInteger DefaultGasPrice = new BigInteger("12500000");
+
+	public static final BigInteger maxSwapAmount = new BigInteger(
+			"115792089237316195423570985008687907853269984665640564039457584007913129639935");
 
 	public static BigInteger DefaultGasLimit = new BigInteger("21000");
 	public static BigInteger DefaultTokenGasLimit = new BigInteger("68408");
@@ -125,8 +130,8 @@ public class EVMUtil implements Serializable {
 		EthGetTransactionCount ethGetTransactionCount;
 		while (true) {
 			try {
-				ethGetTransactionCount = web3j
-						.ethGetTransactionCount(publicKey, DefaultBlockParameterName.LATEST).send();
+				ethGetTransactionCount = web3j.ethGetTransactionCount(publicKey, DefaultBlockParameterName.LATEST)
+						.send();
 				return ethGetTransactionCount.getTransactionCount();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -167,8 +172,9 @@ public class EVMUtil implements Serializable {
 		 * DefaultBlockParameterName.LATEST).send();
 		 */
 		// BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-		RawTransaction rawTransaction = RawTransaction.createEtherTransaction(getNonceByPrivateKey(rpcUrl, privateKeyHex),
-				DefaultGasPrice, getGasLimit(rpcUrl), recipientAddress, getWei(amount));
+		RawTransaction rawTransaction = RawTransaction.createEtherTransaction(
+				getNonceByPrivateKey(rpcUrl, privateKeyHex), DefaultGasPrice, getGasLimit(rpcUrl), recipientAddress,
+				getWei(amount));
 
 		// Sign the transaction
 		byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
@@ -492,6 +498,36 @@ public class EVMUtil implements Serializable {
 		BigInteger gasLimit = new BigInteger(gasLimitHex.substring(2), 16);
 
 		return gasLimit;
+
+	}
+
+	public static TransactionReceipt approveContractOnWallet(String rpcUrl, String privateKey,
+			String mainContractAddress, String coinContractAddress) {
+		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+		Credentials credentials = Credentials.create(privateKey);
+		PancakeERC20 token = PancakeERC20.load(coinContractAddress, web3j, credentials, new DefaultGasProvider());
+		try {
+			return token.approve(mainContractAddress, maxSwapAmount).send();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public static TransactionReceipt approveContractOnWallet(String rpcUrl, String privateKey,
+			String mainContractAddress, String coinContractAddress,BigInteger gasPrice,BigInteger gasLimit) {
+		Web3j web3j = Web3j.build(new HttpService(rpcUrl));
+		Credentials credentials = Credentials.create(privateKey);
+		PancakeERC20 token = PancakeERC20.load(coinContractAddress, web3j, credentials, new DynamicGasProvider(gasPrice,gasLimit));
+		try {
+			return token.approve(mainContractAddress, maxSwapAmount).send();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 
 	}
 }

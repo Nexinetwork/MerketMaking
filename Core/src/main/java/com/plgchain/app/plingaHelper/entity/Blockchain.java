@@ -73,6 +73,15 @@ public class Blockchain implements Serializable {
 	@Column(name = "\"coingeckoId\"",unique = true)
 	private String coingeckoId;
 
+	@Column(name = "\"defiV1Factory\"")
+	private String defiV1Factory;
+
+	@Column(name = "\"defiV1Router01\"")
+	private String defiV1Router01;
+
+	@Column(name = "\"defiV1Router\"")
+	private String defiV1Router;
+
 	@Column(name = "\"rpcUrl\"")
 	private String rpcUrl;
 

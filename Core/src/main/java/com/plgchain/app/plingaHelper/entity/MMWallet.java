@@ -1,7 +1,10 @@
 package com.plgchain.app.plingaHelper.entity;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -68,6 +71,8 @@ public class MMWallet {
 	private List<MarketMakingWalletDto> tankhahTransferWalletList;
 
     private List<MarketMakingWalletDto> tankhahDefiWalletList;
+
+    private Map<String, List<String>> approvedDefiWallets;
 
 	@CreatedDate
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT")
