@@ -64,6 +64,8 @@ public class DefiActionBean implements Serializable {
 		}
 
 		mmWalletService.findByContractIdAndChunk(contractId, 0).ifPresent(mmw -> {
+			var wList = mmw.getDefiWalletList();
+			logger.info(String.format("Defi wallet count for contract %s is %s", sm.getContractsAddress(),wList.size()));
 			mmw.getDefiWalletList().forEach(wallet -> {
 				wallet.setPrivateKeyHex(SecurityUtil.decryptString(wallet.getEncryptedPrivateKey(),
 						sm.getMarketMakingObject().getTrPid()));
