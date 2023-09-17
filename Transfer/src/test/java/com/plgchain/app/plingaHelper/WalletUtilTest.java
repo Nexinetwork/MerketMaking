@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 import com.alibaba.fastjson2.JSON;
 import com.plgchain.app.plingaHelper.security.dao.request.SigninRequest;
@@ -286,6 +287,12 @@ public class WalletUtilTest implements Serializable {
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(req)).asString();
 		System.out.println("Result is : " + response.getBody());
+	}
+
+	//@Test
+	public void testApprove() {
+		TransactionReceipt tr = EVMUtil.approveContractOnWallet("http://185.173.129.243:18545",
+				"a22af9370cd5798a1e2a8bea828014d35832666595bcf9b0ddd6e8a58e343900", "0xeef57E3356ef56B6b79F7449171DE0394fFA6d55", "0xEC3ceC066E5b2331fCD0Eb7eE5A9B17F617A6efb");
 	}
 
 }

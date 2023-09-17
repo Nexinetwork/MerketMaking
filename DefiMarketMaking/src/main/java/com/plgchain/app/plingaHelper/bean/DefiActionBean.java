@@ -75,10 +75,9 @@ public class DefiActionBean implements Serializable {
 				if (blockchain.isAutoGas()) {
 
 				} else {
-					logger.info("Try to approve wallet : " + wallet);
+					//logger.info("Try to approve wallet : " + wallet);
 					TransactionReceipt tr = EVMUtil.approveContractOnWallet(blockchain.getRpcUrl(),
-							wallet.getPrivateKeyHex(), blockchain.getDefiV1Router(), contractAddress,
-							EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit);
+							wallet.getPrivateKeyHex(), blockchain.getDefiV1Router(), contractAddress);
 					if (tr != null) {
 						if (!Strings.isNullOrEmpty(tr.getTransactionHash())) {
 							logger.info(String.format(
