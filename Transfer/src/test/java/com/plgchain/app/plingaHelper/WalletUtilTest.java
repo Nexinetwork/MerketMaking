@@ -44,7 +44,7 @@ public class WalletUtilTest implements Serializable {
 		return jToken;
 	}
 
-	//@Test
+	// @Test
 	public void getTankhahWalletByContractAddress() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -84,7 +84,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("balance : " + balance.toString());
 	}
 
-	@Test
+	// @Test
 	public void correctMetamaskTransWalletsFunding() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -100,7 +100,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void correctMetamaskTransWalletsFundingReverse() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -253,7 +253,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void fixPrivateKeyByContract() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -264,6 +264,24 @@ public class WalletUtilTest implements Serializable {
 				.contractAddress("0x883277f7D623612034db92A2dC16A8BEC20a8FB5").build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/fixPrivateKeyByContract")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(JSON.toJSONString(req)).asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	@Test
+	public void approveContractForTokenContract() {
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
+		// var blockchain = "Plinga-DPOS";
+		var blockchain = "Nexi-DPOS-V1";
+		// var blockchain = "Nexi-DPOS-V2";
+		var req = GeneralReq.builder().blockchain(blockchain)
+				.contractAddress("0x0000000000000000000000000000000000001010")
+				.str1("0xEC3ceC066E5b2331fCD0Eb7eE5A9B17F617A6efb").build();
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.83:7001/api/v1/godaction/contract/approveContractForTokenContract")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
 				.body(JSON.toJSONString(req)).asString();

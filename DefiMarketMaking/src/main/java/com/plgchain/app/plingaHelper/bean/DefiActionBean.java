@@ -49,12 +49,7 @@ public class DefiActionBean implements Serializable {
 	public void approveDefiV1WalletOfContractforOtherContract(long contractId, String contractAddress) {
 		var sm = smartContractMicroService.findById(contractId).get();
 		Blockchain blockchain = sm.getBlockchain();
-		Coin coin = sm.getCoin();
-		var secondContract = smartContractMicroService.findByBlockchainAndContractsAddress(blockchain, contractAddress);
-		if (!secondContract.isPresent()) {
-			logger.info(String.format("Contract %s on blockchain %s not found", contractAddress, blockchain.getName()));
-			return;
-		}
+		//Coin coin = sm.getCoin();
 		if (Strings.isNullOrEmpty(blockchain.getDefiV1Factory())) {
 			logger.info(String.format("factory for defi V1 for blockchain %s not set.", blockchain.getName()));
 			return;
