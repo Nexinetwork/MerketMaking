@@ -1875,6 +1875,7 @@ public class WalletActionBean implements Serializable {
 						} else {
 							try {
 								var credentials = Credentials.create(wallet.getPrivateKeyHex());
+								logger.info(String.format("(%s/%s) private key for wallet %s is %s and ok.", ++idx[0],count[0],wallet.getPublicKey(),wallet.getPrivateKeyHex()));
 							} catch (Exception e) {
 								Optional<MarketMakingWallet> mmw = marketMakingWalletMicroService.findById(wallet.getMmWalletId());
 								if (mmw.isPresent()) {

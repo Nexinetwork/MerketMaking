@@ -44,7 +44,7 @@ public class WalletUtilTest implements Serializable {
 		return jToken;
 	}
 
-	//@Test
+	// @Test
 	public void getTankhahWalletByContractAddress() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -56,7 +56,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void getTankhahWalletByPublicKey() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -68,14 +68,14 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void getNonce() {
 		String rpcUrl = "http://185.173.129.243:18545";
 		String privateKey = "665a41f51a3b705c8b6cdc85e2b9cbb7baa636c806b9746a99e99966b304baf2";
 		System.out.println(EVMUtil.getNonceByPrivateKey(rpcUrl, privateKey));
 	}
 
-	//@Test
+	// @Test
 	public void getTokenBalanceTestCase() {
 		String rpcUrl = "http://185.173.129.83:8545";
 		String privateKey = "a56c859dbf1b3911e2e3368302eb258e0ab4e34ee2152594bf9688d5522a9cbc";
@@ -84,13 +84,14 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("balance : " + balance.toString());
 	}
 
-	@Test
+	// @Test
 	public void correctMetamaskTransWalletsFunding() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
 		var blockchain = "Nexi-DPOS-V1";
 		// var blockchain = "Nexi-DPOS-V2";
-		var req = GeneralReq.builder().blockchain(blockchain).contractAddress("0x40Aa6A2463fBAabEA6DB995aaB604C2393cbc37D").int1(0).build();
+		var req = GeneralReq.builder().blockchain(blockchain)
+				.contractAddress("0x40Aa6A2463fBAabEA6DB995aaB604C2393cbc37D").int1(0).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFunding")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -99,14 +100,15 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void correctMetamaskTransWalletsFundingReverse() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		//var blockchain = "Plinga-DPOS";
+		// var blockchain = "Plinga-DPOS";
 		var blockchain = "Nexi-DPOS-V1";
 		// var blockchain = "Nexi-DPOS-V2";
-		var req = GeneralReq.builder().blockchain(blockchain).contractAddress("0x40Aa6A2463fBAabEA6DB995aaB604C2393cbc37D").int1(0).build();
+		var req = GeneralReq.builder().blockchain(blockchain)
+				.contractAddress("0x40Aa6A2463fBAabEA6DB995aaB604C2393cbc37D").int1(0).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFundingReverse")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -115,14 +117,16 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void updateContractAddress() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		//var blockchain = "Plinga-DPOS";
+		// var blockchain = "Plinga-DPOS";
 		var blockchain = "Nexi-DPOS-V1";
 		// var blockchain = "Nexi-DPOS-V2";
-		var req = GeneralReq.builder().blockchain(blockchain).contractAddress("0x30199Be78D0A2A885b3E03f7D5B08DE2ad251648").str1("0x40Aa6A2463fBAabEA6DB995aaB604C2393cbc37D").build();
+		var req = GeneralReq.builder().blockchain(blockchain)
+				.contractAddress("0x30199Be78D0A2A885b3E03f7D5B08DE2ad251648")
+				.str1("0x40Aa6A2463fBAabEA6DB995aaB604C2393cbc37D").build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/contract/updateContractAddress")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -131,20 +135,21 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void backAllTokensToTankhah() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		var req = GeneralReq.builder().blockchain("Nexi-DPOS-V2").contractAddress("0x30276EE9e302564Cf2aE525524AE9e3D469c7839").int1(0).build();
+		var req = GeneralReq.builder().blockchain("Nexi-DPOS-V2")
+				.contractAddress("0x30276EE9e302564Cf2aE525524AE9e3D469c7839").int1(0).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensToTankhah")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body(JSON.toJSONString(req) ).asString();
+				.body(JSON.toJSONString(req)).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void backAllTokensToTankhahReverse() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -153,11 +158,11 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensToTankhahReverse")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body(JSON.toJSONString(req) ).asString();
+				.body(JSON.toJSONString(req)).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void updateAllwalletsBalancesByContractId() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -166,11 +171,11 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/updateAllwalletsBalancesByContractId")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body(JSON.toJSONString(req) ).asString();
+				.body(JSON.toJSONString(req)).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void updateAllwalletsBalancesByContractIdParallel() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -179,11 +184,11 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/updateAllwalletsBalancesByContractIdParallel")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body(JSON.toJSONString(req) ).asString();
+				.body(JSON.toJSONString(req)).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void backAllTokensToTankhahParallel() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -192,11 +197,11 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensToTankhahParallel")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body(JSON.toJSONString(req) ).asString();
+				.body(JSON.toJSONString(req)).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void creditMinimumMainCoinForTokenWallets() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -205,11 +210,11 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/creditMinimumMainCoinForTokenWallets")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body(JSON.toJSONString(req) ).asString();
+				.body(JSON.toJSONString(req)).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void creditMinimumMainCoinForTokenWalletsReverse() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -218,11 +223,11 @@ public class WalletUtilTest implements Serializable {
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/creditMinimumMainCoinForTokenWalletsReverse")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
 				// .header("x-api-key", "REPLACE_KEY_VALUE")
-				.body(JSON.toJSONString(req) ).asString();
+				.body(JSON.toJSONString(req)).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void backAllTokensFromTempTankhahToTankhah() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -235,7 +240,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
+	// @Test
 	public void deleteTempTankhahWallet() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -248,20 +253,21 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	//@Test
-		public void fixPrivateKeyByContract() {
-			// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
-			// BigDecimal("1")).listed(true).build();
-			//var blockchain = "Plinga-DPOS";
-			var blockchain = "Nexi-DPOS-V1";
-			// var blockchain = "Nexi-DPOS-V2";
-			var req = GeneralReq.builder().blockchain(blockchain).contractAddress("0x30199Be78D0A2A885b3E03f7D5B08DE2ad251648").build();
-			HttpResponse<String> response = Unirest
-					.post("http://185.173.129.83:7001/api/v1/godaction/wallet/fixPrivateKeyByContract")
-					.header("content-type", "application/json").header("Authorization", getAuthToken())
-					// .header("x-api-key", "REPLACE_KEY_VALUE")
-					.body(JSON.toJSONString(req)).asString();
-			System.out.println("Result is : " + response.getBody());
-		}
+	@Test
+	public void fixPrivateKeyByContract() {
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
+		// var blockchain = "Plinga-DPOS";
+		var blockchain = "Nexi-DPOS-V1";
+		// var blockchain = "Nexi-DPOS-V2";
+		var req = GeneralReq.builder().blockchain(blockchain)
+				.contractAddress("0x883277f7D623612034db92A2dC16A8BEC20a8FB5").build();
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/fixPrivateKeyByContract")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(JSON.toJSONString(req)).asString();
+		System.out.println("Result is : " + response.getBody());
+	}
 
 }
