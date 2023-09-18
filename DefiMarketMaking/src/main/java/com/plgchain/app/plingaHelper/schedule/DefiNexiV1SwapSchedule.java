@@ -20,6 +20,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  *
@@ -47,6 +48,8 @@ public class DefiNexiV1SwapSchedule {
 	private Map<String, List<MarketMakingWalletDto>> majorWalletList = new HashMap<>();
 
 	private Blockchain blockchain;
+
+	private int roundSize = 200;
 
 	@PostConstruct
 	@Transactional
@@ -87,8 +90,12 @@ public class DefiNexiV1SwapSchedule {
 
 	public String selectMajorOrMinor() {
 		Random random = new Random();
-		int randomNumber = random.nextInt(2);
+		int randomNumber = random.nextInt(4);
 		if (randomNumber == 0) {
+			return "Major";
+		} else if (randomNumber == 1) {
+			return "Major";
+		} else if (randomNumber == 2) {
 			return "Major";
 		} else {
 			return "Minor";
@@ -126,7 +133,21 @@ public class DefiNexiV1SwapSchedule {
 			initBean.startActionRunning("defiNexiV1Swap");
 			logger.info("defiNexiV1Swap started.");
 
-			// Your business logic goes here
+			IntStream.range(0, roundSize).forEach(idx -> {
+				String mainContract = "";
+				String secondContract = "";
+				MarketMakingWalletDto mmwDto = new MarketMakingWalletDto();
+				if (selectMajorOrMinor().equals("Major")) {
+					mainContract = getRandomMajor();
+					secondContract =  getRandomMinor();
+					mmwDto = getRandomMajorWallet(mainContract);
+				} else {
+					mainContract = getRandomMinor();
+					secondContract =  getRandomMajor();
+					mmwDto = getRandomMinorWallet(mainContract);
+				}
+				logger.info(String.format("%s/%s) try to swap wallet %s between %s ----> %s", idx+1,roundSize,mmwDto.toString(),mainContract,secondContract));
+			});
 
 			initBean.stopActionRunning("defiNexiV1Swap");
 			logger.info("defiNexiV1Swap finished.");
