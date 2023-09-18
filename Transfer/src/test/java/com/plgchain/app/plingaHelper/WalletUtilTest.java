@@ -280,7 +280,7 @@ public class WalletUtilTest implements Serializable {
 		// var blockchain = "Nexi-DPOS-V2";
 		var req = GeneralReq.builder().blockchain(blockchain)
 				.contractAddress("0x0000000000000000000000000000000000001010")
-				.str1("0xEC3ceC066E5b2331fCD0Eb7eE5A9B17F617A6efb").build();
+				.str1("0x883277f7D623612034db92A2dC16A8BEC20a8FB5").build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/contract/approveContractForTokenContract")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())

@@ -104,6 +104,12 @@ public class SmartContract implements Serializable {
 
 	private Integer decimal;
 
+	@Column(name = "\"defiMajorContract\"",nullable = false)
+	private boolean defiMajorContract;
+
+	@Column(name = "\"defiStableCoin\"",nullable = false)
+	private boolean defiStableCoin;
+
 	public SmartContractRes getSmartContractRes() {
 		return SmartContractRes.builder().blockchainCoingeckoId(blockchain.getCoingeckoId()).blockchainId(blockchain.getBlockchainId()).blockchainType(blockchain.getBlockchainType())
 				.chainId(blockchain.getChainId()).coinCoingeckoId(coin.getCoingeckoId()).coinId(coin.getCoinId()).coinName(coin.getName()).coinSysmbol(coin.getSymbol())
