@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
+import org.web3j.tx.gas.DefaultGasProvider;
 
 import com.netflix.servo.util.Strings;
 import com.plgchain.app.plingaHelper.constant.WalletType;
@@ -1299,11 +1300,11 @@ public class WalletActionBean implements Serializable {
 			} else {
 				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex(),
 						tankhahWallet.getPublicKey(), publicKey, sm.getContractsAddress(), amount,
-						EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
+						new DefaultGasProvider().getGasPrice(), new DefaultGasProvider().getGasLimit(), tankhahNonce[0]);
 				tankhahNonce[0] = tankhahNonce[0].add(BigInteger.ONE);
 				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex(),
-						tankhahWallet.getPublicKey(), publicKey, initBean.getMinimumMainCoin(), EVMUtil.DefaultGasPrice,
-						EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+						tankhahWallet.getPublicKey(), publicKey, initBean.getMinimumMainCoin(), new DefaultGasProvider().getGasPrice(),
+						new DefaultGasProvider().getGasLimit(), tankhahNonce[0]);
 			}
 		} else {
 			if (blockchain.isAutoGas()) {
