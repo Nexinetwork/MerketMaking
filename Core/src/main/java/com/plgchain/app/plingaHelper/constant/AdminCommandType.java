@@ -30,6 +30,7 @@ public enum AdminCommandType implements BaseEnum {
 	UPDATECONTRACTADDRESS("Update Contract Address"),
 	FIXPRIVATEKEYBYCONTRACTID("Fix Private Key By ContractId"),
 	APPROVECONTRACTFORTOKENCONTRACTID("Approve Contract For Token Contract"),
+	FUNDACCOUNTFORCONTRACT("Fund Account for contract"),
 	DELETETEMPTANKHAHWALLET("Delete temp tankhah wallet");
 
 	@Setter

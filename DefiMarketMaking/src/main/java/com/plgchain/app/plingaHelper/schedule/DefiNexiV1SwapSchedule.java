@@ -2,22 +2,30 @@ package com.plgchain.app.plingaHelper.schedule;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson2.JSON;
+import com.plgchain.app.plingaHelper.bean.DefiActionBean;
 import com.plgchain.app.plingaHelper.bean.InitBean;
+import com.plgchain.app.plingaHelper.constant.AdminCommandType;
+import com.plgchain.app.plingaHelper.constant.SysConstant;
 import com.plgchain.app.plingaHelper.dto.MarketMakingWalletDto;
 import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.microService.BlockchainMicroService;
 import com.plgchain.app.plingaHelper.microService.SmartContractMicroService;
 import com.plgchain.app.plingaHelper.service.MMWalletService;
+import com.plgchain.app.plingaHelper.type.CommandToRun;
 import com.plgchain.app.plingaHelper.util.SecurityUtil;
+import com.plgchain.app.plingaHelper.util.blockchain.EVMUtil;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -41,13 +49,27 @@ public class DefiNexiV1SwapSchedule {
 	@Inject
 	private MMWalletService mmWalletService;
 
+	@Inject
+	private DefiActionBean defiActionBean;
+
+	@Inject
+	private KafkaTemplate<String, String> kafkaTemplate;
+
 	private List<String> minorContractList;
 	private List<String> majorContractList;
 
 	private Map<String, List<MarketMakingWalletDto>> minorWalletList = new HashMap<>();
 	private Map<String, List<MarketMakingWalletDto>> majorWalletList = new HashMap<>();
 
+	private final String factoryAddress = "0x2DCb27502d7013deD927c6c49f17c198ee05c9b6";
+
+	private final String routerAddress = "0xeef57E3356ef56B6b79F7449171DE0394fFA6d55";
+
 	private Blockchain blockchain;
+
+	private final BigDecimal minTokenBalance = new BigDecimal(10);
+
+	private final BigDecimal minfeeBalance = new BigDecimal(0.1);
 
 	private int roundSize = 200;
 
@@ -55,7 +77,7 @@ public class DefiNexiV1SwapSchedule {
 	@Transactional
 	public void init() {
 		logger.info("init for DefiNexiV1SwapSchedule has been runned.......");
-		this.blockchain = blockchainMicroService.findByName("Nexi-DPOS-V1").orElse(null);
+		this.blockchain = blockchainMicroService.findByName("Nexi-DPOS-V1").get();
 		this.minorContractList = Arrays.asList("0x613d19fd91A62513e16Ecc1c0A4bFb16480bd2Bb",
 				"0xdF397Aeee4950Aafb7DaD6345747337B510B4951", "0x9032ba5aa0d59888E582E8aa5893b53b07DEceC1",
 				"0x1F1FdCf76847E8e9C00048a33dFf1246912a7Fc2", "0x883277f7D623612034db92A2dC16A8BEC20a8FB5",
@@ -139,19 +161,62 @@ public class DefiNexiV1SwapSchedule {
 				MarketMakingWalletDto mmwDto = new MarketMakingWalletDto();
 				if (selectMajorOrMinor().equals("Major")) {
 					mainContract = getRandomMajor();
-					secondContract =  getRandomMinor();
+					secondContract = getRandomMinor();
 					mmwDto = getRandomMajorWallet(mainContract);
 				} else {
 					mainContract = getRandomMinor();
-					secondContract =  getRandomMajor();
+					secondContract = getRandomMajor();
 					mmwDto = getRandomMinorWallet(mainContract);
 				}
-				logger.info(String.format("%s/%s) try to swap wallet %s between %s ----> %s", idx+1,roundSize,mmwDto.toString(),mainContract,secondContract));
+				BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), mmwDto.getPublicKey());
+				if (balance.compareTo(new BigDecimal(0.1)) < 0) {
+					CommandToRun ctr = new CommandToRun();
+					ctr.setAdminCommandType(AdminCommandType.FUNDACCOUNTFORCONTRACT);
+					ctr.setLong1(mmwDto.getContractId());
+					ctr.setStr1(mmwDto.getPrivateKeyHex());
+					ctr.setStr1(mmwDto.getPublicKey());
+					kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+				} else {
+					logger.info(String.format("%s/%s) try to swap between %s ----> %s", idx + 1, roundSize,
+							mainContract, secondContract));
+					if (mainContract.equals(EVMUtil.mainToken)) {
+
+					} else if (secondContract.equals(EVMUtil.mainToken)) {
+
+					} else {
+						BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
+								mmwDto.getPrivateKeyHex(), mainContract);
+						if (balance.compareTo(minTokenBalance) < 0) {
+							CommandToRun ctr = new CommandToRun();
+							ctr.setAdminCommandType(AdminCommandType.FUNDACCOUNTFORCONTRACT);
+							ctr.setLong1(mmwDto.getContractId());
+							ctr.setStr1(mmwDto.getPrivateKeyHex());
+							ctr.setStr1(mmwDto.getPublicKey());
+							ctr.setBigDecimal1(minTokenBalance.multiply(new BigDecimal(5)));
+							kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+						} else if (balance.compareTo(minfeeBalance) < 0) {
+							CommandToRun ctr = new CommandToRun();
+							ctr.setAdminCommandType(AdminCommandType.FUNDACCOUNTFORCONTRACT);
+							ctr.setLong1(mmwDto.getContractId());
+							ctr.setStr1(mmwDto.getPrivateKeyHex());
+							ctr.setStr1(mmwDto.getPublicKey());
+							ctr.setBigDecimal1(minfeeBalance);
+							kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
+						} else {
+							defiActionBean.swapTokenByToken(blockchain.getRpcUrl(), routerAddress, factoryAddress,
+									mmwDto.getPrivateKeyHex(), mainContract, secondContract,
+									defiActionBean.calcRandomPercentInBigDecimal(balance, new BigDecimal(10), new BigDecimal(20),2));
+						}
+					}
+
+				}
 			});
 
 			initBean.stopActionRunning("defiNexiV1Swap");
 			logger.info("defiNexiV1Swap finished.");
-		} else {
+		} else
+
+		{
 			logger.warn("Schedule method defiNexiV1Swap already running, skipping it.");
 		}
 	}

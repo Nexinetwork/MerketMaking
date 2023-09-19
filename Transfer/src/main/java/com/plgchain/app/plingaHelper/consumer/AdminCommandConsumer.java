@@ -97,6 +97,8 @@ public class AdminCommandConsumer implements Serializable {
 					contractActionBean.changeContractAddressOfContract(ctr.getLong1(),ctr.getStr1());
 				} else if (ctr.getAdminCommandType().equals(AdminCommandType.FIXPRIVATEKEYBYCONTRACTID)) {
 					walletActionBean.fixPrivateKeyByContractId(ctr.getLong1());
+				} else if (ctr.getAdminCommandType().equals(AdminCommandType.FUNDACCOUNTFORCONTRACT)) {
+					walletActionBean.creditWalletByContractId(ctr.getLong1(),ctr.getStr1(),ctr.getStr2(),ctr.getBigDecimal1());
 				}
 			}
 		} catch (Exception e) {
