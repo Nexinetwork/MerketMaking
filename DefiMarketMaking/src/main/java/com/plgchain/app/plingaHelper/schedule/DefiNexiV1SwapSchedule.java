@@ -177,8 +177,8 @@ public class DefiNexiV1SwapSchedule {
 					ctr.setStr1(mmwDto.getPublicKey());
 					kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
 				} else {
-					logger.info(String.format("%s/%s) try to swap between %s ----> %s", idx + 1, roundSize,
-							mainContract, secondContract));
+					logger.info(String.format("%s/%s) try to swap between %s ----> %s by publicKey %s", idx + 1, roundSize,
+							mainContract, secondContract,mmwDto.getPublicKey()));
 					if (mainContract.equals(EVMUtil.mainToken)) {
 
 					} else if (secondContract.equals(EVMUtil.mainToken)) {

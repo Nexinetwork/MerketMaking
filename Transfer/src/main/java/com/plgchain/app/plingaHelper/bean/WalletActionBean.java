@@ -1312,8 +1312,8 @@ public class WalletActionBean implements Serializable {
 						tankhahWallet.getPublicKey(), publicKey, amount, EVMUtil.DefaultGasLimit, tankhahNonce[0]);
 			} else {
 				transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex(),
-						tankhahWallet.getPublicKey(), publicKey, amount, EVMUtil.DefaultGasPrice,
-						EVMUtil.DefaultGasLimit, tankhahNonce[0]);
+						tankhahWallet.getPublicKey(), publicKey, amount, new DefaultGasProvider().getGasPrice(),
+						new DefaultGasProvider().getGasLimit(), tankhahNonce[0]);
 			}
 		}
 	}
