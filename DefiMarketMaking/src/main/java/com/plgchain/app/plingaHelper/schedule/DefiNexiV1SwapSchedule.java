@@ -177,7 +177,7 @@ public class DefiNexiV1SwapSchedule {
 					ctr.setStr1(mmwDto.getPublicKey());
 					kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
 				} else {
-					logger.info(String.format("%s/%s) try to swap between %s ----> %s by publicKey %s", idx + 1, roundSize,
+					logger.info(String.format("%s/%s) try to swap between %s ----> %s for wallet %s", idx + 1, roundSize,
 							mainContract, secondContract,mmwDto.getPublicKey()));
 					if (mainContract.equals(EVMUtil.mainToken)) {
 
@@ -191,7 +191,7 @@ public class DefiNexiV1SwapSchedule {
 							ctr.setAdminCommandType(AdminCommandType.FUNDACCOUNTFORCONTRACT);
 							ctr.setLong1(mmwDto.getContractId());
 							ctr.setStr1(mmwDto.getPrivateKeyHex());
-							ctr.setStr1(mmwDto.getPublicKey());
+							ctr.setStr2(mmwDto.getPublicKey());
 							ctr.setBigDecimal1(minTokenBalance.multiply(new BigDecimal(5)));
 							kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
 						} else if (balance.compareTo(minfeeBalance) < 0) {
@@ -199,7 +199,7 @@ public class DefiNexiV1SwapSchedule {
 							ctr.setAdminCommandType(AdminCommandType.FUNDACCOUNTFORCONTRACT);
 							ctr.setLong1(mmwDto.getContractId());
 							ctr.setStr1(mmwDto.getPrivateKeyHex());
-							ctr.setStr1(mmwDto.getPublicKey());
+							ctr.setStr2(mmwDto.getPublicKey());
 							ctr.setBigDecimal1(minfeeBalance);
 							kafkaTemplate.send(SysConstant.KAFKA_ADMIN_COMMAND, JSON.toJSONString(ctr));
 						} else {
