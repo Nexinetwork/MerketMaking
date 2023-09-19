@@ -1285,7 +1285,6 @@ public class WalletActionBean implements Serializable {
 		var mm = marketMakingMicroService.findBySmartContract(sm).get();
 		var blockchain = sm.getBlockchain();
 		var tankhahWallet = tankhahWalletMicroService.findByContract(sm).get(0);
-		BigDecimal balance = EVMUtil.getAccountBalance(blockchain.getRpcUrl(), publicKey);
 		final BigInteger[] tankhahNonce = {
 				EVMUtil.getNonceByPrivateKey(blockchain.getRpcUrl(), tankhahWallet.getPrivateKeyHex()) };
 		if (!sm.getContractsAddress().equals(EVMUtil.mainToken)) {

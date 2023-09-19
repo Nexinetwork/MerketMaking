@@ -118,6 +118,12 @@ public class DefiActionBean implements Serializable {
 		NexiSwapRouter nsr = NexiSwapRouter.load(nexiRouter, web3j, credentials, new DefaultGasProvider());
 		if (!doesPairExist(rpcUrl, nexiFactory, privateKey, contract1, contract2)) {
 			logger.info(String.format("Pair %s with %s does not exist ignore swap", contract1, contract2));
+			if (!contract1.equals(EVMUtil.mainToken)) {
+				approveDefiV1WalletOfContractforOtherContract(rpcUrl, nexiRouter, privateKey, contract1);
+			}
+			if (!contract2.equals(EVMUtil.mainToken)) {
+				approveDefiV1WalletOfContractforOtherContract(rpcUrl, nexiRouter, privateKey, contract2);
+			}
 			return;
 		}
 		boolean mustRetry = true;
