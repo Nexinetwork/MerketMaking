@@ -186,7 +186,7 @@ public class DefiNexiV1SwapSchedule {
 					} else {
 						BigDecimal tokenBalance = EVMUtil.getTokenBalancSync(blockchain.getRpcUrl(),
 								mmwDto.getPrivateKeyHex(), mainContract);
-						if (balance.compareTo(minTokenBalance) < 0) {
+						if (tokenBalance.compareTo(minTokenBalance) < 0) {
 							CommandToRun ctr = new CommandToRun();
 							ctr.setAdminCommandType(AdminCommandType.FUNDACCOUNTFORCONTRACT);
 							ctr.setLong1(mmwDto.getContractId());
