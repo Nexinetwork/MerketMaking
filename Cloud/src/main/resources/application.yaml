@@ -1,0 +1,36 @@
+eureka:
+    client:
+        fetchRegistry: false
+        registerWithEureka: false
+        serviceUrl:
+            defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+    instance:
+        hostname: ${spring.cloud.client.ip-address}
+        instance-id: ${spring.cloud.client.ip-address}:${server.port}
+    server:
+        enable-self-preservation: true
+server:
+    port: 7000
+spark:
+    system:
+        admin-phones: 989109988777
+        admins: XXXXX@flydax.com
+        data-center-id: 1
+        host: smtp.flydax.com
+        name: flydax
+        work-id: 1
+spring:
+    mail:
+        host: smtp.flydax.com
+        password: _YofjY6JsL@o
+        port: 465
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    socketFactory:
+                        class: javax.net.ssl.SSLSocketFactory
+                    starttls:
+                        enable: true
+                        required: true
+        username: noreply@flydax.com
