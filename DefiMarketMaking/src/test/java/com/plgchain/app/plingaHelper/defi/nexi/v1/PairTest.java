@@ -44,7 +44,7 @@ public class PairTest implements Serializable {
 				new DefaultGasProvider());
 		// PancakeERC20 token = PancakeERC20.load(WCRYTO, web3j, credentials, new DefaultGasProvider());
 		try {
-			System.out.println(nexiSwapFactory.getPair(CASHUSD, ORBITEX).send());
+			System.out.println(nexiSwapFactory.getPair(CASHUSD, VLAND).send());
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
