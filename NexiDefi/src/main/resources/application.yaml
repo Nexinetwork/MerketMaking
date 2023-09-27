@@ -2,7 +2,7 @@ eureka:
     client:
         enabled: true
         serviceUrl:
-            defaultZone: http://127.0.0.1:7000/eureka/
+            defaultZone: http://10.20.0.20:7000/eureka/
     instance:
         prefer-ip-address: true
 server:
@@ -29,10 +29,10 @@ spring:
             repositories:
                 enabled: true
         mongodb:
-            uri: mongodb://pligaHelperUser:pligaHelperPass2023!@127.0.0.1:27017/dbPligaHelper
+            uri: mongodb://pligaHelperUser:pligaHelperPass2023!@10.20.0.20:27017/dbPligaHelper
     datasource:
         driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://127.0.0.1:5432/dbBlockchainNetworkHealth
+        url: jdbc:postgresql://10.20.0.20:5432/dbBlockchainNetworkHealth
         username: plingaUser
         password: plingaPass2023!
     devtools:
@@ -54,7 +54,7 @@ spring:
                 order_by:
                     default_null_ordering: first
     kafka:
-        bootstrap-servers: 127.0.0.1:9092
+        bootstrap-servers: 10.20.0.20:9092
         consumer:
             auto:
                 commit:
@@ -78,7 +78,7 @@ spring:
             linger: 1
             retries: 0
     redis:
-        host: 127.0.0.1
+        host: 10.20.0.20
         password: ILoveTedTed2023!
         pool:
             max-active: 300
