@@ -101,7 +101,7 @@ public class WalletController extends BaseController implements Serializable {
 		return success(result);
 	}
 
-	@RequestMapping("/wallet/getTankhahWalletByContractAddress")
+	@RequestMapping("/wallet/getTankhahWalletByContract")
 	public MessageResult getTankhahWalletByContract(@RequestBody GeneralReq req) {
 		try {
 			if (req == null)
