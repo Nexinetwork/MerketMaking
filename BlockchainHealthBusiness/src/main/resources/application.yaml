@@ -38,7 +38,7 @@ spring:
             hibernate:
                 physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     kafka:
-        bootstrap-servers: 127.0.0.1:9092
+        bootstrap-servers: 10.20.0.20:9092
         consumer:
             auto:
                 commit:

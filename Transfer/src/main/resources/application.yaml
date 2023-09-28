@@ -54,7 +54,7 @@ spring:
                 order_by:
                     default_null_ordering: first
     kafka:
-        bootstrap-servers: 127.0.0.1:9092
+        bootstrap-servers: 10.20.0.20:9092
         consumer:
             auto:
                 commit:
