@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson2.JSON;
+import com.google.common.base.Strings;
 import com.plgchain.app.plingaHelper.bean.BlockchainBean;
 import com.plgchain.app.plingaHelper.constant.AdminCommandType;
 import com.plgchain.app.plingaHelper.constant.SysConstant;
@@ -90,10 +91,28 @@ public class WalletController extends BaseController implements Serializable {
 	}
 
 	@RequestMapping("/wallet/getTankhahWalletByContractAddress")
-	public MessageResult getTankhahWalletByContractAddress(@RequestBody String contractAddress) {
-		List<MarketMakingWalletRes> result = tankhahWalletMicroService.findByContractAddress(contractAddress).stream()
+	public MessageResult getTankhahWalletByContractAddress(@RequestBody GeneralReq req) {
+		if (req == null)
+			error("Contract is null");
+		if (Strings.isNullOrEmpty(req.getContractAddress()))
+			error("Contract Address is null");
+		List<MarketMakingWalletRes> result = tankhahWalletMicroService.findByContractAddress(req.getContractAddress()).stream()
 				.map(TankhahWallet::getAsMarketMakingWalletRes).collect(Collectors.toList());
 		return success(result);
+	}
+
+	@RequestMapping("/wallet/getTankhahWalletByContractAddress")
+	public MessageResult getTankhahWalletByContract(@RequestBody GeneralReq req) {
+		try {
+			if (req == null)
+				error("ContractId is null");
+			var sm = blockchainBean.getContract(req);
+			List<MarketMakingWalletRes> result = tankhahWalletMicroService.findByContract(sm).stream()
+					.map(TankhahWallet::getAsMarketMakingWalletRes).collect(Collectors.toList());
+			return success(result);
+		} catch (RestActionError e) {
+			return error(e.getMessage());
+		}
 	}
 
 	@RequestMapping("/wallet/getMarketMakingWalletByPublicKey")
