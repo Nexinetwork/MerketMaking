@@ -4,7 +4,13 @@
 \cp  /root/.m2/repository/com/plgchain/app/Transfer/0.0.1/Transfer-0.0.1.jar /root/PlingaHelperApp/
 \cp  /root/.m2/repository/com/plgchain/app/Ucenter-api/0.0.1/Ucenter-api-0.0.1.jar /root/PlingaHelperApp/
 \cp  /root/.m2/repository/com/plgchain/app/DefiMarketMaking/0.0.1/DefiMarketMaking-0.0.1.jar /root/PlingaHelperApp/
+/usr/bin/systemctl stop kafka.service
+/usr/bin/systemctl stop zookeeper.service
 rm -rf /var/log/plingaHelper/*
+rm -rf /home/kafka/data/*
+rm -rf /home/zookeeper/data/*
+/usr/bin/systemctl restart zookeeper.service
+/usr/bin/systemctl restart kafka.service
 /usr/bin/systemctl restart cloud.service
 /usr/bin/systemctl restart blockchainHealthBusiness.service
 /usr/bin/systemctl restart transfer.service
