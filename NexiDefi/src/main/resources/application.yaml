@@ -10,7 +10,7 @@ server:
     port: 7004
 spring:
     application:
-        name: DefiMarketMaking
+        name: NexiDefi
     async:
         thread:
             pool:
