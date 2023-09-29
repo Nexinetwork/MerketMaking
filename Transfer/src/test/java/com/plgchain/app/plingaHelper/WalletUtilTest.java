@@ -45,7 +45,24 @@ public class WalletUtilTest implements Serializable {
 		return jToken;
 	}
 
-	@Test
+	//@Test
+	public void getTankhahWalletByContract() {
+		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
+		// BigDecimal("1")).listed(true).build();
+		var blockchain = "Plinga-DPOS";
+		//var blockchain = "Nexi-DPOS-V1";
+		// var blockchain = "Nexi-DPOS-V2";
+		var req = GeneralReq.builder().blockchain(blockchain)
+				.contractAddress("0xA60e7e82560165a150F05e75F59bb8499D76AE12").build();
+		HttpResponse<String> response = Unirest
+				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/getTankhahWalletByContract")
+				.header("content-type", "application/json").header("Authorization", getAuthToken())
+				// .header("x-api-key", "REPLACE_KEY_VALUE")
+				.body(JSON.toJSONString(req)).asString();
+		System.out.println("Result is : " + response.getBody());
+	}
+
+	//@Test
 	public void getTankhahWalletByContractAddress() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
@@ -61,6 +78,7 @@ public class WalletUtilTest implements Serializable {
 				.body(JSON.toJSONString(req)).asString();
 		System.out.println("Result is : " + response.getBody());
 	}
+
 
 	//@Test
 	public void getTankhahWalletByPublicKey() {

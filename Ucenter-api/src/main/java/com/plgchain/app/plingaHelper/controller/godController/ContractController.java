@@ -56,6 +56,18 @@ public class ContractController extends BaseController implements Serializable {
 	@Inject
 	private SmartContractMicroService smartContractMicroService;
 
+	@RequestMapping("/contract/getContract")
+	public MessageResult getContract(@RequestBody GeneralReq req) {
+		try {
+			if (req == null)
+				error("ContractId is null");
+			var sm = blockchainBean.getContract(req);
+			return success(sm.getSmartContractRes());
+		} catch (RestActionError e) {
+			return error(e.getMessage());
+		}
+	}
+
 	@RequestMapping("/contract/getContractByContractAddress")
 	public MessageResult getContractByContractAddress(@RequestBody GeneralReq req) {
 		if (req == null || Strings.isNullOrEmpty(req.getContractAddress())) {
