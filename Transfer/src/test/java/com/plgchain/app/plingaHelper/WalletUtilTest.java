@@ -53,7 +53,7 @@ public class WalletUtilTest implements Serializable {
 		//var blockchain = "Nexi-DPOS-V1";
 		// var blockchain = "Nexi-DPOS-V2";
 		var req = GeneralReq.builder().blockchain(blockchain)
-				.contractAddress("0xA60e7e82560165a150F05e75F59bb8499D76AE12").build();
+				.contractAddress("0xd7EbeAab772C8820b0829a7FeDb6356CBaEDfb94").build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/getTankhahWalletByContract")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -112,14 +112,13 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("balance : " + balance.toString());
 	}
 
-	// @Test
+	//@Test
 	public void correctMetamaskTransWalletsFunding() {
-		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
-		// BigDecimal("1")).listed(true).build();
-		var blockchain = "Nexi-DPOS-V1";
+		var blockchain = "Plinga-DPOS";
+		// var blockchain = "Nexi-DPOS-V1";
 		// var blockchain = "Nexi-DPOS-V2";
 		var req = GeneralReq.builder().blockchain(blockchain)
-				.contractAddress("0x883277f7D623612034db92A2dC16A8BEC20a8FB5").int1(0).build();
+				.contractAddress("0xd7EbeAab772C8820b0829a7FeDb6356CBaEDfb94").int1(0).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFunding")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -128,15 +127,15 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	// @Test
+	@Test
 	public void correctMetamaskTransWalletsFundingReverse() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		// var blockchain = "Plinga-DPOS";
-		var blockchain = "Nexi-DPOS-V1";
+		var blockchain = "Plinga-DPOS";
+		//var blockchain = "Nexi-DPOS-V1";
 		// var blockchain = "Nexi-DPOS-V2";
 		var req = GeneralReq.builder().blockchain(blockchain)
-				.contractAddress("0x883277f7D623612034db92A2dC16A8BEC20a8FB5").int1(0).build();
+				.contractAddress("0xd7EbeAab772C8820b0829a7FeDb6356CBaEDfb94").int1(0).build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/correctMetamaskTransWalletsFundingReverse")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())
@@ -259,11 +258,11 @@ public class WalletUtilTest implements Serializable {
 	public void backAllTokensFromTempTankhahToTankhah() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
-		// var blockchain = "Plinga-DPOS";
-		var blockchain = "Nexi-DPOS-V1";
+		var blockchain = "Plinga-DPOS";
+		//var blockchain = "Nexi-DPOS-V1";
 		// var blockchain = "Nexi-DPOS-V2";
 		var req = GeneralReq.builder().blockchain(blockchain)
-				.contractAddress("0x9032ba5aa0d59888E582E8aa5893b53b07DEceC1").build();
+				.contractAddress("0x8Cd10c064C5118c75f1650F286772694c2E97f57").build();
 		HttpResponse<String> response = Unirest
 				.post("http://185.173.129.83:7001/api/v1/godaction/wallet/backAllTokensFromTempTankhahToTankhah")
 				.header("content-type", "application/json").header("Authorization", getAuthToken())

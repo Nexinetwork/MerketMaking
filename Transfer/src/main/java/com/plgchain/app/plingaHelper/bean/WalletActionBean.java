@@ -61,6 +61,8 @@ public class WalletActionBean implements Serializable {
 	private final TempTankhahWalletMicroService tempTankhahWalletMicroService;
 	private final MMWalletService mmWalletService;
 
+	private final int transCountPerRound = 5000;
+
 	@Inject
 	public WalletActionBean(InitBean initBean, MarketMakingMicroService marketMakingMicroService,
 			TransferBean transferBean, TankhahWalletMicroService tankhahWalletMicroService,
@@ -820,6 +822,7 @@ public class WalletActionBean implements Serializable {
 		logger.info(String.format("Nonce for wallet %s of Contract address %s and coin %s and blockchain %s is %s",
 				tankhahWallet.getPublicKey(), sm.getContractsAddress(), coin.getSymbol(), blockchain.getName(),
 				tankhahNonce[0]));
+		final int[] transCount = {0};
 		IntStream.range(0, mm.getChunkCount()).forEach(idx -> {
 			int count = 1;
 			mmWalletService.findByContractIdAndChunk(contractId, idx).ifPresent(mmw -> {
@@ -837,10 +840,12 @@ public class WalletActionBean implements Serializable {
 								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
 										mustReturn, EVMUtil.DefaultGasLimit, nonce);
+								transCount[0] ++;
 							} else {
 								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
 										mustReturn, EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, nonce);
+								transCount[0] ++;
 							}
 						} else if (balance.equals(BigDecimal.ZERO)) {
 							boolean mustRetry = true;
@@ -860,6 +865,7 @@ public class WalletActionBean implements Serializable {
 															new BigDecimal(initBean.getTmpTankhahWalletCount())),
 													EVMUtil.DefaultGasLimit, tankhahNonce[0]);
 											mustRetry = false;
+											transCount[0] ++;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
 													.equals("maximum number of enqueued transactions reached")) {
@@ -879,6 +885,7 @@ public class WalletActionBean implements Serializable {
 															new BigDecimal(initBean.getTmpTankhahWalletCount())),
 													EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, tankhahNonce[0]);
 											mustRetry = false;
+											transCount[0] ++;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
 													.equals("maximum number of enqueued transactions reached")) {
@@ -897,6 +904,7 @@ public class WalletActionBean implements Serializable {
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit, nonce);
 											mustRetry = false;
+											transCount[0] ++;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
 													.equals("maximum number of enqueued transactions reached")) {
@@ -914,6 +922,7 @@ public class WalletActionBean implements Serializable {
 													wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
 													EVMUtil.DefaultGasLimit, nonce);
 											mustRetry = false;
+											transCount[0] ++;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
 													.equals("maximum number of enqueued transactions reached")) {
@@ -943,10 +952,12 @@ public class WalletActionBean implements Serializable {
 								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
 										mustReturn, EVMUtil.DefaultGasLimit, nonce);
+								transCount[0] ++;
 							} else {
 								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
 										mustReturn, EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit, nonce);
+								transCount[0] ++;
 							}
 						} else if (balance.equals(BigDecimal.ZERO)) {
 							boolean mustRetry = true;
@@ -971,6 +982,7 @@ public class WalletActionBean implements Serializable {
 																new BigDecimal(initBean.getTmpTankhahWalletCount())),
 														EVMUtil.DefaultGasLimit, tankhahNonce[0]);
 												mustRetry = false;
+												transCount[0] ++;
 											} catch (RuntimeException e) {
 												if (e.getMessage()
 														.equals("maximum number of enqueued transactions reached")) {
@@ -988,6 +1000,7 @@ public class WalletActionBean implements Serializable {
 														EVMUtil.DefaultGasPrice, EVMUtil.DefaultGasLimit,
 														tankhahNonce[0]);
 												mustRetry = false;
+												transCount[0] ++;
 											} catch (RuntimeException e) {
 												if (e.getMessage()
 														.equals("maximum number of enqueued transactions reached")) {
@@ -1009,6 +1022,7 @@ public class WalletActionBean implements Serializable {
 													tmpTankhah.getPrivateKey(), tmpTankhah.getPublicKey(),
 													wallet.getPublicKey(), amount, EVMUtil.DefaultGasLimit, nonce);
 											mustRetry = false;
+											transCount[0] ++;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
 													.equals("maximum number of enqueued transactions reached")) {
@@ -1023,6 +1037,7 @@ public class WalletActionBean implements Serializable {
 													wallet.getPublicKey(), amount, EVMUtil.DefaultGasPrice,
 													EVMUtil.DefaultGasLimit, nonce);
 											mustRetry = false;
+											transCount[0] ++;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
 													.equals("maximum number of enqueued transactions reached")) {
@@ -1050,11 +1065,13 @@ public class WalletActionBean implements Serializable {
 								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
 										sm.getContractsAddress(), mustReturn, EVMUtil.DefaultTokenGasLimit, nonce);
+								transCount[0] ++;
 							} else {
 								transferBean.transferBetweenToAccountSync(blockchain.getRpcUrl(),
 										wallet.getPrivateKeyHex(), wallet.getPublicKey(), tankhahWallet.getPublicKey(),
 										sm.getContractsAddress(), mustReturn, EVMUtil.DefaultGasPrice,
 										EVMUtil.DefaultTokenGasLimit, nonce);
+								transCount[0] ++;
 							}
 						} else if (tokenBalance.equals(BigDecimal.ZERO)) {
 							boolean mustRetry = true;
@@ -1076,6 +1093,7 @@ public class WalletActionBean implements Serializable {
 																new BigDecimal(initBean.getTmpTankhahWalletCount())),
 														EVMUtil.DefaultTokenGasLimit, tankhahNonce[0]);
 												mustRetry = false;
+												transCount[0] ++;
 											} catch (RuntimeException e) {
 												if (e.getMessage()
 														.equals("maximum number of enqueued transactions reached")) {
@@ -1093,6 +1111,7 @@ public class WalletActionBean implements Serializable {
 														EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit,
 														tankhahNonce[0]);
 												mustRetry = false;
+												transCount[0] ++;
 											} catch (RuntimeException e) {
 												if (e.getMessage()
 														.equals("maximum number of enqueued transactions reached")) {
@@ -1113,6 +1132,7 @@ public class WalletActionBean implements Serializable {
 													wallet.getPublicKey(), sm.getContractsAddress(), amount,
 													EVMUtil.DefaultTokenGasLimit, nonce);
 											mustRetry = false;
+											transCount[0] ++;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
 													.equals("maximum number of enqueued transactions reached")) {
@@ -1127,6 +1147,7 @@ public class WalletActionBean implements Serializable {
 													wallet.getPublicKey(), sm.getContractsAddress(), amount,
 													EVMUtil.DefaultGasPrice, EVMUtil.DefaultTokenGasLimit, nonce);
 											mustRetry = false;
+											transCount[0] ++;
 										} catch (RuntimeException e) {
 											if (e.getMessage()
 													.equals("maximum number of enqueued transactions reached")) {
@@ -1141,8 +1162,17 @@ public class WalletActionBean implements Serializable {
 							}
 						} else {
 							logger.info(String.format(
-									" wallet %s has enogh main token %s balance and chunk %s and count %s",
+									" wallet %s has enough main token %s balance and chunk %s and count %s",
 									wallet.getPublicKey(), sm.getContractsAddress(), idx, count));
+						}
+					}
+					if (transCount[0] > transCountPerRound) {
+						transCount[0] = 0;
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
 				});
