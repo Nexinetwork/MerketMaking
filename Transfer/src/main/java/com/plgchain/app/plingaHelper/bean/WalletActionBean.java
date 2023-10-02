@@ -63,6 +63,10 @@ public class WalletActionBean implements Serializable {
 
 	private final int transCountPerRound = 5000;
 
+	private final int waitTineInSecondsPerRound = 10;
+
+
+
 	@Inject
 	public WalletActionBean(InitBean initBean, MarketMakingMicroService marketMakingMicroService,
 			TransferBean transferBean, TankhahWalletMicroService tankhahWalletMicroService,
@@ -693,7 +697,7 @@ public class WalletActionBean implements Serializable {
 							}
 						} else {
 							logger.info(
-									String.format(" wallet %s has enogh main coin balance with chunk %s and count %s",
+									String.format(" wallet %s has enough main coin balance with chunk %s and count %s",
 											wallet.getPublicKey(), idx, count[0]));
 						}
 						var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(), mm.getMaxInitial(),
@@ -797,7 +801,7 @@ public class WalletActionBean implements Serializable {
 							}
 						} else {
 							logger.info(String.format(
-									" wallet %s has enogh main token %s balance and chunk %s and count %s",
+									" wallet %s has enough main token %s balance and chunk %s and count %s",
 									wallet.getPublicKey(), sm.getContractsAddress(), idx, count[0]));
 						}
 					}
@@ -1052,7 +1056,7 @@ public class WalletActionBean implements Serializable {
 							}
 						} else {
 							logger.info(
-									String.format(" wallet %s has enogh main coin balance with chunk %s and count %s",
+									String.format(" wallet %s has enough main coin balance with chunk %s and count %s",
 											wallet.getPublicKey(), idx, count));
 						}
 						var amount = NumberUtil.generateRandomNumber(mm.getMinInitial(), mm.getMaxInitial(),
@@ -1169,7 +1173,7 @@ public class WalletActionBean implements Serializable {
 					if (transCount[0] > transCountPerRound) {
 						transCount[0] = 0;
 						try {
-							Thread.sleep(5000);
+							Thread.sleep(waitTineInSecondsPerRound * 1000);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

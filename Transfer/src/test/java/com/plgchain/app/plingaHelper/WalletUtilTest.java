@@ -112,7 +112,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("balance : " + balance.toString());
 	}
 
-	//@Test
+	@Test
 	public void correctMetamaskTransWalletsFunding() {
 		var blockchain = "Plinga-DPOS";
 		// var blockchain = "Nexi-DPOS-V1";
@@ -127,7 +127,7 @@ public class WalletUtilTest implements Serializable {
 		System.out.println("Result is : " + response.getBody());
 	}
 
-	@Test
+	//@Test
 	public void correctMetamaskTransWalletsFundingReverse() {
 		// var req = CoinReq.builder().name("Cash USD").symbol("CASHUSD").priceInUsd(new
 		// BigDecimal("1")).listed(true).build();
