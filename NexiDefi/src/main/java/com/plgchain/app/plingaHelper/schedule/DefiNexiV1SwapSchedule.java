@@ -60,9 +60,9 @@ public class DefiNexiV1SwapSchedule {
 	private Map<String, List<MarketMakingWalletDto>> minorWalletList = new HashMap<>();
 	private Map<String, List<MarketMakingWalletDto>> majorWalletList = new HashMap<>();
 
-	private final String factoryAddress = "0x2DCb27502d7013deD927c6c49f17c198ee05c9b6";
+	private final String factoryAddress = "0xd33Fd46e49fA811c4CC1F67cAC2787F256f539c6";
 
-	private final String routerAddress = "0xeef57E3356ef56B6b79F7449171DE0394fFA6d55";
+	private final String routerAddress = "0x079d06da5415A896025999d4079d4188AC02E9C8";
 
 	private Blockchain blockchain;
 

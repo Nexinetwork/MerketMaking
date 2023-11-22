@@ -60,7 +60,7 @@ public class TransactionTest implements Serializable {
 			System.out.println(NumberUtil.generateRandomNumber(0, 2, 0));
 	}
 
-	@Test
+	// @Test
 	public void walletEncryptionTestCase() {
 		String privateKey = "0x28f845a6b5d1e45fa15dfef4fabad4866b8abac57e2204e7f87043c227ee1e9b";
 		String secretKey = "E*PPX2$<7fE57o0gcNiJw50BoZZvKpKynC^NfrFd38!^7ccWidi61JaUt?F0d9<X?KExRd9@$7DWMdR3<7Y!3*)4jGVDzP4MzSr27Lyf@MbU$Vy_??EeC&!VgaUcmuXp";
@@ -81,9 +81,9 @@ public class TransactionTest implements Serializable {
 		int a = 1;
 	}
 
-	//@Test
+	@Test
 	public void getGasLimit() {
-		System.out.println(EVMUtil.getGasLimit("https://rpcurl.mainnet.plgchain.com"));
+		System.out.println(EVMUtil.getGasLimit("https://rpc.chainv1.nexi.technology"));
 	}
 
 	//@Test

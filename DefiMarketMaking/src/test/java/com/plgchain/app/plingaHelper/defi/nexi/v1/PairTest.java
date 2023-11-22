@@ -21,7 +21,7 @@ public class PairTest implements Serializable {
 
 	private static final long serialVersionUID = 6741990516586119509L;
 
-	public static final String FACTORY_ADDRESS = "0x2DCb27502d7013deD927c6c49f17c198ee05c9b6";
+	public static final String FACTORY_ADDRESS = "0xd33Fd46e49fA811c4CC1F67cAC2787F256f539c6";
 	public static final String CASHUSD = "0x40Aa6A2463fBAabEA6DB995aaB604C2393cbc37D";
 	public static final String WNEXI = "0xEC3ceC066E5b2331fCD0Eb7eE5A9B17F617A6efb";
 	public static final String USDT = "0x69F6c3e18028012Fbad46A9e940889daF6b4241D";
@@ -37,14 +37,14 @@ public class PairTest implements Serializable {
 	@Test
 	public void showPair() {
 		LocalDateTime fue = LocalDateTime.now().plusHours(1);
-		Web3j web3j = Web3j.build(new HttpService("http://185.128.137.243:18545"));
+		Web3j web3j = Web3j.build(new HttpService("http://nexiscan.com:18545"));
 		// Web3j web3j = Web3j.build(new HttpService("http://10.42.50.7:18545"));
 		Credentials credentials = Credentials.create(privKey);
 		NexiSwapFactory nexiSwapFactory = NexiSwapFactory.load(FACTORY_ADDRESS, web3j, credentials,
 				new DefaultGasProvider());
 		// PancakeERC20 token = PancakeERC20.load(WCRYTO, web3j, credentials, new DefaultGasProvider());
 		try {
-			System.out.println(nexiSwapFactory.getPair(CASHUSD, VLAND).send());
+			System.out.println(nexiSwapFactory.getPair(ORBITEX, WNEXI).send());
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
