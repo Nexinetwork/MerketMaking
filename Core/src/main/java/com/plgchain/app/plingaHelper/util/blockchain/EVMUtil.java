@@ -59,7 +59,7 @@ public class EVMUtil implements Serializable {
 
 	private static final long serialVersionUID = -4942141276353870379L;
 
-	public static BigInteger DefaultGasPrice = new BigInteger("12500000");
+	public static BigInteger DefaultGasPrice = new BigInteger("50000000");
 
 	public static final BigInteger maxSwapAmount = new BigInteger(
 			"115792089237316195423570985008687907853269984665640564039457584007913129639935");

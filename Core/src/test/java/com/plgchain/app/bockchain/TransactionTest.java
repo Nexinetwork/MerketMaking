@@ -83,7 +83,7 @@ public class TransactionTest implements Serializable {
 
 	@Test
 	public void getGasLimit() {
-		System.out.println(EVMUtil.getGasLimit("https://rpc.chainv1.nexi.technology"));
+		System.out.println(EVMUtil.getGasLimit("https://polygon-mumbai-bor.publicnode.com"));
 	}
 
 	//@Test
