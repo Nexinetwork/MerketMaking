@@ -10,7 +10,7 @@
     <!-- Your own application should inherit from spring-boot-starter-parent -->
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.2.2</version>
+    <version>3.1.5</version>
   </parent>
   <modules>
     <module>Core</module>
@@ -25,9 +25,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.jdk_version>17.0.8</project.build.jdk_version>
     <!-- spring -->
-    <spring-cloud.version>2023.0.0</spring-cloud.version>
-    <spring-cloud-starter-netflix-eureka-version>4.1.0</spring-cloud-starter-netflix-eureka-version>
-    <spring-boot_version>3.2.2</spring-boot_version>
+    <spring-cloud.version>2022.0.4</spring-cloud.version>
+    <spring-cloud-starter-netflix-eureka-version>4.0.3</spring-cloud-starter-netflix-eureka-version>
+    <spring-boot_version>3.1.5</spring-boot_version>
     <spring-security>6.2.0</spring-security>
     <!-- Database Connectivity -->
     <druid_version>1.1.9</druid_version>
