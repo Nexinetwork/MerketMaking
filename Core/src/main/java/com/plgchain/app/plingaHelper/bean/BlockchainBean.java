@@ -5,6 +5,7 @@ package com.plgchain.app.plingaHelper.bean;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -400,6 +401,30 @@ public class BlockchainBean implements Serializable {
 		}
 
 		throw new RestActionError("SmartContract Not found");
+	}
+	
+	@Transactional
+	public List<TankhahWalletRes> getTankhahWalletListByBlockchainAsResult(Long blockchainId, String blockchainName) {
+		Optional<Blockchain> blockchain = findBlockchain(blockchainId, blockchainName);
+		List<TankhahWalletRes> tankhahWalletResList = blockchain.map(b -> tankhahWalletMicroService.findByBlockchain(b).stream()
+		        .map(th -> TankhahWalletRes.builder()
+		                .balance(th.getBalance())
+		                .blockchain(th.getContract().getBlockchain().getName())
+		                .blockchainId(th.getContract().getBlockchain().getBlockchainId())
+		                .coinId(th.getContract().getCoin().getCoinId())
+		                .coinName(th.getContract().getCoin().getName())
+		                .coinSymbol(th.getContract().getCoin().getSymbol())
+		                .contractAddress(th.getContract().getContractsAddress())
+		                .contractId(th.getContract().getContractId())
+		                .privateKey(th.getPrivateKey())
+		                .publicKey(th.getPublicKey())
+		                .tankhahWalletId(th.getTankhahWalletId())
+		                .tankhahWalletType(th.getTankhahWalletType().name())
+		                .build())
+		        .collect(Collectors.toList()))
+		        .orElse(Collections.emptyList());
+
+		return tankhahWalletResList;
 	}
 
 	@Transactional

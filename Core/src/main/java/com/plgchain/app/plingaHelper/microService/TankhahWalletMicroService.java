@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.plgchain.app.plingaHelper.dao.TankhahWalletDao;
+import com.plgchain.app.plingaHelper.entity.Blockchain;
 import com.plgchain.app.plingaHelper.entity.TankhahWallet;
 import com.plgchain.app.plingaHelper.entity.coingecko.SmartContract;
 import com.plgchain.app.plingaHelper.microService.Base.BaseMicroService;
@@ -33,6 +34,10 @@ public class TankhahWalletMicroService extends BaseMicroService<TankhahWallet> i
 
 	public List<TankhahWallet> findByContract(SmartContract contract) {
 		return tankhahWalletDao.findByContract(contract);
+	}
+	
+	public List<TankhahWallet> findByBlockchain(Blockchain blockchain) {
+		return tankhahWalletDao.findByBlockchain(blockchain);
 	}
 
 	public Optional<TankhahWallet> findById(Long id) {

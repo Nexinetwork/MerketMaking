@@ -156,6 +156,15 @@ public class WalletController extends BaseController implements Serializable {
 			return error(e.getMessage());
 		}
 	}
+	
+	@RequestMapping("/wallet/findAllTankhahByBlockchain")
+	public MessageResult findAllTankhahByBlockchain(@RequestBody GeneralReq req) {
+		if (req == null)
+			error("Blockchain Is Null is null");
+		if ((Strings.isNullOrEmpty(req.getBlockchain())) && (req.getBlockchainId() == null || req.getBlockchainId() <=0))
+			error("blockchain is empty");
+		return success(blockchainBean.getTankhahWalletListByBlockchainAsResult(req.getBlockchainId(), req.getBlockchain()));
+	}
 
 	@RequestMapping("/wallet/backAllTokensToTankhah")
 	public MessageResult backAllTokensToTankhah(@RequestBody GeneralReq req) {
