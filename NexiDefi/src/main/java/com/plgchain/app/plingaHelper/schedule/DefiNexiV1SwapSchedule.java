@@ -32,7 +32,7 @@ import java.util.stream.IntStream;
 /**
  *
  */
-@Component
+//@Component
 public class DefiNexiV1SwapSchedule {
 	private final static Logger logger = LoggerFactory.getLogger(DefiNexiV1SwapSchedule.class);
 
@@ -148,7 +148,7 @@ public class DefiNexiV1SwapSchedule {
 	}
 
 	@Transactional
-	@Scheduled(cron = "0 */5 * * * *", zone = "GMT")
+	//@Scheduled(cron = "0 */5 * * * *", zone = "GMT")
 	public void defiNexiV1Swap() {
 		if (!initBean.doesActionRunning("defiNexiV1Swap")) {
 			initBean.startActionRunning("defiNexiV1Swap");
