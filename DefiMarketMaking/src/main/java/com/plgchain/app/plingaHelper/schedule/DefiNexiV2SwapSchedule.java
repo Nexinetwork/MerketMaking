@@ -77,12 +77,12 @@ public class DefiNexiV2SwapSchedule {
 	public void init() {
 		logger.info("init for DefiNexiV1SwapSchedule has been runned.......");
 		this.blockchain = blockchainMicroService.findByName("Nexi-DPOS-V2").get();
-		this.minorContractList = Arrays.asList("0x613d19fd91A62513e16Ecc1c0A4bFb16480bd2Bb",
-				"0xdF397Aeee4950Aafb7DaD6345747337B510B4951", "0x9032ba5aa0d59888E582E8aa5893b53b07DEceC1",
-				"0x1F1FdCf76847E8e9C00048a33dFf1246912a7Fc2", "0x883277f7D623612034db92A2dC16A8BEC20a8FB5",
-				"0x040a129440e4d98fABaD86C8A5D291693636c850", "0x0000000000000000000000000000000000001010");
+		this.minorContractList = Arrays.asList("0x2C74623C959a095554b81522edF457f9DaA1895E",
+				"0xdF397Aeee4950Aafb7DaD6345747337B510B4951", "0xEA52c1F8Ef64c3BfCc043e01081618b5A7159bD1",
+				"0x48FDd05F8C5e9F46A6860dDc13337948141ea268", "0xd78a2aFEcB5EaBabBe85f06A6DB1AeE1a3b161C1",
+				"0x6D2813879c7eAc85376779045cd3b9d7CCfd9911", "0x1F1FdCf76847E8e9C00048a33dFf1246912a7Fc2", "0xB1Aa3D7ECF0Bb9C889C23095AAc02f02A1FB325B", "0x0000000000000000000000000000000000001010");
 		this.majorContractList = Collections.singletonList("0x40Aa6A2463fBAabEA6DB995aaB604C2393cbc37D");
-		this.majorContractList = Arrays.asList("0x40Aa6A2463fBAabEA6DB995aaB604C2393cbc37D","0x0000000000000000000000000000000000001010");
+		this.majorContractList = Arrays.asList("0x6D50bbd7ee1B042ea9C5D0E3E15d4aF569f4fAad");
 
 		majorContractList.forEach(this::initializeMajorWalletList);
 		minorContractList.forEach(this::initializeMinorWalletList);
@@ -149,11 +149,11 @@ public class DefiNexiV2SwapSchedule {
 	}
 
 	@Transactional
-	// @Scheduled(cron = "0 */5 * * * *", zone = "GMT")
+	@Scheduled(cron = "0 */5 * * * *", zone = "GMT")
 	public void defiNexiV1Swap() {
-		if (!initBean.doesActionRunning("defiNexiV1Swap")) {
-			initBean.startActionRunning("defiNexiV1Swap");
-			logger.info("defiNexiV1Swap started.");
+		if (!initBean.doesActionRunning("defiNexiV2Swap")) {
+			initBean.startActionRunning("defiNexiV2Swap");
+			logger.info("defiNexiV2Swap started.");
 
 			IntStream.range(0, roundSize).forEach(idx -> {
 				String mainContract = "";
