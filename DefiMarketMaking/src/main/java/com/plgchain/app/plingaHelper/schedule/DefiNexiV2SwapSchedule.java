@@ -32,7 +32,7 @@ import java.util.stream.IntStream;
 /**
  *
  */
-// @Component
+@Component
 public class DefiNexiV2SwapSchedule {
 	private final static Logger logger = LoggerFactory.getLogger(DefiNexiV2SwapSchedule.class);
 
