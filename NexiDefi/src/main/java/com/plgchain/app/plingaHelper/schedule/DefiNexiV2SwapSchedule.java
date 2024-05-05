@@ -212,12 +212,12 @@ public class DefiNexiV2SwapSchedule {
 				}
 			});
 
-			initBean.stopActionRunning("defiNexiV1Swap");
+			initBean.stopActionRunning("defiNexiV2Swap");
 			logger.info("defiNexiV1Swap finished.");
 		} else
 
 		{
-			logger.warn("Schedule method defiNexiV1Swap already running, skipping it.");
+			logger.warn("Schedule method defiNexiV2Swap already running, skipping it.");
 		}
 	}
 }
